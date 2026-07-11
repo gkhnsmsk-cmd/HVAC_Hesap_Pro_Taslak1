@@ -1,0 +1,3 @@
+=== UFH-ETIKET v2.1 DEBUG ===
+ZwCAD: 20.0
+Iptal.

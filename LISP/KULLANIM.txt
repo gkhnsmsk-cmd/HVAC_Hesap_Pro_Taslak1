@@ -1,0 +1,156 @@
+================================================================
+HVAC HESAP PRO  –  Yerden Isitma AutoLISP Araclari  v2.0
+EN 1264 | ZwCAD 2026+
+================================================================
+
+ÖNEMLİ: Tüm cizimler CM birimindedir.
+  300 mm adim = 30 cizim birimi
+  100 mm adim = 10 cizim birimi
+  Devreler arasi mesafe = 10 birim (10 cm = 100 mm)
+
+================================================================
+DOSYALAR
+================================================================
+  UFH-ETIKET.lsp   Excel'den veri okur, DWG'de mahalleri otomatik
+                   bulur ve etiketleri yerlestirir
+  UFH-BORU.lsp     Güzergah + oda içi serpantin boru deseni cizer
+  KULLANIM.txt     Bu dosya
+
+================================================================
+ADIM 1 – LISP Dosyalarini Yukleme
+================================================================
+
+ZwCAD komut satirina:
+
+  (load "C:\\...\\LISP\\UFH-ETIKET.lsp")
+  (load "C:\\...\\LISP\\UFH-BORU.lsp")
+
+Otomatik yukleme: Tools > Load Application > Startup Suite
+
+================================================================
+ADIM 2 – UFH-ETIKET  (Otomatik Mahal Etiket Yerlestirme)
+================================================================
+
+Komut: UFH-ETIKET
+
+1. Excel dosyasini secin  (HVAC Hesap Pro'dan alinan xlsx)
+   Son sayfa otomatik olarak YERDEN ISITMA okunur.
+
+2. DWG taraması otomatik başlar:
+   - Tüm INSERT entity'leri taranır
+   - ROOM-NO attribute'u olan bloklar bulunur
+   - Excel mahal kodlarıyla eşleştirilir
+
+3. Metin yüksekligini girin  (ornek: 0.15 veya 0.20 cm)
+
+4. Eşleşen mahaller OTOMATIK olarak etiketlenir.
+   Eşleşemeyen mahaller için tıklama istenir:
+     - Tıkla    → etiket yerleşir
+     - Enter    → o mahali atla
+
+Etiket icerigi:
+  [Mahal No]  Mahal Adı
+  Kat  Tip
+  Alan (m2)  Isı Kaybı (W)
+  Adım (mm)  TG/TD (C)
+  Toplam Boru (m)  Devre sayısı
+  Boru/Devre (m)  Akış (L/h)
+  Döşeme sıcaklık kontrolü
+
+Xdata: Adim ve devre bilgisi etiket uzerinde saklanır.
+       UFH-BORU bu veriyi otomatik okur.
+
+Katman: UFH-ETIKET  (turuncu / ACI-30)
+
+----------------------------------------------------------------
+BLOK YAPISI (ROOM-NO attribute)
+----------------------------------------------------------------
+UFH-ETIKET aşağıdaki attribute tag'ını arar:
+  Tag: ROOM-NO  →  oda kodu  (örn: "B01-001")
+
+ZwCAD'de oda blokları genellikle:
+  TRD_B3_MAHAL | TRD-EC-ROOMBOX-BASIC (veya benzeri)
+
+Excel mahal numarası bu tag değeriyle büyük/küçük harfe
+duyarsız karşılaştırılır.
+
+Eğer DWG'de bu blok yapısı yoksa:
+  → Tüm mahaller için tıklama yöntemi kullanılır.
+
+================================================================
+ADIM 3 – UFH-BORU  (Boru Deseni Cizimi)
+================================================================
+
+ÖNCE: Kolektör güzergah polyline'ini çizin
+  → PLINE komutu ile oda içinden başlayıp
+    kollektöre (veya istenen noktaya) kadar çizin.
+  → Enter ile bitiriniz. (Kapalı olmasına gerek yok.)
+
+Komut: UFH-BORU
+
+  [1/3] UFH-ETIKET etiketi secin
+        → Adim ve devre sayisi otomatik okunur
+        → Enter'a basarsaniz elle girersiniz
+
+  [2/3] Oda sinir polyline'ini secin
+        → Kapali LWPOLYLINE olmali
+        → CLOSE ile kapatilmamissa uyari verilir
+
+  [3/3] Kolektör güzergah polyline'ini secin
+        → Az önce PLINE ile cizilen hat
+
+Sonuc:
+  a) Oda içi serpantin boru deseni   (UFH-BORU  kirmizi)
+     - Alttan üste tarama, zigzag baglantili
+  b) Güzergah boyunca boru hatlari   (UFH-GIDIS mavi)
+     - 1 devre  → 2 paralel boru (±5 cm)
+     - 2 devre  → 4 paralel boru (±5/±15 cm)
+     - 3 devre  → 6 paralel boru (±5/±15/±25 cm)
+     - Tüm borular 10 cm (= 100 mm) aralıklı
+
+Hizli test (etiket seçimi olmadan):
+  Komut: UFH-BORU-MANUEL
+  → Adim ve devre sayisini elle girin
+
+================================================================
+KATMANLAR
+================================================================
+
+  UFH-ETIKET   ACI-30  turuncu   mahal bilgi etiketleri
+  UFH-BORU     ACI-1   kirmizi   oda içi serpantin borular
+  UFH-DONUS    ACI-4   cyan      serpantin donus baglantilar
+  UFH-GIDIS    ACI-5   mavi      kolektör güzergah boruları
+
+================================================================
+İPUÇLARI
+================================================================
+
+Cizim birimi kontrolu:
+  UNITS komutu → Uzunluk birimi "Centimeters" olmali.
+
+DWG'de ROOM-NO bulunamazsa:
+  UFH-ETIKET çalışır ama tüm mahaller için tıklama ister.
+  Bu durumda mimarı bloklarındaki attribute tag ismini kontrol edin.
+  Debug dosyasına hangi ROOM-NO'ların bulunduğu yazılır.
+
+Debug log dosyası:
+  LISP\UFH_DEBUG.txt  – hata takibi ve tarama sonuçları
+
+Oda dik açılı değilse:
+  UCS'yi oda yönüne çevirin → UFH-BORU'yu çalıştırın
+  → UCSICON komutu ile WCS'ye dönün.
+
+Birden fazla oda için:
+  Her oda için ayrı güzergah polyline'i çizin
+  ve UFH-BORU'yu ayrı ayrı çalıştırın.
+
+Fazla çizgiler:
+  Oda dışında kalan boru parçalarını TRIM ile temizleyin.
+
+Katman yönetimi:
+  Gidiş borularını UFH-GIDIS-G, dönüş borularını UFH-GIDIS-D
+  gibi ayrı katmanlara taşıyarak renk/isim ayrımı yapabilirsiniz.
+
+================================================================
+HVAC Hesap Pro  |  EN 1264 UFH Modulu  |  v2.0  |  2026
+================================================================

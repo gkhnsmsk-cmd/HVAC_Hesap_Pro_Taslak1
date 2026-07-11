@@ -1,0 +1,21 @@
+# Bağımlılıklar (yeniden kurulabilir, depoya girmez)
+**/node_modules/
+
+# Sırlar / anahtarlar — ASLA depoya girmemeli
+**/.env
+**/.env.*
+**/*.key
+**/*.pem
+
+# Elle alınmış yedek / bozuk kopyalar (artık git bunları gereksiz kılıyor)
+*.bak
+*.bak_*
+*.bak2_*
+*.broken_*
+
+# İşletim sistemi / editör çöpleri
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
