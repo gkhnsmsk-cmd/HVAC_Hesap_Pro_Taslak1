@@ -2025,6 +2025,9 @@ Groq API key yoksa sağ üstteki alanı doldurun.</div>
 </div>
 <!-- ══ JS MODÜLLER ══ -->
 <script src="js/calc-engine.js?v=20260709b"></script>
+<script src="js/validate.js?v=1"></script>
+<script src="js/persist.js?v=1"></script>
+<script>window.addEventListener('load',function(){setTimeout(function(){try{window.HvacPersist&&HvacPersist.offerRestore();}catch(e){}},1200);});</script>
 <script src="js/device-db.js?v=20260709b"></script>
 <script src="js/render-views.js?v=20260709b"></script>
 <script src="js/export-rtf.js?v=20260709b"></script>
@@ -2959,6 +2962,7 @@ function renderResults(R, P){
   // globalResults ve globalParams set et
   globalResults = R;
   window.globalResults = R;  // goToStep(4) window.globalResults kontrol ediyor
+  try { if (window.HvacPersist) HvacPersist.autosave(); } catch(e){}
   filtreliSonuclar = [...R];
   globalParams = P;
   window.globalParams = P;
@@ -4726,7 +4730,7 @@ function runHesap(){
     fAyd:      +document.getElementById('p_fayd').value,
     odaZam:    +document.getElementById('p_oda_zam').value,
     effZam:    +document.getElementById('p_eff_zam').value,
-    ruzgarZam: +document.getElementById('p_ruzgar').value,
+    ruzgarZam: +document.getElementById('p_wind').value, ruzgarHiz: +document.getElementById('p_ruzgar').value,
     emSog:     +document.getElementById('p_em_sog').value||0,
     emIst:     +document.getElementById('p_em_ist').value||0,
     thKatsayi: +document.getElementById('p_th_k').value||1.0,
@@ -4797,7 +4801,7 @@ function updateHesiYuku(){
     fAyd:      +document.getElementById('p_fayd').value,
     odaZam:    +document.getElementById('p_oda_zam').value,
     effZam:    +document.getElementById('p_eff_zam').value,
-    ruzgarZam: +document.getElementById('p_ruzgar').value,
+    ruzgarZam: +document.getElementById('p_wind').value, ruzgarHiz: +document.getElementById('p_ruzgar').value,
     emSog:     +document.getElementById('p_em_sog').value||0,
     emIst:     +document.getElementById('p_em_ist').value||0,
     thKatsayi: +document.getElementById('p_th_k').value||1.0,

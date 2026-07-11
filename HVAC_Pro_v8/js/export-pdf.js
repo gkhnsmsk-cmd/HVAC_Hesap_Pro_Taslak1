@@ -455,6 +455,50 @@ function generateCarrierHapHtml(){
   html += '<div style="text-align:right;font-family:Arial;font-size:8pt;color:#666666;margin-top:20px;">Hourly Analysis Program 5.11 | Page ' + currentPage + ' of ' + totalPages + '</div>';
   
   console.log('✅ generateCarrierHapHtml başarıyla tamamlandı, HTML uzunluğu:', html.length);
+
+  // APPENDIX — Calculation Methodology & Standards (traceability / audit)
+  html += '<div class="page-break"></div>';
+  html += '<div class="header">APPENDIX — CALCULATION METHODOLOGY &amp; STANDARDS</div>';
+  html += '<div class="section-header">A.1 Design Basis Summary</div>';
+  html += '<table>' +
+    '<tr><th class="left-align">Parameter</th><th class="left-align">Value</th></tr>' +
+    '<tr><td class="left-align">Cooling outdoor design (DB / WB)</td><td class="left-align">' + (P.Tmax||'-') + ' &deg;C / ' + (P.yazYT||P.yazYt||'-') + ' &deg;C</td></tr>' +
+    '<tr class="alt-row"><td class="left-align">Cooling indoor set-point</td><td class="left-align">' + (P.icKtYaz||24) + ' &deg;C</td></tr>' +
+    '<tr><td class="left-align">Heating outdoor design (DB)</td><td class="left-align">' + (P.kisKt!=null?P.kisKt:'-') + ' &deg;C</td></tr>' +
+    '<tr class="alt-row"><td class="left-align">Heating indoor set-point</td><td class="left-align">' + (P.icKtKis||22) + ' &deg;C</td></tr>' +
+    '<tr><td class="left-align">Solar data basis (latitude)</td><td class="left-align">Clear-sky model, ~40-41&deg;N reference</td></tr>' +
+    '<tr class="alt-row"><td class="left-align">Cooling safety factor</td><td class="left-align">' + (P.emSog||0) + ' %</td></tr>' +
+    '<tr><td class="left-align">Heating safety factor</td><td class="left-align">' + (P.emIst||0) + ' %</td></tr>' +
+    '<tr class="alt-row"><td class="left-align">Wind / exposure factor (heating)</td><td class="left-align">x' + (P.ruzgarZam||1) + '</td></tr>' +
+    '</table>';
+  html += '<div class="section-header">A.2 Cooling Load Method</div>';
+  html += '<p style="font-size:9pt;margin:3px 0;">Sensible cooling loads are computed with the ASHRAE CLTD/CLF method and solar heat-gain factors (SHGF), evaluated by orientation, month and hour; the peak hour is selected by a month &times; hour sweep.</p>';
+  html += '<p style="font-size:9pt;margin:3px 0;font-style:italic;">Solar: q = SHGF(month, orientation, hour) &times; SHGC &times; Shade Factor. &nbsp; Walls / roof: CLTD (ASHRAE Group D wall, monthly T<sub>max</sub> correction).</p>';
+  html += '<div class="section-header">A.3 Heating Load Method</div>';
+  html += '<p style="font-size:9pt;margin:3px 0;font-style:italic;">Q = U &middot; A &middot; &Delta;T &times; exposure factor, &nbsp;plus infiltration and ventilation heating.</p>';
+  html += '<p style="font-size:9pt;margin:3px 0;">Internal gains (lighting, people, equipment, solar) are conservatively neglected for the heating case.</p>';
+  html += '<div class="section-header">A.4 Ventilation &amp; Infiltration</div>';
+  html += '<table>' +
+    '<tr><th class="left-align">Item</th><th class="left-align">Basis</th></tr>' +
+    '<tr><td class="left-align">Office ventilation</td><td class="left-align">Per-person + per-area (3.8 L/s&middot;person + 0.6 L/s&middot;m&sup2;)</td></tr>' +
+    '<tr class="alt-row"><td class="left-align">Other space types</td><td class="left-align">Air-change (ACH) method by space type</td></tr>' +
+    '<tr><td class="left-align">Infiltration</td><td class="left-align">TS 825 ACH basis; Q = &rho; &middot; c<sub>p</sub> &middot; V &middot; &Delta;T (&rho; = 1.2 kg/m&sup3;, c<sub>p</sub> = 1006 J/kg&middot;K)</td></tr>' +
+    '</table>';
+  html += '<div class="section-header">A.5 Psychrometrics</div>';
+  html += '<p style="font-size:9pt;margin:3px 0;">The fresh-air (outdoor-air) load is split into sensible and latent components from the enthalpy and humidity-ratio difference between outdoor and indoor air.</p>';
+  html += '<div class="section-header">A.6 References</div>';
+  html += '<ol style="font-size:9pt;margin:3px 0 3px 18px;padding:0;">' +
+    '<li>ASHRAE Handbook &mdash; Fundamentals, Nonresidential Cooling and Heating Load Calculations (CLTD / CLF / SHGF method as published in earlier editions; superseded by the RTS method in current editions).</li>' +
+    '<li>ASHRAE Standard 62.1 &mdash; Ventilation for Acceptable Indoor Air Quality (default outdoor-air rates).</li>' +
+    '<li>EN 12831-1 &mdash; Energy performance of buildings, design heat load (simplified conduction basis).</li>' +
+    '<li>TS 825 &mdash; Thermal insulation requirements for buildings (infiltration air-change basis).</li>' +
+    '</ol>';
+  html += '<div class="section-header">A.7 Limitations &amp; Disclaimer</div>';
+  html += '<ul style="font-size:9pt;margin:3px 0 3px 18px;padding:0;">' +
+    '<li>Loads are computed with the steady-periodic CLTD / CLF approach, not a transient (8760-hour) simulation.</li>' +
+    '<li>Solar gains use a clear-sky model at a reference latitude, not a site-specific weather file.</li>' +
+    '<li>Values are design estimates and remain subject to review by a qualified engineer.</li>' +
+    '</ul>';
   return html;
   
   } catch(err) {

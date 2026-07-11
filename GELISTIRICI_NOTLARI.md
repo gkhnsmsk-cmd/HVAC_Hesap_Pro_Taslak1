@@ -68,3 +68,16 @@ buradan devam etmeli. Önemli kararlar, mimari ve tuzaklar burada.
 
 ## Model politikası (kullanıcı onayı)
 - Günlük iş: Opus+Haiku. Yüksek risk (hesap motoru/refactor/sürüm): Fable+Haiku. Yığın ucuz iş: Sonnet+Haiku.
+
+## Değişiklik günlüğü
+- **2026-07-11 — KRİTİK rüzgâr hatası düzeltmesi (TS 2164/825).**
+  - HATA: Motor, transmisyon ısı kaybını `p_wind` (×1.00/1.07 maruziyet FAKTÖRÜ) yerine `p_ruzgar`
+    (rüzgâr HIZI, m/s, varsayılan 3.5) ile çarpıyordu → ısıtma yükleri ~%57 şişik.
+  - DÜZELTME: P-builder'larda (calc-engine.js + index.html) `ruzgarZam` artık `p_wind`'den okunuyor;
+    ayrıca `ruzgarHiz` = `p_ruzgar` olarak eklendi.
+  - YENİ: İnfiltrasyon rüzgâr hızıyla ölçekleniyor: `ach_eff = ach_base × (v/3.5)^1.33`, [0.7–1.6] kırpma.
+    v_ref=3.5 seçildiği için varsayılan projelerde infiltrasyon DEĞİŞMEZ (yalnız transmisyon hatası düzelir).
+  - AYRIM: p_wind → yalnız transmisyon zammı; p_ruzgar (m/s) → yalnız infiltrasyon.
+  - Demo/doğrulama: `node tools/ruzgar-demo.js`.
+  - GERİYE UYUM: Eski projeler yeniden hesaplanmalı; eski ısıtma sonuçları güvenli tarafta fazla boyutluydu.
+  - TODO (opsiyonel): UI'da p_wind ve p_ruzgar etiketlerine rollerini açıkça yaz (Fable önerisi).

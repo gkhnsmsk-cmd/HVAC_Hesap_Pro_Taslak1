@@ -241,6 +241,30 @@ function procFile(f, settings = null){
       });
       globalData=cleaned;
       document.getElementById('fileStatus').innerHTML=`<div class="file-loaded">✓ ${f.name} – <strong>${cleaned.length} mahal</strong></div>`;
+      try {
+        if (typeof validateRooms === 'function') {
+          var _vIssues = validateRooms(cleaned) || [];
+          if (_vIssues.length) {
+            window._vToggle = window._vToggle || function(){ var d=document.getElementById('_vDetay'); if(d) d.style.display = (d.style.display==='none'?'block':'none'); };
+            var _vErr = _vIssues.filter(function(x){return x.seviye==='hata';}).length;
+            var _vWarn = _vIssues.filter(function(x){return x.seviye==='uyari';}).length;
+            var _lng = (typeof LANG!=='undefined' && LANG==='en');
+            var _vr = _vIssues.map(function(x){
+              var col = x.seviye==='hata' ? '#c0392b' : '#b9770e';
+              var ico = x.seviye==='hata' ? '⛔' : '⚠';
+              return '<div style="padding:3px 8px;font-size:11px;color:'+col+';border-bottom:1px solid rgba(0,0,0,.06);"><strong>'+ico+' '+x.mahal+':</strong> '+x.mesaj+'</div>';
+            }).join('');
+            var _sum = '<span style="cursor:pointer;" onclick="_vToggle()">'
+              + (_vErr? ' · <span style="color:#c0392b;font-weight:600;">⛔ '+_vErr+(_lng?' error':' hata')+'</span>':'')
+              + (_vWarn? ' · <span style="color:#b9770e;font-weight:600;">⚠ '+_vWarn+(_lng?' warning':' uyari')+'</span>':'')
+              + ' <span style="font-size:10px;color:#888;text-decoration:underline;">'+(_lng?'details':'ayrinti')+'</span></span>';
+            var _fs = document.getElementById('fileStatus');
+            if (_fs) _fs.innerHTML += _sum + '<div id="_vDetay" style="display:none;margin-top:6px;max-height:180px;overflow:auto;border:1px solid rgba(0,0,0,.08);border-radius:6px;">'+_vr+'</div>';
+            if (typeof _toast==='function') _toast((_lng?'Data check: ':'Veri kontrolu: ')+_vErr+(_lng?' error, ':' hata, ')+_vWarn+(_lng?' warning':' uyari'));
+            if (typeof console!=='undefined') console.warn('[Dogrulama]', _vIssues);
+          }
+        }
+      } catch(_ve) { if(typeof console!=='undefined') console.error('Dogrulama atlandi:', _ve); }
       document.getElementById('runBtn').disabled=false;
       
       // Eğer ayarlar varsa uygula
@@ -880,7 +904,7 @@ function yukleProjeVeri(projeData) {
       fAyd:      +document.getElementById('p_fayd').value,
       odaZam:    +document.getElementById('p_oda_zam').value,
       effZam:    +document.getElementById('p_eff_zam').value,
-      ruzgarZam: +document.getElementById('p_ruzgar').value,
+      ruzgarZam: +document.getElementById('p_wind').value, ruzgarHiz: +document.getElementById('p_ruzgar').value,
       emSog:     +document.getElementById('p_em_sog').value||0,
       emIst:     +document.getElementById('p_em_ist').value||0,
       thKatsayi: +document.getElementById('p_th_k').value||1.0,
@@ -1618,7 +1642,9 @@ function hesaplaMahalV5(row, P, korunanCihaz){
   // ── İNFİLTRASYON (TS 825 ACH yöntemi) ───────────────────────
   // Q_infil_sog = ρ × Cp × V̇_infil × ΔT  (duyulur, soğutma)
   // Q_infil_ist = ρ × Cp × V̇_infil × ΔT  (ısıtma)
-  const ach = infilACH(mahalTip);
+  const _achBase = infilACH(mahalTip);
+  const _vRuz = (P.ruzgarHiz && P.ruzgarHiz > 0) ? P.ruzgarHiz : 3.5;
+  const ach = _achBase * Math.max(0.7, Math.min(1.6, Math.pow(_vRuz / 3.5, 1.33)));
   const vInfil_m3h = hacim * ach;              // m³/h
   const vInfil_kgs = vInfil_m3h * 1.2 / 3600; // kg/s
   const dT_infil_sog = Math.max(0, P.Tmax - Ty);
