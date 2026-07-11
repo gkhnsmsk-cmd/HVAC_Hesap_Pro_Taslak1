@@ -2024,17 +2024,19 @@ Groq API key yoksa sağ üstteki alanı doldurun.</div>
   </div>
 </div>
 <!-- ══ JS MODÜLLER ══ -->
-<script src="js/calc-engine.js?v=20260709b"></script>
+<script src="js/errors.js?v=1"></script>
+<script>try{window.HvacErrors&&HvacErrors.install();}catch(e){}</script>
+<script src="js/calc-engine.js?v=20260711a"></script>
 <script src="js/validate.js?v=1"></script>
 <script src="js/persist.js?v=1"></script>
 <script>window.addEventListener('load',function(){setTimeout(function(){try{window.HvacPersist&&HvacPersist.offerRestore();}catch(e){}},1200);});</script>
-<script src="js/device-db.js?v=20260709b"></script>
-<script src="js/render-views.js?v=20260709b"></script>
-<script src="js/export-rtf.js?v=20260709b"></script>
-<script src="js/export-pdf.js?v=20260709b"></script>
-<script src="js/export-excel.js?v=20260709b"></script>
-<script src="js/modules.js?v=20260709b"></script>
-<script src="js/api.js?v=20260709b"></script>
+<script src="js/device-db.js?v=20260711a"></script>
+<script src="js/render-views.js?v=20260711a"></script>
+<script src="js/export-rtf.js?v=20260711a"></script>
+<script src="js/export-pdf.js?v=20260711a"></script>
+<script src="js/export-excel.js?v=20260711a"></script>
+<script src="js/modules.js?v=20260711a"></script>
+<script src="js/api.js?v=20260711a"></script>
 
 <script>
 // ── Çeviriler & setLang ──
@@ -6633,6 +6635,18 @@ function openModuleModal(type) {
       </div>
       <button class="mod-run-btn" onclick="_runPressure()">▶ ${LANG==='en' ? 'Calculate' : 'Hesapla'}</button>
       <div class="mod-result" id="modResult"></div>
+      <div style="border-top:1px solid #e2e8f0;margin:14px 0 10px;"></div>
+      <div style="font-size:11px;font-weight:700;color:#475569;margin-bottom:6px;">${LANG==='en' ? 'DUCT SIZING (circular)' : 'KANAL BOYUTLANDIRMA (dairesel)'}</div>
+      <div class="mod-grid2">
+        <div class="mod-field"><label>${LANG==='en' ? 'Airflow (L/s)' : 'Hava Debisi (L/s)'}</label>
+          <input type="number" id="mod_duct_q" value="200" step="10" min="1"></div>
+        <div class="mod-field"><label>${LANG==='en' ? 'Friction (Pa/m)' : 'Sürtünme (Pa/m)'}</label>
+          <input type="number" id="mod_duct_r" value="0.8" step="0.1" min="0.1"></div>
+        <div class="mod-field"><label>${LANG==='en' ? 'Material' : 'Malzeme'}</label>
+          <select id="mod_duct_mat"><option value="galvaniz">Galvaniz</option><option value="spiral">Spiral</option><option value="paslanmaz">${LANG==='en' ? 'Stainless' : 'Paslanmaz'}</option><option value="fibro">Fibro</option></select></div>
+      </div>
+      <button class="mod-run-btn" onclick="_runDuct()">▶ ${LANG==='en' ? 'Size Duct' : 'Kanal Boyutlandır'}</button>
+      <div class="mod-result" id="modDuctResult"></div>
     `;
   } else if (type === 'chiller') {
     title.textContent = LANG==='en' ? '❄️ Chiller & Fan Selection' : '❄️ Chiller & Fan Seçimi';
@@ -6736,6 +6750,27 @@ function _runPressure() {
       <tr><td>${LANG==='en' ? 'Mass Flow Rate' : 'Kütlesel Debi'}</td><td>${res.m_dot_kgh ? res.m_dot_kgh.toFixed(1) : '-'} kg/h</td></tr>
     </table>`);
   } catch(e) { _showModResult('<span class="res-err">❌ Hata: ' + e.message + '</span>'); }
+}
+
+function _runDuct() {
+  const out = (h) => { const el = document.getElementById('modDuctResult'); if (el) { el.innerHTML = h; el.classList.add('show'); } };
+  if (!window.DuctSizing) { out('<span class="res-err">modules.js?</span>'); return; }
+  const Q = +document.getElementById('mod_duct_q').value||200;
+  const Rr = +document.getElementById('mod_duct_r').value||0.8;
+  const mat = document.getElementById('mod_duct_mat').value||'galvaniz';
+  try {
+    const res = DuctSizing.calcCircular(Q, Rr, mat);
+    if (!res) { out('<span class="res-err">'+(LANG==='en'?'Calc error.':'Hesap hatasi.')+'</span>'); return; }
+    out(`<table>
+      <tr><th colspan="2">${LANG==='en' ? '🌀 Duct Sizing Results' : '🌀 Kanal Boyutlandırma Sonuçları'}</th></tr>
+      <tr><td>${LANG==='en' ? 'Airflow' : 'Hava Debisi'}</td><td>${res.Q_ls} L/s (${(res.Q_ls*3.6).toFixed(0)} m³/h)</td></tr>
+      <tr><td>${LANG==='en' ? 'Round Duct (std)' : 'Yuvarlak Kanal (std)'}</td><td><strong class="res-ok">Ø${res.D_std_mm} mm</strong></td></tr>
+      <tr><td>${LANG==='en' ? 'Equivalent Rect.' : 'Eşdeğer Dikdörtgen'}</td><td>${res.rect_a} × ${res.rect_b} mm</td></tr>
+      <tr><td>${LANG==='en' ? 'Velocity' : 'Hız'}</td><td>${res.v} m/s (${res.akis})</td></tr>
+      <tr><td>${LANG==='en' ? 'Actual Friction' : 'Gerçek Sürtünme'}</td><td>${res.R_actual} Pa/m</td></tr>
+      <tr><td>Reynolds</td><td>${Math.round(res.Re)}</td></tr>
+    </table>`);
+  } catch(e) { out('<span class="res-err">'+e.message+'</span>'); }
 }
 
 function _runChillerFan() {

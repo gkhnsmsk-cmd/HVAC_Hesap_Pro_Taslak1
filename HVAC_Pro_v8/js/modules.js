@@ -88,6 +88,9 @@ const PressureLoss = (() => {
       dP_pm:   +dP_pm.toFixed(1),    // Pa/m
       dP_tot:  +dP_total.toFixed(0), // Pa
       m_dot:   +m_dot.toFixed(4),    // kg/s
+      dP_Pa_m: +dP_pm.toFixed(1),               // UI adaptor: Pa/m
+      dP_total_kPa: +(dP_total/1000).toFixed(2),  // UI adaptor: Pa->kPa
+      m_dot_kgh: +(m_dot*3600).toFixed(1),        // UI adaptor: kg/s->kg/h
       V_m3h:   +(V_dot * 3600).toFixed(2), // m³/h
     };
   }
@@ -879,7 +882,12 @@ const FanSelect = (() => {
       };
     });
 
-    return { Q_m3h, SP_Pa, results };
+    return { Q_m3h, SP_Pa, results,
+      // UI uyum adaptoru: en iyi fani duz alanlara da koy (results[] korunur)
+      tip: results[0] ? results[0].tip : null,
+      q_m3h: Q_m3h,
+      motor_kW: results[0] ? results[0].P_iec_kW : null,
+      verim: results[0] ? results[0].eta : null };
   }
 
   function renderCard(res) {

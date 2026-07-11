@@ -1,0 +1,39 @@
+{
+  "surum": 1,
+  "not": "Gece otonom loop kuyrugu. Sadece headless-dogrulanabilir, additive, tasarim-karari gerektirmeyen isler. Ambiguite/UI/standart-veri suphesi -> status 'needs_user'.",
+  "gorevler": [
+    {
+      "id": "T1",
+      "baslik": "report-model anlatiminda degisken sayilari kaldir",
+      "aciklama": "Kullanici karari: rapor anlatiminda degisken sayisal deger (kW vb.) OLMAZ; sayilar EKLER'de. HVAC_Pro_v8/js/report-model.js icindeki ISITMA_SOGUTMA_PRESETS.vrf/.chiller/.split metinlerinden {{toplam_sogutma_kW}} ve {{toplam_isitma_kW}} iceren cumleleri python ile cikar; metni niteliksel birak (sayi verme). Ayrica tools/report-model-test.js'te '64 kW' assert satirini kaldir; yerine her preset metninde 'toplam_sogutma_kW' ve 'toplam_isitma_kW' string'inin GECMEDIGINI assert et.",
+      "kabul": "grep -c 'toplam_sogutma_kW' HVAC_Pro_v8/js/report-model.js == 0 VE node tools/report-model-test.js cikis 0.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/report-model.js",
+        "tools/report-model-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T2",
+      "baslik": "U-deger motoru (uvalue-engine.js) — SADECE formul",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/uvalue-engine.js. Saf, DOM'suz IIFE modul; window.UValue + module.exports. Fonksiyon uValue(layers, Rsi, Rse): layers=[{d_m, lambda}] icin U = 1/(Rsi + sum(d/lambda) + Rse) dondur (W/m2K, 3 ondalik). Rsi/Rse verilmezse duvar icin Rsi=0.13, Rse=0.04 varsayilani kullan (EN ISO 6946; yorumda 'teyit' yaz). Ayrica rTotal(layers,Rsi,Rse) dondur. MALZEME KUTUPHANESI EKLEME (lambda kullanici girdisi). tools/uvalue-test.js yaz: 2 katmanli duvar d=0.2 lambda=0.5 (R=0.4) + d=0.05 lambda=0.035 (R=1.4286), Rsi=0.13 Rse=0.04 -> R=2.0 -> U=0.50 (±0.01) assert et; tek katman kontrol; NaN/negatif girdi -> guvenli deger. Modul-test tarzi.",
+      "kabul": "node tools/uvalue-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/uvalue-engine.js",
+        "tools/uvalue-test.js"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "T3",
+      "baslik": "Boru hidroligi cekirdegi (pipe-hydraulics.js) — Darcy-Weisbach",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/pipe-hydraulics.js. Saf IIFE; window.PipeHydraulics + module.exports. Fonksiyon pressureDrop({Q_m3h, D_mm, L_m, rho, mu, eps_mm}): v=Q/(A), Re=rho*v*D/mu, Colebrook yerine Swamee-Jain f=0.25/(log10(eps/(3.7*D)+5.74/Re^0.9))^2, dP_pm=f*(1/D)*rho*v^2/2 (Pa/m), dP_total=dP_pm*L (Pa). Varsayilan: su rho=1000, mu=0.001, eps=0.045mm. {v_ms, Re, f, dP_Pa_m, dP_total_kPa} dondur (dP_total kPa=Pa/1000). tools/pipe-hyd-test.js: bilinen vaka su Q=3.6 m3h (1 L/s), D=50mm, L=10m -> v~0.51 m/s, Re turbulanslı, dP_pm makul (>0, <500 Pa/m); el hesabiyla v = Q/(3600)/(pi*(D/1000)^2/4) dogrula (±%2). Sonlu-sayi assert.",
+      "kabul": "node tools/pipe-hyd-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/pipe-hydraulics.js",
+        "tools/pipe-hyd-test.js"
+      ],
+      "status": "pending"
+    }
+  ]
+}

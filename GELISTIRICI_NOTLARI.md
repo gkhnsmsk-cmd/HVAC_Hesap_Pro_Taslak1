@@ -81,3 +81,50 @@ buradan devam etmeli. Önemli kararlar, mimari ve tuzaklar burada.
   - Demo/doğrulama: `node tools/ruzgar-demo.js`.
   - GERİYE UYUM: Eski projeler yeniden hesaplanmalı; eski ısıtma sonuçları güvenli tarafta fazla boyutluydu.
   - TODO (opsiyonel): UI'da p_wind ve p_ruzgar etiketlerine rollerini açıkça yaz (Fable önerisi).
+
+- **2026-07-11 — P2 (merkezî hata yakalama) + P3 (golden test) — Fable önderliğinde.**
+  - `errors.js`: window hata/promise-red yakalama, okunur hata bandı, persist varsa "son taslağı geri yükle".
+    En önce yüklenir + install edilir. Test: `tools/errors-test.js`.
+  - `persist.js`: otomatik kayıt (5'li snapshot halkası) + undo + yükleme-anı "Geri Yükle" bandı. Test: `tools/persist-test.js`.
+  - `tools/golden-test.js` (+ Golden-Test.bat): kullanıcının GERÇEK raporundan (ENTRANCE HALL) alınan
+    doğrulanmış değerleri kilitler — roof 213.3, floor 274.3, qKayipBase 487.6, infil 245 + RÜZGÂR ×1.00 kilidi.
+  - Test seti (hepsi çıkış 0 olmalı): saglik-kontrol, motor-test, golden-test, persist-test, errors-test, validate-test.
+
+- **2026-07-11 — Faz 4 P1: Modül sözleşme uyumu (Fable önderliğinde).**
+  - Canlı modül UI'si `mod_*` / `_showModResult`; eski `run*` fonksiyonları (`pl-result/en-result/ts-result` id'leri YOK) ölü kod.
+  - FanSelect.select: UI-uyum düz alanları eklendi (tip, q_m3h, motor_kW, verim) — results[] korundu.
+  - PressureLoss.select: UI-uyum alanları eklendi (dP_Pa_m, dP_total_kPa [Pa→kPa], m_dot_kgh [kg/s→kg/h]).
+  - ChillerSelect: alanlar zaten uyumlu. EnergyEstimate çift-imza yalnız ölü kodda.
+  - Yeni test: `tools/modul-test.js` (+ Modul-Test.bat) — modül sözleşmelerini + UI-uyum alanlarını kilitler.
+  - Test seti artık 7: saglik, motor, golden, modul, persist, errors, validate.
+  - SIRADAKI (Fable): DuctSizing + UFHCalc'ı UI'ye bağla (kod hazır, hiç çağrılmıyor); sonra psikrometrik SVG diyagram.
+
+- **2026-07-11 — Faz 4 P2: DuctSizing UI'ye bağlandı.**
+  - "Pipe & Duct" moduna (type==='pressure') ikinci bölüm: Kanal Boyutlandırma (mod_duct_q/r/mat) + _runDuct() → DuctSizing.calcCircular → Ø std çap, eşdeğer dikdörtgen, hız, sürtünme, Reynolds.
+  - UFHCalc henüz bağlı değil — ayrı bir tool butonu/UI yeri gerektiriyor (tasarım kararı, sonraki adım).
+
+- **2026-07-11 — Batch (kullanıcı yokken): golden genişletme + modül denetimi.**
+  - Golden test 5 GERÇEK mahale çıkarıldı (Entrance Hall, Electrical, Women's Locker, Deep Freezer, Cooking) —
+    çatı/döşeme/duvar transmisyonu + rüzgâr×1.00 kilidi, hepsi kullanıcının gerçek raporundan.
+  - Modül denetimi: canlı UI'de yalnız FanSelect + PressureLoss gerçek uyumsuzdu (düzeltildi). ChillerSelect,
+    Psychro, EnergyEstimate canlı çağrıları TEMİZ. TS825Check/eski run* fonksiyonları ölü kod (pl/en/ts-result id'leri yok).
+  - modul-test.js'e "5) Canli UI sozlesme alanlari" bölümü: tüm modüllerin UI-okuduğu alanlar kilitlendi.
+  - AÇIK: UFHCalc UI'ye bağlı değil (yeni tool yeri gerek); psikrometrik SVG diyagram (radikal UI) kullanıcı onayı bekliyor.
+
+## Marka / İsim
+- Yeni yazılım adı: **Gsem Mep Pro** (çok disiplinli MEP hesap + raporlama platformu).
+- Uygulanacak yerler: rapor kapağı, uygulama başlığı (eski "HVAC HESAP PRO v8.0" → "Gsem Mep Pro").
+- Yol haritası: YOL_HARITASI.md. Referans rapor yapısı: anlatım gövdesi (editlenebilir, sistem-tipi presetli) + EKLER (motor cetvelleri) → tek "Rapor Al" orkestratörü.
+
+## Rapor ilkeleri (kullanıcı kararı — ÖNEMLİ)
+- Anlatım metninde DEĞİŞKEN SAYISAL DEĞER OLMAZ (56 kW vb.). Sayılar sürekli revize olur → EKLER'de.
+- Anlatım = mevcut durum, adres, kullanım amacı, bina tipi, kat/m² bilgisi, hangi sistemler düşünüldü, hangileri ZORUNLU (sprinkler, yangın dolabı, hidrant, sığınak havalandırma, asansör/merdiven basınçlandırma, duman atım).
+- report-model.js REVİZE edilecek: preset metinlerindeki {{toplam_sogutma_kW}}/{{toplam_isitma_kW}} çıkarılıp anlatım niteliksel yapılacak; sayılar EK cetvellere.
+
+## Gerçek proje iş akışı (omurga)
+Konsept/sistem kararı → sıhhi → TS825 U-değeri/ısı yalıtımı → ısı kaybı/kazancı → cihaz seçimi → çizim → basınç kaybı (pompa/fan Pa) → yangın ön hesap→çizim→hidrolik → ekipman elektrik listesi → otomasyon nokta/kablo → hesap raporu → teknik şartname → metraj/keşif.
+Paket: (1) çizim+hesap raporu, (2) keşif listesi, (3) teknik şartname.
+
+## Yeni modüller (kullanıcı)
+- TS 825 U-değeri + ısı yalıtımı (2024 rev., ısıtma+soğutma, EN ISO 52016 yakın; katman→U=1/(Rsi+Σd/λ+Rse); malzeme/iklim kütüphanesi). Datası yok, sıfırdan pro yapılacak.
+- Merdiven basınçlandırma, Asansör basınçlandırma, Duman atım/tahliye, Sığınak havalandırma, Sistem karşılaştırma.

@@ -1,0 +1,51 @@
+// Gsem Mep Pro — Rapor Anlatım Modeli (report-model.js)
+// Editlenebilir anlatım bölümleri + sistem-tipi presetleri + yer-tutucu doldurma.
+// SAF (DOM'suz) — headless test edilebilir. Rapor orkestratörü bunu kullanır.
+(function () {
+  var SECTIONS = [
+    { key: 'konu', no: '1', title: 'RAPORUN KONUSU',
+      text: `İşbu rapor, {{proje_adi}} projesine ait mekanik tesisat sistemlerinin hesap ve tasarım esaslarını kapsamaktadır. Rapor kapsamında; ısıtma ve soğutma yükleri hesapları, havalandırma sistemleri, sıhhi tesisat (temiz su, atık su ve kullanım sıcak suyu) sistemleri ile yangın mücadele sistemlerine ait tasarım kriterleri, kabul edilen dış ve iç hava şartları, uygulanan hesap yöntemleri ve seçilen sistemlerin genel tanıtımı yer almaktadır. Hesaplamalarda ilgili ulusal ve uluslararası standartlar (TS 2164, EN 12831, VDI 2078, ASHRAE, EN 12056, NFPA/EN 12845) esas alınmıştır.` },
+    { key: 'genel', no: '2', title: 'GENEL BİLGİ VE TANITIM',
+      text: `{{proje_adi}}, {{sehir}} ilinde inşa edilecek olup toplam yaklaşık {{alan_m2}} m² kapalı alana sahiptir. Yapı {{kat_bilgisi}} olarak projelendirilmiş olup hesaplara esas mahal sayısı {{mahal_sayisi}} adettir. Mekanik tesisat projeleri; mimari projeler, mahal listeleri ve işveren gereksinim programı esas alınarak hazırlanmıştır. İşbu rapor {{tarih}} tarihi itibarıyla geçerli proje verilerine göre düzenlenmiştir.` },
+    { key: 'standartlar', no: '3', title: 'PROJELERDE UYULAN STANDARTLAR',
+      text: `Proje kapsamındaki mekanik tesisat sistemleri aşağıda listelenen ulusal ve uluslararası standart ve yönetmeliklere uygun olarak tasarlanmıştır. (Standart listesi disiplin bölümlerine göre otomatik derlenir.)` },
+    { key: 'dizayn', no: '4', title: 'DİZAYN KRİTERLERİ',
+      text: `Dış hava tasarım şartları; {{sehir}} ili için meteorolojik veriler ile TS 2164 ve ASHRAE Handbook — Fundamentals iklim verileri esas alınarak belirlenmiştir. Yaz dış şartları {{yaz_db}} °C KT / {{yaz_wb}} °C YT, kış dış şartı {{kis_db}} °C KT olarak kabul edilmiştir. İç hava tasarım şartları; mahal fonksiyonlarına göre EN 16798 ve VDI 6020 konfor kriterleri doğrultusunda yaz için {{ic_yaz}} °C, kış için {{ic_kis}} °C ve %{{ic_nem}} bağıl nem olarak alınmıştır. Mahal bazında kabul edilen sıcaklık, nem, hava değişim ve taze hava değerleri aşağıdaki tabloda verilmiştir.` },
+    { key: 'sihhi', no: '5', title: 'SIHHİ TESİSAT',
+      text: `Atık su tesisatı, EN 12056 standardına göre boyutlandırılmış olup pis su ve yağmur suyu hatları ayrık sistem olarak projelendirilmiştir; kolonlar çatı seviyesinde havalıklandırılmıştır. Kullanım soğuk suyu, şebekeden alınarak su deposu ve frekans kontrollü hidrofor grubu üzerinden dağıtılacak; kullanma noktalarında işletme basıncının sınır değerleri aşması halinde basınç düşürücüler kullanılacaktır. Kullanım sıcak suyu (DHW), merkezi sıcak su üreticileri/boylerler vasıtasıyla 60 °C depolama sıcaklığında hazırlanacak, sirkülasyon hattı ile kullanma noktalarında bekleme süresi asgariye indirilecek ve lejyonella riskine karşı periyodik termik dezenfeksiyona uygun tasarım yapılacaktır.` },
+    { key: 'isitma_sogutma', no: '6', title: 'ISITMA-SOĞUTMA SİSTEMLERİ', preset: true, text: '' },
+    { key: 'havalandirma', no: '7', title: 'HAVALANDIRMA SİSTEMLERİ',
+      text: `Mahallerin taze hava ihtiyaçları, mahal fonksiyonu ve kişi sayısına bağlı olarak EN 16798 ve ASHRAE 62.1 esaslarına göre belirlenmiş olup taze hava, ısı geri kazanımlı havalandırma santralleri ile mahallere sevk edilecektir. Kanal boyutlandırmasında eşit sürtünme yöntemi esas alınmış; ana kanallarda hava hızı ve birim sürtünme kaybı konfor sınırları içinde tutulmuştur. WC, banyo ve ıslak hacimlerin egzoz havası ayrı egzoz sistemleri ile dış ortama atılacak, bu mahaller negatif basınçta tutulacaktır. Hava dağıtımı; mahal geometrisine uygun menfez, difüzör ve panjurlar ile ses ve hava hızı konfor kriterleri sağlanacak şekilde yapılacaktır.` },
+    { key: 'yangin', no: '8', title: 'YANGIN MÜCADELE SİSTEMİ',
+      text: `Yangın mücadele sistemi, Binaların Yangından Korunması Hakkında Yönetmelik hükümlerine uygun olarak projelendirilmiştir. Bina genelinde yangın dolapları ve bina dışında hidrant sistemi tesis edilecek; sprinkler gerektiren alanlarda otomatik sprinkler sistemi NFPA 13 / EN 12845 standartlarına göre tehlike sınıfına uygun olarak boyutlandırılacaktır. Sistem; yangın su deposu ile elektrikli ve dizel yangın pompaları ve jokey pompadan oluşan pompa grubu üzerinden beslenecektir. Elektrik ve sistem odaları gibi su ile söndürmenin uygun olmadığı mahallerde temiz gazlı otomatik söndürme sistemi öngörülmüştür.` },
+  ];
+
+  var ISITMA_SOGUTMA_PRESETS = {
+    vrf: { ad: 'VRF/VRV (3/2 borulu)',
+      text: `Binanın ısıtma ve soğutma ihtiyacı, değişken soğutucu akışkanlı VRF/VRV sistemi ile karşılanacaktır. Isıtma ve soğutma yükleri; EN 12831 ve VDI 2078 / ASHRAE esaslarına göre hesaplanmış olup sayısal yük değerleri ekte verilmiştir. Eş zamanlı ısıtma ve soğutma ihtiyacı bulunan bölgelerde üç borulu ısı geri kazanımlı VRF sistemi, tek modda çalışacak bölgelerde ise iki borulu ısı pompalı VRF sistemi tercih edilmiştir. Dış üniteler eş zamanlılık faktörü dikkate alınarak seçilecek, iç üniteler mahal yüklerine göre boyutlandırılacaktır.` },
+    chiller: { ad: 'Chiller + Kazan + Fan-coil',
+      text: `Binanın soğutma ihtiyacı hava/su soğutmalı soğutma grupları (chiller), ısıtma ihtiyacı ise yoğuşmalı kazanlar ile karşılanacak; mahallere ısı transferi fan-coil üniteleri üzerinden yapılacaktır. Hesaplanan sayısal yük değerleri ekte verilmiştir (EN 12831, VDI 2078). Soğutulmuş su devresi 7/12 °C, ısıtma devresi 60/50 °C rejiminde çalışacak şekilde tasarlanmış; dağıtım, frekans kontrollü sirkülasyon pompaları ile değişken debili olarak projelendirilmiştir. Boru boyutlandırmasında Darcy-Weisbach esaslı basınç kaybı hesabı uygulanmıştır.` },
+    split: { ad: 'Split / Multi-split',
+      text: `Mahallerin ısıtma ve soğutma ihtiyacı, bireysel split ve multi-split tipi klima cihazları ile karşılanacaktır. Cihaz kapasiteleri, EN 12831 ve VDI 2078 / ASHRAE esaslarına göre mahal bazında hesaplanan yüklere göre seçilmiş olup sayısal yük değerleri ekte verilmiştir. Birden fazla iç ünitenin tek dış üniteye bağlanmasının uygun olduğu mahallerde multi-split sistem tercih edilerek dış ünite sayısı azaltılacaktır. Cihazlar yüksek sezonsal verimlilik (SEER/SCOP) değerlerine sahip, düşük dış hava sıcaklıklarında ısıtma yapabilen inverter tip olarak seçilecektir.` },
+  };
+
+  function fillPlaceholders(text, p) {
+    p = p || {};
+    return String(text).replace(/\{\{(\w+)\}\}/g, function (m, k) {
+      return (p[k] !== undefined && p[k] !== null && p[k] !== '') ? String(p[k]) : '—';
+    });
+  }
+
+  function buildNarrative(project, presetKey) {
+    project = project || {};
+    presetKey = presetKey || 'vrf';
+    return SECTIONS.map(function (s) {
+      var raw = s.preset ? ((ISITMA_SOGUTMA_PRESETS[presetKey] || ISITMA_SOGUTMA_PRESETS.vrf).text) : s.text;
+      return { key: s.key, no: s.no, title: s.title, text: fillPlaceholders(raw, project) };
+    });
+  }
+
+  var api = { SECTIONS: SECTIONS, ISITMA_SOGUTMA_PRESETS: ISITMA_SOGUTMA_PRESETS, fillPlaceholders: fillPlaceholders, buildNarrative: buildNarrative };
+  if (typeof window !== 'undefined') window.ReportModel = api;
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+})();

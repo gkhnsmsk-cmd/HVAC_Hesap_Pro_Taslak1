@@ -1,0 +1,27 @@
+const RM = require('../HVAC_Pro_v8/js/report-model.js');
+const R = m => process.stdout.write(m + '\n');
+let fail = 0; const ok = (a, k) => { R((k ? '  OK   ' : '  KALDI ') + a); if (!k) fail++; };
+
+const proj = { proje_adi: 'Forum One Ofis', sehir: 'İstanbul', alan_m2: 1500, mahal_sayisi: 23, toplam_sogutma_kW: 64, toplam_isitma_kW: 51 };
+
+ok('fillPlaceholders bilinen -> doldurur', RM.fillPlaceholders('X {{sehir}} Y', proj) === 'X İstanbul Y');
+ok('fillPlaceholders bilinmeyen -> tire', RM.fillPlaceholders('{{yok}}', proj) === '—');
+
+const n = RM.buildNarrative(proj, 'vrf');
+ok('8 bölüm', n.length === 8);
+ok('bölüm 1 = RAPORUN KONUSU', n[0].title === 'RAPORUN KONUSU');
+ok('proje adı dolduruldu', n[0].text.indexOf('Forum One Ofis') > -1);
+ok('bölüm 6 preset=VRF metni', n[5].text.indexOf('VRF/VRV') > -1 && n[5].text.indexOf('üç borulu') > -1);
+Object.keys(RM.ISITMA_SOGUTMA_PRESETS).forEach(function(k){
+  const t = RM.ISITMA_SOGUTMA_PRESETS[k].text;
+  ok(k + ': metinde toplam_sogutma_kW gecmiyor', t.indexOf('toplam_sogutma_kW') === -1);
+  ok(k + ': metinde toplam_isitma_kW gecmiyor', t.indexOf('toplam_isitma_kW') === -1);
+});
+
+const nc = RM.buildNarrative(proj, 'chiller');
+ok('preset=chiller -> chiller metni', nc[5].text.indexOf('soğutma grupları (chiller)') > -1);
+const ns = RM.buildNarrative(proj, 'split');
+ok('preset=split -> split metni', ns[5].text.indexOf('multi-split') > -1);
+
+R('\n' + (fail ? fail + ' KALDI' : 'report-model testleri GECTI (' + Object.keys(RM.ISITMA_SOGUTMA_PRESETS).length + ' sistem preseti)'));
+process.exit(fail ? 1 : 0);
