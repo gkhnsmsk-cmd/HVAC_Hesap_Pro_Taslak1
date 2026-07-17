@@ -22,7 +22,7 @@
         "HVAC_Pro_v8/js/uvalue-engine.js",
         "tools/uvalue-test.js"
       ],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "T3",
@@ -32,6 +32,523 @@
       "dokunulan": [
         "HVAC_Pro_v8/js/pipe-hydraulics.js",
         "tools/pipe-hyd-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T4",
+      "baslik": "EN 12056 pis su debi motoru (sanitary-drainage.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/sanitary-drainage.js. Saf IIFE; window.SanitaryDrainage + module.exports. Fonksiyon wasteFlow(sumDU, K): Qww = K*sqrt(sumDU) (L/s), EN 12056-2. K girdi; varsayilan K=0.5 (yorumda: 0.5 duzensiz konut, 0.7 hastane/okul, 1.0 sik kullanim, 1.2 laboratuvar; 'standarttan teyit' yaz). MALZEME/DU tablosu EKLEME (DU kullanici girdisi). Ayrica pipeMin(Qww): basit dolum orani ile min DN oneri (Qww<0.5->DN50, <1.5->DN70, <2.5->DN100, else DN125; yorumda teyit). tools/sanitary-test.js: wasteFlow(4,0.5)==1.0 (±0.01), wasteFlow(9,0.7)==2.1 (±0.05), NaN girdi guvenli. Modul-test tarzi assert.",
+      "kabul": "node tools/sanitary-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/sanitary-drainage.js",
+        "tools/sanitary-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T5",
+      "baslik": "Kapali genlesme tanki (expansion-tank.js) — EN 12828 formul",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/expansion-tank.js. Saf IIFE; window.ExpansionTank + module.exports. Fonksiyon nominalVolume({V_sistem_L, e, Pmax_bar, Pon_bar}): Ve=V_sistem*e (su genlesme hacmi, e=genlesme katsayisi GIRDI, or. 90C icin ~0.0359, yorumda teyit); Vn = Ve * (Pmax_bar+1) / (Pmax_bar - Pon_bar) (mutlak basinc, basitlestirilmis EN 12828). {Ve_L, Vn_L} dondur (1 ondalik). tools/expansion-test.js: V_sistem=1000, e=0.0359, Pmax=3, Pon=1 -> Ve=35.9, Vn=35.9*(4)/(2)=71.8 (±0.5) assert; sonlu-sayi; sifir bolme guvenli.",
+      "kabul": "node tools/expansion-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/expansion-tank.js",
+        "tools/expansion-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T6",
+      "baslik": "Sistem karsilastirma (system-compare.js) — LCC/NPV",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/system-compare.js. Saf IIFE; window.SystemCompare + module.exports. Fonksiyon npv({ilk_yatirim, yillik_isletme, omur_yil, faiz}): NPV = ilk_yatirim + yillik_isletme * ((1-(1+faiz)^-omur)/faiz) (faiz orani or.0.1). Fonksiyon compare(sistemler[]): her sistem {ad, ilk_yatirim, yillik_isletme, omur_yil, faiz} icin npv hesapla, npv artan siralayip {ad, npv, sira} dizisi + en dusuk 'onerilen' dondur. tools/syscompare-test.js: npv({ilk_yatirim:100000,yillik_isletme:10000,omur_yil:10,faiz:0.1}) ~= 161446 (±100); compare 2 sistemde dogru sirala; en dusuk NPV onerilen.",
+      "kabul": "node tools/syscompare-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/system-compare.js",
+        "tools/syscompare-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T7",
+      "baslik": "Yagmur suyu debisi ve boru capi (rainwater-drainage.js) — EN 12056-3",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/rainwater-drainage.js. Saf IIFE; window.RainwaterDrainage + module.exports. Fonksiyon designFlow({A_m2, C, i_l_s_m2}): Q = C * A_m2 * i_l_s_m2 / 1000 (L/s icin i genelde l/s.m2 verilir, formul dogrudan Q=C*A*i, sonuc L/s). C=akis katsayisi (duz catide tipik 1.0, GIRDI, varsayim degil). i=yagmur siddeti (l/s.m2, bolgeye gore GIRDI, varsayilan yok — kullanici girer, yorumda 'EN 12056-3 Ek B bolgesel deger, TEYIT' yaz). Fonksiyon gutterPipeDN(Q_l_s): basit kapasite tablosuyla (DN70-><1.5, DN100-><4.5, DN125-><8.5, DN150-><15, else DN200) DN oner (yorumda 'basitlestirilmis, dikey boru serbest dusme kapasitesi yaklasik degeri, teyit' yaz). tools/rainwater-test.js: designFlow({A_m2:200,C:1.0,i_l_s_m2:0.03})==6.0 (±0.1); gutterPipeDN(6.0)=='DN100' sinir testleriyle; gecersiz/NaN girdi guvenli (NaN donsun, patlamaz).",
+      "kabul": "node tools/rainwater-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/rainwater-drainage.js",
+        "tools/rainwater-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T8",
+      "baslik": "Siginak havalandirma (shelter-ventilation.js) — kisi basi taze hava",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/shelter-ventilation.js. Saf IIFE; window.ShelterVentilation + module.exports. Fonksiyon freshAirRequired({kisi_sayisi, kisi_basi_m3h}): Q_m3h = kisi_sayisi * kisi_basi_m3h (kisi_basi_m3h GIRDI, varsayilan yok verilirse kullanici girer; yorumda 'siginak yonetmeligi kisi basi debisi, TEYIT' yaz, ornek olarak 30-50 m3/h araligi yorumda belirt). Fonksiyon achFromVolume({V_m3, ach}): Q_m3h = V_m3 * ach (hacim bazli kontrol, iki yontemden BUYUK OLANI kullanicinin secmesi icin iki sonucu da dondur, otomatik secim YAPMA). Fonksiyon fanSelect(Q_m3h): Q_m3h/3600 ile m3/s debiyi de dondur (fan secimi icin yardimci alan, cihaz secimi YAPMAZ). tools/shelter-vent-test.js: freshAirRequired({kisi_sayisi:100, kisi_basi_m3h:30})==3000; achFromVolume({V_m3:500, ach:6})==3000; gecersiz girdi -> NaN guvenli.",
+      "kabul": "node tools/shelter-vent-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/shelter-ventilation.js",
+        "tools/shelter-vent-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T9",
+      "baslik": "Otopark havalandirma — ACH bazli debi (carpark-ventilation.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/carpark-ventilation.js. Saf IIFE; window.CarparkVentilation + module.exports. Fonksiyon normalVentFlow({V_m3, ach}): Q_m3h = V_m3 * ach (normal isletme ACH GIRDI, yorumda 'yonetmelige gore tipik 6 ACH, TEYIT' yaz, varsayilan deger VERME). Fonksiyon fireVentFlow({A_m2, debit_m3h_m2}): Q_m3h = A_m2 * debit_m3h_m2 (yangin modu alan bazli debi, GIRDI, yorumda 'yangin yonetmeligi alan basi debi, TEYIT' yaz). Fonksiyon jetFanCountEstimate({Q_m3h, tek_fan_m3h}): Math.ceil(Q_m3h/tek_fan_m3h) ile kaba fan adedi tahmini dondur (yorumda 'kaba tahmin, itki/erisim mesafesi hesaba KATILMAZ, detay CAD asamasinda' yaz — TASARIM KARARI ICERMEZ, sadece bolme islemi). tools/carpark-vent-test.js: normalVentFlow({V_m3:1000, ach:6})==6000; fireVentFlow({A_m2:500, debit_m3h_m2:40})==20000; jetFanCountEstimate({Q_m3h:6000, tek_fan_m3h:1000})==6; gecersiz girdi guvenli.",
+      "kabul": "node tools/carpark-vent-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/carpark-ventilation.js",
+        "tools/carpark-vent-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T10",
+      "baslik": "Duman tahliye/egzoz on hesabi (smoke-extract.js) — EN 12101",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/smoke-extract.js. Saf IIFE; window.SmokeExtract + module.exports. Fonksiyon achExtract({V_m3, ach}): Q_m3h = V_m3*ach (ACH GIRDI, yorumda 'EN 12101 yonetmelik degeri, TEYIT' yaz, varsayilan VERME). Fonksiyon areaExtract({A_m2, debit_m3h_m2}): Q_m3h = A_m2*debit_m3h_m2 (atrium/kapali otopark alan bazli debi, GIRDI, yorumda 'TEYIT' yaz). Fonksiyon makeupAirEstimate(Q_extract_m3h, oran): Q_extract_m3h*oran (oran GIRDI, varsayilan 0.85-0.9 araligi YORUMDA belirt ama parametre ZORUNLU, default deger kodda VERME — cagiran taraf gecmezse NaN donsun). tools/smoke-extract-test.js: achExtract({V_m3:2000, ach:10})==20000; areaExtract({A_m2:800, debit_m3h_m2:40})==32000; makeupAirEstimate(20000,0.9)==18000; gecersiz/eksik girdi NaN guvenli.",
+      "kabul": "node tools/smoke-extract-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/smoke-extract.js",
+        "tools/smoke-extract-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T11",
+      "baslik": "Yangin on hesap — tehlike sinifi debi/alan (fire-prelim.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/fire-prelim.js. Saf IIFE; window.FirePrelim + module.exports. Fonksiyon sprinklerDemand({A_m2, debit_l_min_m2, tasarim_alani_m2}): Q_l_min = debit_l_min_m2 * Math.min(A_m2, tasarim_alani_m2) (debit_l_min_m2 VE tasarim_alani_m2 GIRDI — tehlike sinifina gore NFPA13/EN12845'ten, yorumda 'TEYIT' yaz, sabit deger VERME). Fonksiyon hydrantDemand({hidrant_sayisi, debit_l_s_adet}): Q_l_s = hidrant_sayisi*debit_l_s_adet (debit_l_s_adet GIRDI, yorumda 'yonetmelik degeri, TEYIT' yaz). Fonksiyon tankVolume({Q_l_min, sure_dk}): V_L = Q_l_min*sure_dk (sure_dk GIRDI, yorumda 'tasarim suresi TEYIT' yaz). tools/fire-prelim-test.js: sprinklerDemand({A_m2:1000, debit_l_min_m2:5, tasarim_alani_m2:260})==1300; hydrantDemand({hidrant_sayisi:2, debit_l_s_adet:10})==20; tankVolume({Q_l_min:1300, sure_dk:60})==78000; gecersiz girdi NaN guvenli.",
+      "kabul": "node tools/fire-prelim-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/fire-prelim.js",
+        "tools/fire-prelim-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T12",
+      "baslik": "Pompa NPSH hesabi (pump-npsh.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/pump-npsh.js. Saf IIFE; window.PumpNPSH + module.exports. Fonksiyon npshAvailable({P_atm_kPa, h_s_m, h_f_m, P_vap_kPa, rho, g}): NPSHa_m = (P_atm_kPa*1000)/(rho*g) - h_s_m - h_f_m - (P_vap_kPa*1000)/(rho*g) (rho ve g opsiyonel, verilmezse rho=1000 kg/m3, g=9.81 m/s2 GUVENLI VARSAYILAN olarak kullanilabilir cunku bunlar fizik sabiti/su yogunlugu, standart-teyidi degil; h_s_m emme yuksekligi NEGATIF olabilir (pompa kaynaktan asagida ise pozitif emme), h_f_m sürtünme kaybi metre su sutunu GIRDI). Fonksiyon marginCheck(npsha_m, npshr_m, guvenlik_payi_m): npsha_m - npshr_m >= (guvenlik_payi_m||0.5) ise true/false dondur (guvenlik_payi_m opsiyonel, default 0.5m tipik muhendislik pratigi, yorumda belirt). tools/pump-npsh-test.js: npshAvailable({P_atm_kPa:101.325, h_s_m:2, h_f_m:1, P_vap_kPa:2.34}) ~= 7.15 (±0.2, hesap: 101325/9810 - 2 - 1 - 2340/9810 ≈ 10.33-2-1-0.24=7.09, tolerans genis tut); marginCheck(7.09, 3, 0.5)==true; marginCheck(3, 3, 0.5)==false; gecersiz girdi NaN guvenli.",
+      "kabul": "node tools/pump-npsh-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/pump-npsh.js",
+        "tools/pump-npsh-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T13",
+      "baslik": "Isi geri kazanim verimi (heat-recovery.js) — sensible effectiveness",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/heat-recovery.js. Saf IIFE; window.HeatRecovery + module.exports. Fonksiyon sensibleEffectiveness({T_disaridan_C, T_egzozdan_C, T_besleme_sonrasi_C}): eff = (T_besleme_sonrasi_C - T_disaridan_C) / (T_egzozdan_C - T_disaridan_C) (0-1 arasi, 3 ondalik; T_egzozdan_C==T_disaridan_C ise NaN guvenli). Fonksiyon recoveredHeat({Q_m3h, eff, dT_C, rho, cp}): kW = (Q_m3h/3600) * rho * cp * dT_C * eff / 1000 (rho=1.2 kg/m3, cp=1005 J/kgK HAVA FIZIK SABITI oldugu icin GUVENLI VARSAYILAN, opsiyonel override edilebilir). tools/heat-recovery-test.js: sensibleEffectiveness({T_disaridan_C:-5,T_egzozdan_C:22,T_besleme_sonrasi_C:15}) ~= 0.741 (±0.01); recoveredHeat({Q_m3h:3000, eff:0.7, dT_C:27}) sonlu ve pozitif; payda sifir -> NaN guvenli.",
+      "kabul": "node tools/heat-recovery-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/heat-recovery.js",
+        "tools/heat-recovery-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T14",
+      "baslik": "Kondens/drenaj hatti boyutlandirma (condensate-drain.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/condensate-drain.js. Saf IIFE; window.CondensateDrain + module.exports. Fonksiyon condensateFlow({Q_soguk_kW, kg_kondens_kWh}): L_h = Q_soguk_kW * kg_kondens_kWh (kg_kondens_kWh GIRDI ZORUNLU — iklim/nem kosuluna gore degisir, yorumda 'tipik konfor soğutma icin 0.15-0.4 kg/kWh araligi, TEYIT' yaz, sabit varsayilan VERME). Fonksiyon drainPipeDN(L_h): basit kapasite tablosuyla (DN15-><10, DN20-><25, DN25-><50, DN32-><100, else DN40) DN oner (yorumda 'basitlestirilmis egim/kapasite yaklasik degeri, TEYIT' yaz). tools/condensate-drain-test.js: condensateFlow({Q_soguk_kW:50, kg_kondens_kWh:0.3})==15; drainPipeDN(15)=='DN20'; sinir testleri; gecersiz girdi NaN guvenli.",
+      "kabul": "node tools/condensate-drain-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/condensate-drain.js",
+        "tools/condensate-drain-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T15",
+      "baslik": "Kablo kesiti kaba on-secim (cable-sizing-prelim.js) — akim tasima (basitlestirilmis)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/cable-sizing-prelim.js. Saf IIFE; window.CableSizingPrelim + module.exports. Fonksiyon loadCurrent({P_kW, V, cosPhi, faz}): faz==3 ise I_A = (P_kW*1000)/(Math.sqrt(3)*V*cosPhi), faz==1 ise I_A = (P_kW*1000)/(V*cosPhi) (V, cosPhi GIRDI ZORUNLU, tipik V=400 (3faz)/230(1faz) kullanici girer, sabit VARSAYILAN verme). Fonksiyon voltageDropCheck({I_A, L_m, kesit_mm2, iletken_direnc_ohm_km, V, limit_yuzde}): dV_V = I_A * (iletken_direnc_ohm_km/1000) * L_m * 2 (basit tek-faz-esdegeri gidis-donus, iletken_direnc_ohm_km GIRDI — bakir/aluminyum direnc TEYIT), dV_yuzde = dV_V/V*100, {dV_V, dV_yuzde, uygun: dV_yuzde <= (limit_yuzde||5)} dondur (limit_yuzde opsiyonel varsayilan %5 YONETMELIK TIPIK degeri, yorumda TEYIT yaz). Bu modul KESIT SECIMI YAPMAZ, sadece akim ve gerilim dususu hesabi — kesit tablosu/onerisi ICERMEZ (tasarim karari gerektirir, kapsam disi). tools/cable-sizing-prelim-test.js: loadCurrent({P_kW:10,V:400,cosPhi:0.9,faz:3}) ~= 16.04 (±0.1); voltageDropCheck ornegi sonlu ve mantikli; gecersiz girdi NaN guvenli.",
+      "kabul": "node tools/cable-sizing-prelim-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/cable-sizing-prelim.js",
+        "tools/cable-sizing-prelim-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T16",
+      "baslik": "Glaser yogusma kontrolu basitlestirilmis (condensation-check.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/condensation-check.js. Saf IIFE; window.CondensationCheck + module.exports. Fonksiyon vaporPressureProfile({katmanlar, Ti_C, Tdis_C, RHi, RHdis}): katmanlar=[{d_m, sd_m (esdeger hava difuzyon kalinligi, GIRDI ZORUNLU, malzeme sd degeri kullanicidan)}] — katman sirasiyla ic ortamdan dis ortama dogru toplam sd birikimli olarak hesapla, her katman sinirinda dogrusal enterpolasyonla kismi buhar basincini (Pa) ve o sicaklikta doyma buhar basincini (Antoine/basit formul: Psat_Pa = 611*Math.exp(17.27*T/(T+237.3))) dondur; her sinirda {konum_sd, T_C (dogrusal enterpolasyon Ti-Tdis arasi), P_buhar_Pa, P_sat_Pa, risk: P_buhar_Pa > P_sat_Pa} iceren dizi dondur. Sicaklik profili basit dogrusal enterpolasyon (gercek Glaser'da R-agirlikli olur ama BASITLESTIRILMIS versiyon oldugu YORUMDA belirtilsin, 'detay hesap icin tam Glaser yontemi/yazilimi TEYIT' notu ekle). tools/condensation-check-test.js: 2 katmanli basit ornek (dis duvar+yalitim), Ti=20,Tdis=-5,RHi=50,RHdis=80 ile fonksiyonu cagir, dizi uzunlugu katman sayisi+1, her elemanda risk boolean, T_C ic'ten dis'e azalan sirada; gecersiz/NaN girdi guvenli (bos dizi veya NaN degerler, patlamaz).",
+      "kabul": "node tools/condensation-check-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/condensation-check.js",
+        "tools/condensation-check-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T17",
+      "baslik": "Gazli sondurme ajan miktari (gas-suppression.js) — basit hacim*konsantrasyon",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/gas-suppression.js. Saf IIFE; window.GasSuppression + module.exports. Fonksiyon agentMass({V_m3, tasarim_konsantrasyon_yuzde, ozgul_hacim_m3_kg}): W_kg = (V_m3 / ozgul_hacim_m3_kg) * (tasarim_konsantrasyon_yuzde / (100 - tasarim_konsantrasyon_yuzde)) (NFPA 2001 tipi ajan kutlesi formulu; tasarim_konsantrasyon_yuzde ve ozgul_hacim_m3_kg GIRDI ZORUNLU — ajan tipine (FM200/Novec1230/CO2) ve sicakliga gore degisir, sabit deger VERME, yorumda 'ajan uretici tablosu/NFPA 2001 TEYIT' yaz). Fonksiyon cylinderCountEstimate({W_kg, tup_kapasite_kg}): Math.ceil(W_kg/tup_kapasite_kg) (tup_kapasite_kg GIRDI, sadece bolme islemi, TASARIM KARARI ICERMEZ). tools/gas-suppression-test.js: agentMass({V_m3:200, tasarim_konsantrasyon_yuzde:8, ozgul_hacim_m3_kg:0.65}) ~= (200/0.65)*(8/92) ~= 26.75 (±0.5); cylinderCountEstimate({W_kg:26.75, tup_kapasite_kg:10})==3; gecersiz girdi (konsantrasyon>=100 veya negatif) NaN guvenli.",
+      "kabul": "node tools/gas-suppression-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/gas-suppression.js",
+        "tools/gas-suppression-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T18",
+      "baslik": "Su yumusatma - recine hacmi (water-softening.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/water-softening.js. Saf IIFE; window.WaterSoftening + module.exports. Fonksiyon resinVolume({debi_m3h, sertlik_delta_F, sure_h, recine_kapasite_gr_L}): yuk_gr = debi_m3h*sure_h*sertlik_delta_F*10 (1 Fransiz sertlik derecesi (F) = 10 mg CaCO3/L varsayimi, bu birim donusumu sabittir yorumda belirt), V_L = yuk_gr / recine_kapasite_gr_L (recine_kapasite_gr_L GIRDI ZORUNLU - recine urun tipine gore degisir, sabit VERME, yorumda 'urun teknik veri sayfasi TEYIT' yaz). Gecersiz/NaN/sifir bolme guvenli. tools/water-softening-test.js: debi_m3h=2, sertlik_delta_F=20, sure_h=8, recine_kapasite_gr_L=50 -> yuk_gr=2*8*20*10=3200, V_L=64 assert (±0.1); gecersiz girdi NaN guvenli.",
+      "kabul": "node tools/water-softening-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/water-softening.js",
+        "tools/water-softening-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T19",
+      "baslik": "Yakit tanki hacmi (fuel-tank.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/fuel-tank.js. Saf IIFE; window.FuelTank + module.exports. Fonksiyon tankVolume({debi_kg_h, calisma_saat, yogunluk_kg_L}): V_L = debi_kg_h*calisma_saat/yogunluk_kg_L (yogunluk_kg_L GIRDI ZORUNLU - yakit tipine (dogalgaz disi sivi yakit, motorin vb.) gore degisir, sabit VERME, yorumda 'yakit tipine gore teknik veri TEYIT, tipik motorin ~0.83-0.86 kg/L' yaz). Sifir bolme/gecersiz girdi NaN guvenli. tools/fuel-tank-test.js: debi_kg_h=50, calisma_saat=24, yogunluk_kg_L=0.85 -> V_L=50*24/0.85≈1411.8 assert (±1); yogunluk=0 -> NaN guvenli.",
+      "kabul": "node tools/fuel-tank-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/fuel-tank.js",
+        "tools/fuel-tank-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T20",
+      "baslik": "Kanal susturucu gerekli azaltma (duct-silencer.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/duct-silencer.js. Saf IIFE; window.DuctSilencer + module.exports. Fonksiyon attenuationRequired({SWL_kaynak_dB, hedef_NC_dB, oda_azaltma_dB}): gerekli_azaltma_dB = SWL_kaynak_dB - hedef_NC_dB - oda_azaltma_dB (tum degerler GIRDI ZORUNLU - kaynak ses gucu/hedef NC/oda azaltma degeri akustik hesap/olcum sonucu, sabit VERME, yorumda 'akustik danisman/olcum TEYIT' yaz; sonuc negatifse susturucuya gerek yok anlamina gelir, negatif deger de dondurulebilir, MODUL SUSTURUCU SECIMI YAPMAZ sadece fark hesabidir). Gecersiz/NaN girdi guvenli. tools/duct-silencer-test.js: SWL_kaynak_dB=85, hedef_NC_dB=35, oda_azaltma_dB=10 -> gerekli_azaltma_dB=40 assert; negatif sonuc durumu (susturucu gerekmiyor) test edilsin; NaN girdi guvenli.",
+      "kabul": "node tools/duct-silencer-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/duct-silencer.js",
+        "tools/duct-silencer-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T21",
+      "baslik": "Sismik askı yatay kuvvet basit hesabi (seismic-hanger.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/seismic-hanger.js. Saf IIFE; window.SeismicHanger + module.exports. Fonksiyon seismicLoad({W_kg, Sds, Ip}): Fp_kg = 0.4*Sds*Ip*W_kg (basitlestirilmis ASCE 7 tarzi yatay sismik kuvvet formulu; Sds (tasarim spektral ivme katsayisi) ve Ip (onem katsayisi) GIRDI ZORUNLU - bolge/bina onemine gore degisir, sabit VERME, yorumda 'ASCE 7 / TBDY 2018 (Turkiye Bina Deprem Yonetmeligi) TEYIT edilmeli, BASITLESTIRILMIS formul, detay hesap icin tam yonetmelik gerekir' yaz). Gecersiz/NaN girdi guvenli. tools/seismic-hanger-test.js: W_kg=100, Sds=1.0, Ip=1.5 -> Fp_kg=0.4*1.0*1.5*100=60 assert; NaN girdi guvenli.",
+      "kabul": "node tools/seismic-hanger-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/seismic-hanger.js",
+        "tools/seismic-hanger-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T22",
+      "baslik": "Basincli hava debisi (compressed-air.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/compressed-air.js. Saf IIFE; window.CompressedAir + module.exports. Fonksiyon airDemand({toplam_alet_debisi_m3h, es_zamanlilik_faktoru}): Q_m3h = toplam_alet_debisi_m3h * es_zamanlilik_faktoru (es_zamanlilik_faktoru GIRDI ZORUNLU - alet sayisi/kullanim profiline gore degisir, 0-1 arasi, sabit VERME, yorumda 'endustri/uygulama tipine gore TEYIT, tipik 0.4-0.8 araligi' yaz). Gecersiz/NaN girdi guvenli. tools/compressed-air-test.js: toplam_alet_debisi_m3h=500, es_zamanlilik_faktoru=0.6 -> Q_m3h=300 assert; NaN girdi guvenli; faktor>1 veya negatif -> yine hesapla ama yorumda sinir kontrolu yapilmadigi belirtilsin (fonksiyon TASARIM KARARI vermez).",
+      "kabul": "node tools/compressed-air-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/compressed-air.js",
+        "tools/compressed-air-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T23",
+      "baslik": "Medikal gaz debisi (medical-gas.js) — basit toplam debi",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/medical-gas.js. Saf IIFE; window.MedicalGas + module.exports. Fonksiyon totalFlow({noktalar}): noktalar=[{adet, debi_l_min_nokta}] dizisi icin her eleman icin adet*debi_l_min_nokta topla, toplam L/min dondur (debi_l_min_nokta GIRDI ZORUNLU - gaz tipine (O2/vakum/basincli hava/N2O) ve nokta tipine gore degisir, sabit VERME, yorumda 'ISO 7396-1 / yonetmelik nokta debisi tablosu TEYIT' yaz). Fonksiyon simultaneityFactor(toplam_l_min, faktor): toplam_l_min*faktor dondur (faktor GIRDI ZORUNLU, es-zamanlilik/cesitlilik faktoru, yorumda 'ISO 7396-1 Ek TEYIT' yaz, sabit VERME). Gecersiz/NaN girdi guvenli. tools/medical-gas-test.js: totalFlow({noktalar:[{adet:10,debi_l_min_nokta:6},{adet:5,debi_l_min_nokta:10}]})==110; simultaneityFactor(110,0.5)==55; bos/NaN girdi guvenli.",
+      "kabul": "node tools/medical-gas-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/medical-gas.js",
+        "tools/medical-gas-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T24",
+      "baslik": "Otopark CO bazli kontrol havalandirma debisi (co-control-ventilation.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/co-control-ventilation.js. Saf IIFE; window.COControlVentilation + module.exports. Fonksiyon coBasedFlow({V_m3, hedef_ach_araligi_dk}): normal ACH-bazli otopark havalandirmasindan (carpark-ventilation.js) FARKLI olarak, CO sensor kontrollu degisken debi icin sadece min/max ACH sinirlarindan iki debi sinirini dondurur: Q_min_m3h ve Q_max_m3h ({ach_min, ach_max} GIRDI ZORUNLU, sabit VERME, yorumda 'yonetmelik/CO sensor kontrol bandı TEYIT' yaz). Formul: Q_min_m3h = V_m3*ach_min, Q_max_m3h = V_m3*ach_max. Fonksiyon coLevelCheck({co_ppm, esik_ppm}): co_ppm > esik_ppm ise true (fan hizini artir sinyali) dondur (esik_ppm GIRDI ZORUNLU, yonetmelik CO esigi, sabit VERME, yorumda TEYIT yaz) — TASARIM KARARI/OTOMASYON MANTIGI ICERMEZ, sadece karsilastirma. tools/co-control-vent-test.js: coBasedFlow({V_m3:1000, ach_min:2, ach_max:6}) -> {Q_min_m3h:2000, Q_max_m3h:6000}; coLevelCheck({co_ppm:60, esik_ppm:50})==true; coLevelCheck({co_ppm:30,esik_ppm:50})==false; gecersiz girdi guvenli.",
+      "kabul": "node tools/co-control-vent-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/co-control-ventilation.js",
+        "tools/co-control-vent-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T25",
+      "baslik": "Isi pompasi enerji/karbon basit karsilastirma (heat-pump-energy.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/heat-pump-energy.js. Saf IIFE; window.HeatPumpEnergy + module.exports. Fonksiyon electricityDemand({Q_isi_kWh, COP}): kWh_elektrik = Q_isi_kWh/COP (COP GIRDI ZORUNLU, cihaza gore degisir, sabit VERME, yorumda 'cihaz teknik veri sayfasi TEYIT' yaz; COP<=0 veya NaN -> NaN guvenli). Fonksiyon carbonEmission({kWh_elektrik, emisyon_faktoru_kgCO2_kWh}): kWh_elektrik*emisyon_faktoru_kgCO2_kWh (emisyon_faktoru_kgCO2_kWh GIRDI ZORUNLU - sebeke/ulke/yila gore degisir, sabit VERME, yorumda 'ulusal sebeke emisyon faktoru TEYIT' yaz). tools/heat-pump-energy-test.js: electricityDemand({Q_isi_kWh:1000, COP:3.5}) ~= 285.7 (±0.5); carbonEmission({kWh_elektrik:285.7, emisyon_faktoru_kgCO2_kWh:0.4}) ~= 114.3 (±0.5); COP=0 -> NaN guvenli; gecersiz girdi guvenli.",
+      "kabul": "node tools/heat-pump-energy-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/heat-pump-energy.js",
+        "tools/heat-pump-energy-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T26",
+      "baslik": "Oda gurultu seviyesi (desibel toplama) basit hesap (noise-level-sum.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/noise-level-sum.js. Saf IIFE; window.NoiseLevelSum + module.exports. Fonksiyon sumDecibels(dB_dizisi): birden fazla ses kaynaginin (or. birden fazla difuzor/cihaz) toplam ses basinc seviyesini logaritmik toplama ile hesapla: L_toplam = 10*Math.log10(sum(10^(Li/10))) (saf matematik, standart-veri degil — akustik fizik formulu, GUVENLI, sabit VERME gerektirmez). Bos dizi -> -Infinity veya guvenli 0 dondur (NaN patlamasin). Fonksiyon nrMargin({L_toplam_dB, hedef_NR_dB}): L_toplam_dB - hedef_NR_dB dondur (hedef_NR_dB GIRDI ZORUNLU - oda kullanim tipine gore degisir, sabit VERME, yorumda 'VDI 2081 / oda NR/NC hedef tablosu TEYIT' yaz; pozitif sonuc hedefi astigini gosterir, TASARIM KARARI vermez sadece fark). tools/noise-level-sum-test.js: sumDecibels([50,50]) ~= 53.0 (±0.1, esit iki kaynak +3dB); sumDecibels([]) guvenli (sonlu veya 0); nrMargin({L_toplam_dB:53, hedef_NR_dB:40})==13; gecersiz girdi guvenli.",
+      "kabul": "node tools/noise-level-sum-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/noise-level-sum.js",
+        "tools/noise-level-sum-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T27",
+      "baslik": "Boru termal uzama (pipe-thermal-expansion.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/pipe-thermal-expansion.js. Saf IIFE; window.PipeThermalExpansion + module.exports. Fonksiyon linearExpansion({L_m, alpha_per_C, dT_C}): dL_mm = L_m * alpha_per_C * dT_C * 1000 (alpha_per_C GIRDI ZORUNLU - malzemeye gore degisir (celik ~12e-6, bakir ~17e-6, PPR ~0.15, sabit VERME, yorumda 'malzeme teknik veri sayfasi TEYIT' yaz). Fonksiyon loopLength({dL_mm, D_mm, E_MPa, sigma_allow_MPa}): basit L-kompansator/dilatasyon kolu kaba tahmini icin dL_mm, D_mm, E_MPa, sigma_allow_MPa GIRDI ZORUNLU (malzeme elastisite modulu ve izin verilebilir gerilme standart-teyidi ister), formul: Lb_mm = sqrt(3*E_MPa*D_mm*dL_mm/sigma_allow_MPa) (basitlestirilmis dilatasyon kolu formulu, yorumda 'ASME B31/EN 13480 TEYIT, basitlestirilmis' yaz). tools/pipe-thermal-expansion-test.js: linearExpansion({L_m:50, alpha_per_C:0.000012, dT_C:60})==36 (±0.1); loopLength ornegi sonlu ve pozitif; gecersiz/NaN girdi guvenli.",
+      "kabul": "node tools/pipe-thermal-expansion-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/pipe-thermal-expansion.js",
+        "tools/pipe-thermal-expansion-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T28",
+      "baslik": "Su darbesi basinc artisi (water-hammer.js) — Joukowsky",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/water-hammer.js. Saf IIFE; window.WaterHammer + module.exports. Fonksiyon joukowskyPressureRise({rho, a_ms, dv_ms}): dP_Pa = rho*a_ms*dv_ms (Joukowsky formulu, saf fizik; rho opsiyonel GUVENLI VARSAYILAN su icin 1000 kg/m3, a_ms (basinc dalga hizi, boru malzeme/capina gore degisir) VE dv_ms (ani hiz degisimi) GIRDI ZORUNLU, sabit VERME, yorumda 'dalga hizi boru malzemesi/et kalinligina gore hesaplanir veya TEYIT edilir' yaz). dP_bar = dP_Pa/1e5 de dondur. tools/water-hammer-test.js: joukowskyPressureRise({rho:1000, a_ms:1200, dv_ms:2}) == 2400000 Pa (=24 bar) (±1000 Pa); rho verilmezse varsayilan 1000 kullanildigini test et; gecersiz/NaN girdi guvenli.",
+      "kabul": "node tools/water-hammer-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/water-hammer.js",
+        "tools/water-hammer-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T29",
+      "baslik": "Isi degistirici LMTD (lmtd.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/lmtd.js. Saf IIFE; window.LMTD + module.exports. Fonksiyon lmtd({dT1_C, dT2_C}): eger dT1_C==dT2_C ise LMTD=dT1_C (limit durumu), degilse LMTD_C = (dT1_C - dT2_C) / Math.log(dT1_C/dT2_C) (saf matematik/termodinamik formul, standart-veri DEGIL, sabit gerektirmez). dT1_C,dT2_C pozitif olmali; negatif/sifir/NaN girdi guvenli (NaN donsun). Fonksiyon requiredArea({Q_W, U_W_m2K, LMTD_C}): A_m2 = Q_W/(U_W_m2K*LMTD_C) (U_W_m2K esanjor U-degeri GIRDI ZORUNLU - ekipmana gore degisir, sabit VERME, yorumda 'esanjor teknik veri sayfasi TEYIT' yaz). tools/lmtd-test.js: lmtd({dT1_C:40, dT2_C:10}) ~= 21.6 (±0.1, formul: (40-10)/ln(4)); dT1==dT2 durumu (or. 20,20) -> 20; requiredArea ornegi sonlu pozitif; gecersiz/NaN girdi guvenli.",
+      "kabul": "node tools/lmtd-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/lmtd.js",
+        "tools/lmtd-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T30",
+      "baslik": "Fan/pompa afinite yasalari (affinity-laws.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/affinity-laws.js. Saf IIFE; window.AffinityLaws + module.exports. Devir sayisi (RPM) degisimiyle olceklendirme (saf matematik, pompa/fan afinite yasalari, standart-veri degil): Fonksiyon scaleBySpeed({Q1, H1, P1, N1, N2}): oran=N2/N1; Q2=Q1*oran; H2=H1*Math.pow(oran,2); P2=P1*Math.pow(oran,3); {Q2,H2,P2} dondur (N1,N2 devir GIRDI ZORUNLU). Fonksiyon scaleByDiameter({Q1, H1, P1, D1, D2}): ayni formul ama oran=D2/D1 (pervane/rotor capi degisimi). Gecersiz/NaN/sifir bolme guvenli. tools/affinity-laws-test.js: scaleBySpeed({Q1:100,H1:20,P1:5,N1:1000,N2:1500}) -> Q2=150 (±0.1), H2=45 (±0.1), P2=16.875 (±0.1); scaleByDiameter benzer test; gecersiz girdi guvenli.",
+      "kabul": "node tools/affinity-laws-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/affinity-laws.js",
+        "tools/affinity-laws-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T31",
+      "baslik": "Su deposu hacmi (water-storage-tank.js) — TS 1258 basit hacim hesabi",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/water-storage-tank.js. Saf IIFE; window.WaterStorageTank + module.exports. Fonksiyon calc({gunlukTuketimL, depolamaSuresiSaat, esZamanlilikFaktor=1, yanginRezerviL=0}): tum girdiler ZORUNLU (gunlukTuketimL, depolamaSuresiSaat kullanici girisi; TS1258'e gore tam gunluk depolama suresi=24 varsayimi KULLANICI verir, hardcode edilmez). gerekliHacimL = gunlukTuketimL * (depolamaSuresiSaat/24) * esZamanlilikFaktor + yanginRezerviL. gerekliHacimM3 = gerekliHacimL/1000. Gecersiz/negatif/NaN girdi guvenli (hata firlatmadan null/undefined donsun ya da acik hata objesi). tools/water-storage-tank-test.js: ornek {gunlukTuketimL:5000, depolamaSuresiSaat:24, esZamanlilikFaktor:1, yanginRezerviL:2000} -> gerekliHacimL=7000 (±0.1), gerekliHacimM3=7 (±0.01); gecersiz girdi (negatif/NaN) guvenli test.",
+      "kabul": "node tools/water-storage-tank-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/water-storage-tank.js",
+        "tools/water-storage-tank-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T32",
+      "baslik": "DHW/Boyler anlik isi gucu ve depolama hacmi (dhw-boiler.js) — EN 806 basit formul",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/dhw-boiler.js. Saf IIFE; window.DhwBoiler + module.exports. Fonksiyon calc({debiLpm, tGiris_C, tCikis_C, cp=4.186, yogunluk=1}): tum sicaklik/debi girdileri KULLANICI verir (standart tablo degeri hardcode edilmez). kW = (debiLpm/60) * yogunluk * cp * (tCikis_C - tGiris_C) (birim kontrolu: kg/s * kJ/kgK * K = kW). Fonksiyon depolamaHacmi({gunlukIhtiyacL, esZamanlilikFaktor=1}): gunlukIhtiyacL zorunlu kullanici girisi, hacimL = gunlukIhtiyacL * esZamanlilikFaktor. Gecersiz/negatif/NaN girdi guvenli. tools/dhw-boiler-test.js: calc({debiLpm:20, tGiris_C:10, tCikis_C:60}) -> kW≈69.77 (±0.5); depolamaHacmi({gunlukIhtiyacL:1000, esZamanlilikFaktor:0.5}) -> 500 (±0.1); gecersiz girdi guvenli.",
+      "kabul": "node tools/dhw-boiler-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/dhw-boiler.js",
+        "tools/dhw-boiler-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T33",
+      "baslik": "Havuz suyu yuzeyi buharlasma nem yuku (pool-evaporation.js) — VDI 2089 basitlestirilmis",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/pool-evaporation.js. Saf IIFE; window.PoolEvaporation + module.exports. Fonksiyon calc({havuzAlaniM2, buharBasinciSu_Pa, buharBasinciHava_Pa, aktiviteFaktor=1, konvKatsayi=0.09}): tum basinc/aktivite degerleri KULLANICI girisi (standart-tablo sabitleri hardcode edilmez; konvKatsayi de degistirilebilir varsayimli parametre olarak birakilir, aciklamada 'VDI 2089 tipik araligi 0.05-0.15, kullanici teyit etmeli' notu). buharlasmaKgPerH = konvKatsayi * havuzAlaniM2 * (buharBasinciSu_Pa - buharBasinciHava_Pa) / 1000 * aktiviteFaktor (basit lineer VDI-tarzi yaklasim, tam formul degil). nemYukuKgPerH negatifse 0'a kirp (yogunlasma yonu ayri konu). Gecersiz/NaN girdi guvenli. tools/pool-evaporation-test.js: calc({havuzAlaniM2:100, buharBasinciSu_Pa:4245, buharBasinciHava_Pa:1500, aktiviteFaktor:1, konvKatsayi:0.09}) -> beklenen deger elle hesaplanip (~24.7 kg/h, ±1) test edilecek; gecersiz girdi guvenli.",
+      "kabul": "node tools/pool-evaporation-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/pool-evaporation.js",
+        "tools/pool-evaporation-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T34",
+      "baslik": "Asansor kuyusu basinclandirma debisi (elevator-pressurization.js) — EN 12101-6 basit sizdirmazlik debisi",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/elevator-pressurization.js. Saf IIFE; window.ElevatorPressurization + module.exports. Fonksiyon calc({sizdirmazlikAlaniM2, hizKatsayi=0.83, hedefBasincFarkiPa, hava_yogunluk=1.2}): sizdirmazlikAlaniM2 (kapi/boslukalanlari toplami) ve hedefBasincFarkiPa (tipik 50 Pa, KULLANICI girer, hardcode edilmez) zorunlu. hizMs = hizKatsayi * Math.sqrt(2*hedefBasincFarkiPa/hava_yogunluk) (basit orifis akis formulu). debiM3s = sizdirmazlikAlaniM2 * hizMs. debiM3h = debiM3s*3600. Gecersiz/negatif/NaN girdi guvenli. tools/elevator-pressurization-test.js: calc({sizdirmazlikAlaniM2:1.0, hizKatsayi:0.83, hedefBasincFarkiPa:50, hava_yogunluk:1.2}) -> hizMs≈7.58 (±0.05), debiM3h≈27288 (±100); gecersiz girdi guvenli.",
+      "kabul": "node tools/elevator-pressurization-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/elevator-pressurization.js",
+        "tools/elevator-pressurization-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T35",
+      "baslik": "Sprinkler K-faktor debi-basinc iliskisi (sprinkler-k-factor.js) — NFPA13/EN12845 Q=K*sqrt(P)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/sprinkler-k-factor.js. Saf IIFE; window.SprinklerKFactor + module.exports. Fonksiyon debiFromBasinc({K, basincBar}): K (sprinkler K-faktoru, ornegin K=80 veya K=115, metrik birim L/min/bar^0.5) ve basincBar KULLANICI girer (standart K-faktor tablosu hardcode edilmez, kullanici kendi sprinkler etiketinden girer). debiLpm = K * Math.sqrt(basincBar). Fonksiyon basincFromDebi({K, debiLpm}): basincBar = Math.pow(debiLpm/K, 2). Fonksiyon toplamDebi({sprinklerSayisi, debiLpmHer}): sprinklerSayisi * debiLpmHer (tasarim alani icin es zamanli calisan sprinkler sayisi kullanici girer). Gecersiz/negatif/NaN/sifira bolme guvenli. tools/sprinkler-k-factor-test.js: debiFromBasinc({K:80, basincBar:1}) -> 80 (±0.01); basincFromDebi({K:80, debiLpm:113.14}) -> ~2 (±0.05); toplamDebi({sprinklerSayisi:12, debiLpmHer:80}) -> 960; gecersiz girdi guvenli.",
+      "kabul": "node tools/sprinkler-k-factor-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/sprinkler-k-factor.js",
+        "tools/sprinkler-k-factor-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T36",
+      "baslik": "Merdiven basinclandirma debisi (EN 12101-6)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/staircase-pressurization.js. Saf IIFE; window.StaircasePressurization + module.exports. Fonksiyon calc({sizinti_alani_m2, hedef_basinc_farkiPa, hava_yogunluk=1.2}): parametreler GIRDI ZORUNLU (hedef_basinc_farkiPa EN 12101-6 tipik 50 Pa, hardcode yok). hiz_ms = 0.83*Math.sqrt(2*hedef_basinc_farkiPa/hava_yogunluk) (orifis akisi, saf fizik). debi_m3h = sizinti_alani_m2*hiz_ms*3.6 (birim: m2*m/s*3.6=m3/h). Gecersiz/NaN/negatif girdi guvenli. tools/staircase-pressurization-test.js: T34 tarzi test (asansor-pressurization'a benzer, fakat merdiven kapisinin ozel sizdirmasi icin ornek degerler).",
+      "kabul": "node tools/staircase-pressurization-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/staircase-pressurization.js",
+        "tools/staircase-pressurization-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T37",
+      "baslik": "Mutfak hood/davlumbaz egzoz debisi (VDI 2052 basit)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/kitchen-hood.js. Saf IIFE; window.KitchenHood + module.exports. Fonksiyon calc({alanM2, izgara_eni_m, hava_hizi_ms, cikmaDugume=2}): tum parametreler GIRDI ZORUNLU (vdi2052 bazli, sabit deger VERME, yorumda 'VDI 2052 / yonetmelik tahmini hava hizi, TEYIT' yaz). A_grill_m2 = izgara_eni_m * cikmaDugume. debi_m3h = A_grill_m2 * hava_hizi_ms * 3600 (m2*m/s*3600=m3/h). Gecersiz/NaN/negatif girdi guvenli. tools/kitchen-hood-test.js: calc({alanM2:10, izgara_eni_m:2.5, hava_hizi_ms:0.5, cikmaDugume:2}) -> debi_m3h=18000 (±100) tahmini test; edge cases; NaN guvenli.",
+      "kabul": "node tools/kitchen-hood-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/kitchen-hood.js",
+        "tools/kitchen-hood-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T38",
+      "baslik": "Asansor makine odasi havalandirmasi (motor isi tabanlı)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/elevator-motor-cooling.js. Saf IIFE; window.ElevatorMotorCooling + module.exports. Fonksiyon calc({motor_kW, verim_yuzde, hedef_temp_artisi_K}): tum parametreler GIRDI ZORUNLU (motor verimi tipik %85-95 ama GIRDI alir, hardcode yok; hedef oda sicaklik artisi kalinmaligina balisi, GIRDI). Atilan_isi_kW = motor_kW * (1 - verim_yuzde/100). debi_m3h = (Atilan_isi_kW*3600) / (1.2*1005*hedef_temp_artisi_K) (hava yogunlugu/cp = 1.2 kg/m3 / 1005 J/kgK ozel sabitler, GUVENLI VARSAYILAN). Gecersiz/negatif/sifir bolme guvenli. tools/elevator-motor-cooling-test.js: motor_kW=10, verim_yuzde=90, hedef_temp_artisi_K=10 -> Atilan=1 kW, debi_m3h~300 (±5); NaN guvenli.",
+      "kabul": "node tools/elevator-motor-cooling-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/elevator-motor-cooling.js",
+        "tools/elevator-motor-cooling-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T39",
+      "baslik": "Sogutma kulesi kapasite tahmini (chiller isi bazli)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/cooling-tower-sizing.js. Saf IIFE; window.CoolingTowerSizing + module.exports. Fonksiyon calc({Q_sogutma_kW, pompVerimi_yuzde=85, T_kule_sirkülasyon_C}): Q_sogutma_kW GIRDI ZORUNLU, pompa_overheadi_yuzde GIRDI (veya default 3%, yorumda belirt). Atilan_toplam_kW = Q_sogutma_kW * (1 + pompVerimi_yuzde/100/100) (yani %3 fazlasi). Kule_kapasite_kW = Atilan_toplam_kW. Gecersiz/negatif/NaN girdi guvenli. tools/cooling-tower-sizing-test.js: Q_sogutma_kW=500, pompVerimi_yuzde=3 -> Atilan=515 (±1); NaN guvenli.",
+      "kabul": "node tools/cooling-tower-sizing-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/cooling-tower-sizing.js",
+        "tools/cooling-tower-sizing-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T40",
+      "baslik": "Kombi boyutlandirmasi (isitma yüküne gore)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/boiler-sizing.js. Saf IIFE; window.BoilerSizing + module.exports. Fonksiyon calc({Q_isitma_yuku_kW, emniyet_faktoru=1.2}): Q_isitma_yuku_kW GIRDI ZOKUNLU; emniyet_faktoru opsiyonel GIRDI (varsayilan 1.2, yorumda 'yonetmelik / tasarim pratigi 1.15-1.3 araligi, TEYIT' yaz, hardcode degil). P_kombi_kW = Q_isitma_yuku_kW * emniyet_faktoru (saf matemaitk, standart-veri degil). Gecersiz/negatif/sifir bolme guvenli. tools/boiler-sizing-test.js: Q_isitma_yuku_kW=100, emniyet_faktoru=1.2 -> P_kombi_kW=120 assert; emniyet_faktoru default 1.2 test; NaN guvenli.",
+      "kabul": "node tools/boiler-sizing-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/boiler-sizing.js",
+        "tools/boiler-sizing-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T41",
+      "baslik": "Taze hava (havalandirma) yuku — duyulur+gizli, psikrometrik",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/fresh-air-load.js. Saf IIFE; window.FreshAirLoad + module.exports. Fonksiyon calc({debi_m3h, T_dis_C, T_ic_C, x_dis_g_kg, x_ic_g_kg}): debi_m3h/T_dis_C/T_ic_C GIRDI ZORUNLU; x_dis_g_kg/x_ic_g_kg (mutlak nem, g su/kg kuru hava) opsiyonel (verilmezse gizli yuk 0). Fizik sabitleri (hardcode edilebilir, standart-veri DEGIL): hava_yogunlugu=1.2 kg/m3, cp_hava=1.005 kJ/kgK, buharlasma_isisi_hfg=2500 kJ/kg. Q_duyulur_kW = (debi_m3h/3600)*1.2*1.005*(T_dis_C-T_ic_C). Q_gizli_kW = (debi_m3h/3600)*1.2*2500*(x_dis_g_kg-x_ic_g_kg)/1000. Q_toplam_kW = Q_duyulur_kW+Q_gizli_kW. Gecersiz/negatif debi/NaN girdi guvenli (NaN don). tools/fresh-air-load-test.js: debi_m3h=1000, T_dis_C=35, T_ic_C=24, x_dis_g_kg=18, x_ic_g_kg=10 icin Q_duyulur ve Q_gizli degerlerini elle hesaplayip assert et (±0.1 tolerans); NaN/negatif guvenli test.",
+      "kabul": "node tools/fresh-air-load-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/fresh-air-load.js",
+        "tools/fresh-air-load-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T42",
+      "baslik": "Kullanim soguk suyu pik debisi + hidrofor tanki on-boyutlandirma (EN 806 basitlestirilmis)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/domestic-water-demand.js. Saf IIFE; window.DomesticWaterDemand + module.exports. Fonksiyon calc({gunluk_ortalama_debi_m3gun, pik_katsayisi=3, calisma_saati=10, pompa_devre_dakika=15}): gunluk_ortalama_debi_m3gun GIRDI ZORUNLU; pik_katsayisi VE calisma_saati opsiyonel GIRDI (varsayilan sirasiyla 3 ve 10, yorumda 'tesis tipine gore degisir, TEYIT gerekir' yaz — standart-veri hardcode ETME, sadece varsayilan). Pik_debi_m3h = (gunluk_ortalama_debi_m3gun*pik_katsayisi)/calisma_saati. Hidrofor_tank_hacmi_m3 = Pik_debi_m3h * (pompa_devre_dakika/60) * 0.25 (basit kaba kural, yorumda TEYIT notu). Gecersiz/negatif/NaN guvenli. tools/domestic-water-demand-test.js: gunluk_ortalama_debi_m3gun=24, pik_katsayisi=3, calisma_saati=10 -> Pik_debi_m3h=7.2 assert; NaN/negatif guvenli test.",
+      "kabul": "node tools/domestic-water-demand-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/domestic-water-demand.js",
+        "tools/domestic-water-demand-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T43",
+      "baslik": "Zorunlu sistem kontrol listesi (yonetmelik esikli, esikler kullanici girdisi)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/mandatory-systems-checklist.js. Saf IIFE; window.MandatorySystemsChecklist + module.exports. Fonksiyon calc({bina_yuksekligi_m, kat_sayisi, toplam_insaat_alani_m2, esik_sprinkler_yukseklik_m, esik_hidrant_alan_m2, esik_siginak_kat_sayisi, esik_asansor_basinclandirma_yukseklik_m, esik_duman_tahliye_alan_m2}): TUM esik_* degerleri GIRDI ZORUNLU (hardcode YOK — yonetmelik esikleri kullanicidan/disaridan gelir, yorumda 'Binalarin Yangindan Korunmasi Hakkinda Yonetmelik TEYIT' yaz). Sadece karsilastirma (>=) yapip {sprinkler_gerekli, hidrant_gerekli, siginak_havalandirma_gerekli, asansor_basinclandirma_gerekli, duman_tahliye_gerekli} boolean nesnesi don. Eksik/NaN girdide ilgili alan null don (crash yok). tools/mandatory-systems-checklist-test.js: ornek degerlerle esik-ustu ve esik-alti iki senaryo assert et; eksik girdi null testi.",
+      "kabul": "node tools/mandatory-systems-checklist-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/mandatory-systems-checklist.js",
+        "tools/mandatory-systems-checklist-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T44",
+      "baslik": "Yangin pompasi toplam debi (sprinkler+hidrant+dolap, es-zamanlilik faktorlu)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/fire-pump-sizing.js. Saf IIFE; window.FirePumpSizing + module.exports. Fonksiyon calc({Q_sprinkler_m3h=0, Q_hidrant_m3h=0, Q_dolap_m3h=0, es_zamanlilik_faktoru=1, P_gerekli_bar}): en az bir Q_* GIRDI olmali (hepsi opsiyonel varsayilan 0), es_zamanlilik_faktoru opsiyonel GIRDI (varsayilan 1, yorumda 'NFPA13/EN12845 proje bazli TEYIT' yaz — hardcode standart-veri DEGIL). Q_toplam_m3h = (Q_sprinkler_m3h+Q_hidrant_m3h+Q_dolap_m3h)*es_zamanlilik_faktoru. P_gerekli_bar varsa aynen dondur (pass-through, hesap YOK). Gecersiz/negatif/NaN guvenli. tools/fire-pump-sizing-test.js: Q_sprinkler_m3h=54, Q_hidrant_m3h=30, Q_dolap_m3h=10, es_zamanlilik_faktoru=1 -> Q_toplam_m3h=94 assert; NaN/negatif guvenli test.",
+      "kabul": "node tools/fire-pump-sizing-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/fire-pump-sizing.js",
+        "tools/fire-pump-sizing-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T45",
+      "baslik": "Isitici/sogutucu batarya kapasitesi (debi+deltaT bazli, hava veya su)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/coil-sizing.js. Saf IIFE; window.CoilSizing + module.exports. Fonksiyon calc({tip, debi_m3h, debi_lps, T_giris_C, T_cikis_C}): tip='hava' ise debi_m3h GIRDI ZORUNLU, tip='su' ise debi_lps GIRDI ZORUNLU; T_giris_C/T_cikis_C GIRDI ZORUNLU (her ikisi de). Fizik sabitleri (hardcode edilebilir, standart-veri DEGIL): hava_yogunlugu=1.2 kg/m3, cp_hava=1.005 kJ/kgK, su_yogunlugu=1000 kg/m3, cp_su=4.186 kJ/kgK. Hava: Q_kW=(debi_m3h/3600)*1.2*1.005*abs(T_cikis_C-T_giris_C). Su: Q_kW=(debi_lps/1000)*1000*4.186*abs(T_cikis_C-T_giris_C). Bilinmeyen tip / eksik girdi / NaN guvenli (NaN don). tools/coil-sizing-test.js: tip='hava', debi_m3h=2000, T_giris_C=16, T_cikis_C=45 icin Q_kW elle hesapla assert (±0.5 tolerans); tip='su', debi_lps=2, T_giris_C=45, T_cikis_C=35 icin Q_kW assert; NaN/gecersiz tip guvenli test.",
+      "kabul": "node tools/coil-sizing-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/coil-sizing.js",
+        "tools/coil-sizing-test.js"
+      ],
+      "status": "done"
+    },
+    {
+      "id": "T46",
+      "baslik": "Silindirik boru/kanal yalitim isi kaybi (pipe-insulation-loss.js) — Fourier iletim",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/pipe-insulation-loss.js. Saf IIFE; window.PipeInsulationLoss + module.exports. Fonksiyon lossPerMeter({T_i_C, T_o_C, r1_m, r2_m, k_W_mK}): saf Fourier silindirik iletim formulu (standart-veri DEGIL, fizik): q_W_m = 2*Math.PI*k_W_mK*(T_i_C-T_o_C)/Math.log(r2_m/r1_m). r1_m/r2_m/k_W_mK/T_i_C/T_o_C GIRDI ZORUNLU (k_W_mK yalitim malzemesine gore degisir, yorumda 'malzeme teknik veri sayfasi TEYIT' yaz, sabit VERME). r2_m<=r1_m veya k<=0 veya NaN girdi -> NaN guvenli. Fonksiyon totalLoss({q_W_m, L_m}): q_W_m*L_m dondur. tools/pipe-insulation-loss-test.js: T_i_C=80, T_o_C=20, r1_m=0.02, r2_m=0.05, k_W_mK=0.04 icin q_W_m elle hesapla (2*pi*0.04*60/ln(2.5)) assert (±0.1); totalLoss ornegi; gecersiz/NaN girdi guvenli test.",
+      "kabul": "node tools/pipe-insulation-loss-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/pipe-insulation-loss.js",
+        "tools/pipe-insulation-loss-test.js"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "T47",
+      "baslik": "Kojenerasyon/isi pompasi opsiyon basit enerji dengesi (cogeneration-energy.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/cogeneration-energy.js. Saf IIFE; window.CogenerationEnergy + module.exports. Fonksiyon outputs({yakit_girdi_kW, elektrik_verimi, isil_verim}): elektrik_verimi VE isil_verim GIRDI ZORUNLU (cihaza gore degisir, sabit VERME, yorumda 'cihaz teknik veri sayfasi TEYIT' yaz). elektrik_kW = yakit_girdi_kW*elektrik_verimi; isi_kW = yakit_girdi_kW*isil_verim; toplam_verim = elektrik_verimi+isil_verim (saf oran toplami, matematik). Gecersiz/negatif/NaN girdi guvenli. Fonksiyon primaryEnergySavingRatio({toplam_verim, ref_elektrik_verimi, ref_isi_verimi, elektrik_verimi, isil_verim}): basit PES orani = 1 - 1/((elektrik_verimi/ref_elektrik_verimi)+(isil_verim/ref_isi_verimi)) (ref degerler GIRDI ZORUNLU, sabit VERME, yorumda 'referans sebeke verimleri ulke/yil TEYIT' yaz). tools/cogeneration-energy-test.js: yakit_girdi_kW=100, elektrik_verimi=0.35, isil_verim=0.45 icin elektrik_kW=35, isi_kW=45, toplam_verim=0.8 assert; PES ornegi sonlu; gecersiz girdi NaN guvenli.",
+      "kabul": "node tools/cogeneration-energy-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/cogeneration-energy.js",
+        "tools/cogeneration-energy-test.js"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "T48",
+      "baslik": "Reaktif guc kompanzasyon kondansator gucu (power-factor-correction.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/power-factor-correction.js. Saf IIFE; window.PowerFactorCorrection + module.exports. Fonksiyon capacitorPower({P_kW, cosPhi1, cosPhi2}): saf trigonometri/elektrik formulu (standart-veri DEGIL): tanPhi1 = Math.tan(Math.acos(cosPhi1)); tanPhi2 = Math.tan(Math.acos(cosPhi2)); Qc_kVAR = P_kW*(tanPhi1-tanPhi2). cosPhi1/cosPhi2 (0,1] araliginda olmali, P_kW/cosPhi1/cosPhi2 GIRDI ZORUNLU, gecersiz araliktaysa (<=0 veya >1) veya NaN ise -> NaN guvenli. Fonksiyon newApparentPower({P_kW, cosPhi2}): S_kVA = P_kW/cosPhi2 (gecersiz cosPhi2 -> NaN guvenli). tools/power-factor-correction-test.js: P_kW=100, cosPhi1=0.75, cosPhi2=0.95 icin Qc_kVAR elle hesapla (100*(tan(acos(0.75))-tan(acos(0.95)))≈100*(0.882-0.329)≈55.3) assert (±1); newApparentPower ornegi; gecersiz cosPhi (0, negatif, >1) NaN guvenli test.",
+      "kabul": "node tools/power-factor-correction-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/power-factor-correction.js",
+        "tools/power-factor-correction-test.js"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "T49",
+      "baslik": "Genel oda havalandirma debisi — ACH ve kisi basi iki yontem (room-ventilation-rate.js) EN 16798",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/room-ventilation-rate.js. Saf IIFE; window.RoomVentilationRate + module.exports. Fonksiyon byACH({V_m3, ach}): Q_m3h = V_m3*ach (ach GIRDI ZORUNLU, yonetmelige/oda tipine gore degisir, sabit VERME, yorumda 'EN 16798-1 oda tipi tablosu TEYIT' yaz). Fonksiyon byOccupancy({kisi_sayisi, kisi_basi_m3h}): Q_m3h = kisi_sayisi*kisi_basi_m3h (kisi_basi_m3h GIRDI ZORUNLU, yorumda 'EN 16798-1 Kategori (I/II/III/IV) kisi basi debi tablosu TEYIT' yaz). Fonksiyon compare({Q_ach_m3h, Q_occupancy_m3h}): iki degeri de aynen dondur + buyuk_olan alanini ekle (OTOMATIK SECIM YAPMAZ, sadece bilgi, kullanici karar verir — buyuk_olan sadece 'hangisi buyuk' bilgisi, zorunlu uygulama degil). Gecersiz/NaN girdi guvenli. tools/room-ventilation-rate-test.js: byACH({V_m3:200,ach:4})==800; byOccupancy({kisi_sayisi:20,kisi_basi_m3h:36})==720; compare({Q_ach_m3h:800,Q_occupancy_m3h:720}).buyuk_olan=='ach'; gecersiz girdi guvenli test.",
+      "kabul": "node tools/room-ventilation-rate-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/room-ventilation-rate.js",
+        "tools/room-ventilation-rate-test.js"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "T50",
+      "baslik": "Kanal isi kazanci/kaybi — kosullandirilmamis mahalde kanal (duct-heat-gain.js)",
+      "aciklama": "YENI dosya HVAC_Pro_v8/js/duct-heat-gain.js. Saf IIFE; window.DuctHeatGain + module.exports. Fonksiyon calc({U_W_m2K, A_m2, T_ambient_C, T_air_C}): saf iletim formulu Q_W = U_W_m2K*A_m2*(T_ambient_C-T_air_C) (standart-veri DEGIL, fizik; U_W_m2K kanal yalitim durumuna gore degisir, GIRDI ZORUNLU, sabit VERME, yorumda 'kanal yalitim kalinligi/malzemesine gore hesaplanir veya TEYIT edilir' yaz). Pozitif Q_W = kanal havasina ISI KAZANCI (sogutmada istenmeyen), negatif = ISI KAYBI (isitmada). Gecersiz/NaN girdi guvenli. Fonksiyon percentOfLoad({Q_W, toplam_yuk_W}): Q_W/toplam_yuk_W*100 (toplam_yuk_W GIRDI ZORUNLU, sadece bilgi amacli oran, TASARIM KARARI ICERMEZ). tools/duct-heat-gain-test.js: U_W_m2K=0.5, A_m2=20, T_ambient_C=35, T_air_C=13 icin Q_W==220 assert; percentOfLoad ornegi; gecersiz/NaN girdi guvenli test.",
+      "kabul": "node tools/duct-heat-gain-test.js cikis 0 VE node saglik-kontrol.js yesil.",
+      "dokunulan": [
+        "HVAC_Pro_v8/js/duct-heat-gain.js",
+        "tools/duct-heat-gain-test.js"
       ],
       "status": "pending"
     }

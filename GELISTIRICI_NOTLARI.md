@@ -4,6 +4,18 @@ Bu dosya, projenin "belleği". Claude oturumlar arası hafıza taşımaz; her ye
 buradan devam etmeli. Önemli kararlar, mimari ve tuzaklar burada.
 
 ## ⚠ KRİTİK TUZAKLAR (önce bunları oku)
+-1. **Worker'lar paylaşılan altyapı dosyalarına (saglik-kontrol.js, TASK_QUEUE.json şeması, tools/motor-test.js, tools/golden-test.js) İZİNSİZ DOKUNABİLİR — buna karşı DAİMA doğrula.**
+   Örnek olay (2026-07-17): Bir Haiku worker'a tek bir modül görevi (T24) verildi, ama worker
+   kapsam dışına çıkıp `saglik-kontrol.js`'yi tamamen yeniden yazdı — orijinali HER js dosyasının
+   sözdizimini (kesilme/bozulma) kontrol ediyordu, worker'ın versiyonu sadece test dosyası olan
+   modülleri çalıştırıyordu, testsiz dosyaların (render-views.js, export-pdf.js, modules.js, api.js,
+   persist.js, index.html vb.) sözdizimi kontrolü SESSİZCE kayboldu. saglik-kontrol.js yine "yeşil"
+   dönüyordu, yani bu regresyon fark edilmeden geçebilirdi. Düzeltme: git'teki orijinal geri yüklendi
+   + otomatik test-keşfi (readdir ile tools/*-test.js, elle liste tutmadan) eklendi.
+   → Her worker raporundan sonra: worker'ın SADECE görev tanımındaki "dokunulan" dosyaları
+   değiştirdiğini teyit et (gerekirse `git diff --stat` veya dosya zaman damgalarına bak).
+   Paylaşılan/altyapı dosyalarında beklenmeyen değişiklik varsa geri al.
+0. **İki dil (TR/EN) EN BAŞTAN zorunlu — sonradan eklenmez.** Kullanıcı kararı: yazılım kesinlikle Türkçe VE İngilizce olacak, dil seçici olacak. Yeni yazılan HER ekran/bileşen/metin baştan i18n'e (data-i18n / T.tr-T.en sözlük mekanizması, mevcut index.html'deki `LANG`/`applyI18n()` yapısına bak) bağlı yazılmalı — sabit (hardcoded) TR veya EN metin GİRİLMEYECEK. Stitch'te üretilen yeni ekranlarda da metinler ayrı bir sözlük/liste olarak çıkarılabilir şekilde tasarlanmalı (sonradan çevirmek zor/pahalı, baştan yapılmalı).
 1. **Edit/Write dosya aracı bu bağlı klasörde büyük dosyaları KESİYOR (truncate).**
    Belirti: dosya sonu yarıda kalır, `node --check` "Unexpected end of input" verir.
    → **Tüm dosya düzenlemelerini `mcp__workspace__bash` içinden `python`/`sed`/`cat` ile yap.**
@@ -28,7 +40,7 @@ buradan devam etmeli. Önemli kararlar, mimari ve tuzaklar burada.
 - `modules.js` — mühendislik modülleri: PressureLoss, EnergyEstimate, TS825Check, Psychro,
   DuctSizing, UFHCalc, ChillerSelect, FanSelect (her biri IIFE, `window.X = X`).
 - `api.js` — AI/asistan ve yardımcılar.
-- `validate.js` — (YENİ) Excel girdi doğrulaması `window.validateRooms(rows)`. Henüz bağlı değil.
+- `validate.js` — Excel girdi doğrulaması `window.validateRooms(rows)`. BAĞLANDI (index.html satır 2030 + calc-engine.js procFile() içinde try-catch ile çağrılıyor).
 
 ## Hesap motoru — ısı kaybı formülü (doğrulanmış)
 - Ham transmisyon: `qKR = duvarQis + pencereQis + dosemeQis(qDoK) + tavanQis(qTK) + skylightQis`
@@ -128,3 +140,13 @@ Paket: (1) çizim+hesap raporu, (2) keşif listesi, (3) teknik şartname.
 ## Yeni modüller (kullanıcı)
 - TS 825 U-değeri + ısı yalıtımı (2024 rev., ısıtma+soğutma, EN ISO 52016 yakın; katman→U=1/(Rsi+Σd/λ+Rse); malzeme/iklim kütüphanesi). Datası yok, sıfırdan pro yapılacak.
 - Merdiven basınçlandırma, Asansör basınçlandırma, Duman atım/tahliye, Sığınak havalandırma, Sistem karşılaştırma.
+
+## AI Agent (kullanıcı kararı — ÖNEMLİ, mimariye baştan girecek)
+- Yazılımda bir "AI Agent" özelliği olacak. **Groq mutlaka desteklenecek** — kullanıcı kendi ÜCRETSİZ Groq API anahtarını girecek (uygulama kendi API maliyeti üstlenmeyecek, BYOK — bring your own key modeli).
+- Groq TEK seçenek olmayacak: kullanıcı başka bir AI sağlayıcı kullanıyorsa (OpenAI, Anthropic/Claude, Google Gemini vb.) kendi API anahtarını girip onu da seçebilmeli. Yani "AI sağlayıcı seçimi" (dropdown) + "API anahtarı" (kullanıcı girer, güvenli/gizli saklanır, asla koda gömülmez) ayarı olacak.
+- Mimari sonuç: `js/api.js` (mevcut AI/asistan yardımcıları dosyası) bu çoklu-sağlayıcı + kullanıcı-API-anahtarı modeline göre genişletilecek/yeniden tasarlanacak — sağlayıcı bazlı adaptör yapısı (her sağlayıcı için ayrı istek formatı) önerilir. Şimdilik kod yazılmadı, bu bir MİMARİ KARAR notu; ilgili modül geliştirilirken bu kısıt unutulmayacak.
+
+## CAD stratejisi (kullanıcı — sonraki katman, şimdi DEĞİL)
+- Çekirdek önce MANUEL + çoktan-seçmeli veri girişiyle çalışacak. CAD sonra AYRI bir katman/modül olarak eklenecek; aynı Proje JSON'unu doldurur (çekirdek yeniden yazılmaz).
+- CAD yaklaşımı: hazır AKILLI BLOK kütüphanesi (DN20 çelik boru, dirsek, TE, fitting, cihaz) + attribute (tip/DN/malzeme/debi) + yerleşim/rota kuralları (çap değişimi→redüksiyon, yön→dirsek, kollektör→TE). Blok+attribute standardı hazır olunca otomasyona kalır.
+- İlk hamle (onaylı): js/project-schema.js — tek Proje JSON şeması { meta, mahaller[], sistemler[], cihazlar[], hatlar[], disiplinSonuclari{} } + motor/rapor adaptörleri. Manuel giriş bugün, CAD-besleme sonra.

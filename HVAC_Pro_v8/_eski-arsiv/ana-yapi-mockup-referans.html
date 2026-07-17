@@ -1,0 +1,1223 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GSEM MEP PRO</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
+            background-color: #12161E;
+            color: #e2e8f0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* ===== HEADER / LOGO + RIBBON ===== */
+        header {
+            background: #1a1f28;
+            border-bottom: 1px solid #2d3139;
+            box-shadow: none;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .logo-bar {
+            display: flex;
+            align-items: center;
+            padding: 8px 16px;
+            border-bottom: 1px solid #2d3139;
+            background: #1a1f28;
+        }
+
+        .logo {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            background: linear-gradient(135deg, #3B82F6, #10B981);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-transform: uppercase;
+        }
+
+        .ribbon-container {
+            display: flex;
+            padding: 0;
+            background: #1a1f28;
+            border-bottom: 1px solid #2d3139;
+            overflow-x: auto;
+        }
+
+        .ribbon-tabs {
+            display: flex;
+            list-style: none;
+            gap: 0;
+        }
+
+        .ribbon-tab {
+            padding: 10px 18px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: #cbd5e1;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .ribbon-tab:hover {
+            background-color: rgba(59, 130, 246, 0.08);
+            color: #e2e8f0;
+        }
+
+        .ribbon-tab.active {
+            border-bottom-color: #3B82F6;
+            background-color: rgba(59, 130, 246, 0.05);
+            color: #e2e8f0;
+        }
+
+        .ribbon-content {
+            display: none;
+            padding: 12px 16px;
+            background: #1a1f28;
+            border-top: 1px solid #2d3139;
+            box-shadow: none;
+        }
+
+        .ribbon-content.active {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .ribbon-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .ribbon-group-label {
+            font-size: 11px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .ribbon-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .ribbon-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: #1E232E;
+            border: 1px solid #2d3139;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #cbd5e1;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .ribbon-btn:hover {
+            background: #252b36;
+            border-color: #3B82F6;
+            color: #e2e8f0;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .ribbon-btn-label {
+            font-size: 9px;
+            color: #94a3b8;
+            margin-top: 2px;
+            text-align: center;
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* ===== SIDEBAR (PROJECT TREE) ===== */
+        .sidebar {
+            width: 280px;
+            background: #1E232E;
+            border-right: 1px solid #2d3139;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: none;
+        }
+
+        .sidebar-title {
+            padding: 12px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #e2e8f0;
+            text-transform: uppercase;
+            border-bottom: 1px solid #2d3139;
+            background: #1a1f28;
+            letter-spacing: 0.5px;
+        }
+
+        .tree-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+        }
+
+        .tree-node {
+            margin: 0;
+            list-style: none;
+        }
+
+        .tree-item {
+            padding: 6px 12px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            font-size: 13px;
+            color: #cbd5e1;
+            transition: all 0.2s ease;
+            border-left: 3px solid transparent;
+            margin: 1px 4px;
+            border-radius: 0 4px 4px 0;
+        }
+
+        .tree-item:hover {
+            background-color: rgba(59, 130, 246, 0.08);
+            color: #e2e8f0;
+            border-left-color: #3B82F6;
+        }
+
+        .tree-item.active {
+            background-color: rgba(59, 130, 246, 0.12);
+            color: #e2e8f0;
+            border-left-color: #3B82F6;
+            font-weight: 600;
+        }
+
+        .tree-toggle {
+            display: inline-flex;
+            width: 16px;
+            height: 16px;
+            align-items: center;
+            justify-content: center;
+            margin-right: 6px;
+            cursor: pointer;
+            font-size: 10px;
+            color: #64748b;
+            transition: transform 0.2s;
+        }
+
+        .tree-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .tree-children {
+            margin-left: 0;
+            display: none;
+        }
+
+        .tree-children.open {
+            display: block;
+        }
+
+        .tree-item-icon {
+            display: inline-flex;
+            width: 14px;
+            height: 14px;
+            align-items: center;
+            justify-content: center;
+            margin-right: 6px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        /* ===== CENTER WORKSPACE ===== */
+        .workspace {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #12161E;
+            border-right: 1px solid #2d3139;
+            overflow: hidden;
+        }
+
+        .doc-tabs {
+            display: flex;
+            background: #1a1f28;
+            border-bottom: 1px solid #2d3139;
+            padding: 0;
+            gap: 2px;
+            padding-left: 4px;
+            padding-right: 4px;
+            overflow-x: auto;
+            box-shadow: none;
+        }
+
+        .doc-tab {
+            padding: 8px 14px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            border-radius: 0;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 12px;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .doc-tab:hover {
+            background: rgba(59, 130, 246, 0.08);
+            color: #cbd5e1;
+        }
+
+        .doc-tab.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: #e2e8f0;
+            border-bottom-color: #3B82F6;
+            box-shadow: none;
+        }
+
+        .doc-content {
+            flex: 1;
+            display: none;
+            flex-direction: column;
+            overflow: auto;
+            padding: 16px;
+        }
+
+        .doc-content.active {
+            display: flex;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #2d3139;
+        }
+
+        .content-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #e2e8f0;
+        }
+
+        .content-toolbar {
+            display: flex;
+            gap: 8px;
+        }
+
+        .toolbar-btn {
+            padding: 6px 12px;
+            background: #1E232E;
+            border: 1px solid #2d3139;
+            border-radius: 4px;
+            cursor: pointer;
+            color: #cbd5e1;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+
+        .toolbar-btn:hover {
+            background: #252b36;
+            border-color: #3B82F6;
+            color: #e2e8f0;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: transparent;
+            border: 1px solid #2d3139;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .data-table thead {
+            background: #171b24;
+            border-bottom: 1px solid #2d3139;
+        }
+
+        .data-table th {
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 12px;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-right: 1px solid #2d3139;
+        }
+
+        .data-table th:last-child {
+            border-right: none;
+        }
+
+        .data-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid rgba(45, 49, 57, 0.6);
+            font-size: 13px;
+            color: #cbd5e1;
+        }
+
+        .data-table tbody tr:hover {
+            background-color: rgba(59, 130, 246, 0.05);
+        }
+
+        .data-table tbody tr:nth-child(even) {
+            background-color: transparent;
+        }
+
+        /* ===== RIGHT PANEL ===== */
+        .right-panel {
+            width: 320px;
+            background: #1E232E;
+            border-left: 1px solid #2d3139;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: none;
+        }
+
+        .panel-title {
+            padding: 12px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #e2e8f0;
+            text-transform: uppercase;
+            border-bottom: 1px solid #2d3139;
+            background: #1a1f28;
+            letter-spacing: 0.5px;
+        }
+
+        .panel-cards {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px;
+        }
+
+        .panel-card {
+            background: transparent;
+            border: 1px solid #2d3139;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .panel-card:hover {
+            background: rgba(59, 130, 246, 0.05);
+            border-color: #3B82F6;
+            box-shadow: none;
+        }
+
+        .panel-card-header {
+            padding: 10px 12px;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            font-weight: 700;
+            color: #e2e8f0;
+            border-bottom: 1px solid #2d3139;
+            user-select: none;
+            transition: all 0.2s ease;
+        }
+
+        .panel-card-header:hover {
+            background: rgba(59, 130, 246, 0.08);
+        }
+
+        .panel-card-toggle {
+            display: inline-flex;
+            width: 16px;
+            height: 16px;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #64748b;
+            transition: transform 0.2s;
+        }
+
+        .panel-card-toggle.collapsed {
+            transform: rotate(-90deg);
+        }
+
+        .panel-card-content {
+            padding: 12px;
+            display: none;
+            background: transparent;
+            border-top: 1px solid #2d3139;
+        }
+
+        .panel-card-content.open {
+            display: block;
+        }
+
+        .panel-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            font-size: 12px;
+            border-bottom: 1px solid rgba(45, 49, 57, 0.4);
+        }
+
+        .panel-item:last-child {
+            border-bottom: none;
+        }
+
+        .panel-item-label {
+            color: #94a3b8;
+            font-weight: 500;
+        }
+
+        .panel-item-value {
+            color: #3B82F6;
+            font-weight: 700;
+            font-family: 'Courier New', monospace;
+        }
+
+        .panel-alert {
+            background-color: transparent;
+            border-left: none;
+            padding: 6px 0;
+            border-radius: 0;
+            font-size: 11px;
+            color: #EF4444;
+            margin-top: 8px;
+            display: flex;
+            gap: 6px;
+            align-items: center;
+        }
+
+        .panel-alert::before {
+            content: "";
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #EF4444;
+            flex-shrink: 0;
+        }
+
+        /* ===== FOOTER / STATUS BAR ===== */
+        footer {
+            background: #1a1f28;
+            border-top: 1px solid #2d3139;
+            padding: 8px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 11px;
+            color: #94a3b8;
+            gap: 16px;
+            box-shadow: none;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0;
+            background: transparent;
+            border: none;
+            border-radius: 0;
+            color: #10B981;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #10B981;
+        }
+
+        .status-center {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.4);
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="logo-bar">
+            <div class="logo">GSEM MEP PRO</div>
+        </div>
+        <div class="ribbon-container">
+            <ul class="ribbon-tabs">
+                <li class="ribbon-tab active" data-tab="home">Ana Sayfa</li>
+                <li class="ribbon-tab" data-tab="heating-cooling">Isıtma/Soğutma</li>
+                <li class="ribbon-tab" data-tab="ventilation">Havalandırma</li>
+                <li class="ribbon-tab" data-tab="plumbing">Sıhhi Tesisat</li>
+                <li class="ribbon-tab" data-tab="fire">Yangın Sistemleri</li>
+                <li class="ribbon-tab" data-tab="reports">Raporlar</li>
+                <li class="ribbon-tab" data-tab="settings">Ayarlar</li>
+            </ul>
+        </div>
+
+        <!-- Ribbon Content -->
+        <div class="ribbon-content active" data-tab-content="home">
+            <div class="ribbon-group">
+                <div class="ribbon-buttons">
+                    <button class="ribbon-btn" title="Yeni Proje"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><path d="M4 2h8l4 4v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><line x1="8" y1="7" x2="14" y2="7" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="8" y1="10" x2="14" y2="10" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="8" y1="13" x2="14" y2="13" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg></button>
+                    <button class="ribbon-btn" title="Aç"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><path d="M2 4h6l1.5 1.5H18a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg></button>
+                    <button class="ribbon-btn" title="Kaydet"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><path d="M2 2h12v7H2V2z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><rect x="2" y="9" width="14" height="8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><rect x="4" y="10" width="4" height="6" fill="currentColor" opacity="0.5"/><line x1="10" y1="13" x2="14" y2="13" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg></button>
+                </div>
+                <div class="ribbon-group-label">Dosya</div>
+            </div>
+            <div class="ribbon-group">
+                <div class="ribbon-buttons">
+                    <button class="ribbon-btn" title="Mahal Ekle"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><path d="M10 2l8 7v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-9l8-7z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><line x1="10" y1="2" x2="10" y2="9" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><rect x="7" y="10" width="6" height="8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg></button>
+                    <button class="ribbon-btn" title="Sistem Ekle"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M10 4v2.5M10 13.5v2.5M4 10H6.5M13.5 10H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.5"/></svg></button>
+                    <button class="ribbon-btn" title="Cihaz Ekle"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><path d="M4 3h12a1 1 0 0 1 1 1v9H3V4a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M2 12h16l-1 3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1l-1-3z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><circle cx="10" cy="8" r="1.5" fill="currentColor"/></svg></button>
+                </div>
+                <div class="ribbon-group-label">Ekle</div>
+            </div>
+            <div class="ribbon-group">
+                <div class="ribbon-buttons">
+                    <button class="ribbon-btn" title="Geri Al">↶</button>
+                    <button class="ribbon-btn" title="İleri Al">↷</button>
+                </div>
+                <div class="ribbon-group-label">Düzenle</div>
+            </div>
+            <div class="ribbon-group">
+                <div class="ribbon-buttons">
+                    <button class="ribbon-btn" title="Yakınlaştır"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="13" y1="13" x2="17" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="8" y1="6" x2="8" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="6" y1="8" x2="10" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+                    <button class="ribbon-btn" title="Uzaklaştır"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><circle cx="8" cy="8" r="5" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="13" y1="13" x2="17" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="6" y1="8" x2="10" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+                    <button class="ribbon-btn" title="Uygun Yakınlık"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><rect x="4" y="4" width="12" height="12" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="10" cy="10" r="1.5" fill="currentColor"/></svg></button>
+                </div>
+                <div class="ribbon-group-label">Görünüm</div>
+            </div>
+        </div>
+
+        <div class="ribbon-content" data-tab-content="heating-cooling">
+            <div class="ribbon-group">
+                <div class="ribbon-buttons">
+                    <button class="ribbon-btn" title="Isıtma Yükü Hesabı"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><path d="M10 4c1 0 2 1 2 3 0 2-1 3-1 5 0 1.5 1 2.5 1 4 0 2-1.5 2.5-3 2.5s-3-0.5-3-2.5c0-1.5 1-2.5 1-4 0-2-1-3-1-5 0-2 1-3 2-3z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/></svg></button>
+                    <button class="ribbon-btn" title="Soğutma Yükü Hesabı"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><path d="M10 2l2 3-1 3 2 0 -1 3 2 1 -2 2 1 3 -3 -1 0 3 -3 -3 1 -3 -2 -1 2 -3 -1 -3 3 1z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/></svg></button>
+                    <button class="ribbon-btn" title="Boyutlandırma"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><line x1="3" y1="17" x2="17" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="3" y1="14" x2="3" y2="18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="17" y1="14" x2="17" y2="18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="10" y1="3" x2="10" y2="17" stroke="currentColor" stroke-width="1" stroke-dasharray="2,2" opacity="0.7"/></svg></button>
+                </div>
+                <div class="ribbon-group-label">Hesaplar</div>
+            </div>
+            <div class="ribbon-group">
+                <div class="ribbon-buttons">
+                    <button class="ribbon-btn" title="EN 12831"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><rect x="4" y="2" width="10" height="14" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><circle cx="14.5" cy="5" r="1.2" fill="currentColor"/><line x1="7" y1="6" x2="13" y2="6" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="7" y1="8.5" x2="13" y2="8.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="7" y1="11" x2="13" y2="11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><line x1="7" y1="13.5" x2="11" y2="13.5" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg></button>
+                    <button class="ribbon-btn" title="VDI 2078"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><rect x="3" y="10" width="3" height="6" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/><rect x="8" y="6" width="3" height="10" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/><rect x="13" y="4" width="3" height="12" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/><line x1="2" y1="16" x2="18" y2="16" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button>
+                </div>
+                <div class="ribbon-group-label">Standartlar</div>
+            </div>
+        </div>
+
+        <div class="ribbon-content" data-tab-content="ventilation">
+            <div class="ribbon-group">
+                <div class="ribbon-buttons">
+                    <button class="ribbon-btn" title="Havalandırma Tasarımı"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><path d="M3 8Q5 5 8 6T12 4Q15 5 16 8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round"/><path d="M4 11Q6 8 10 9T15 8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.7"/><path d="M2 14Q5 12 9 13T16 12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.5"/></svg></button>
+                    <button class="ribbon-btn" title="Kanal Boyutlandırma"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><path d="M10 3l8 12H2z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><line x1="10" y1="8" x2="10" y2="12" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><circle cx="10" cy="14" r="0.8" fill="currentColor"/></svg></button>
+                    <button class="ribbon-btn" title="Basınç Kaybı"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><line x1="10" y1="3" x2="10" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M6 12l4 4 4-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                </div>
+                <div class="ribbon-group-label">Havalandırma</div>
+            </div>
+        </div>
+
+        <div class="ribbon-content" data-tab-content="plumbing">
+            <div class="ribbon-group">
+                <div class="ribbon-buttons">
+                    <button class="ribbon-btn" title="Boru Boyutu"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="1.5" fill="currentColor" opacity="0.4"/></svg></button>
+                    <button class="ribbon-btn" title="Akış Hesabı"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><path d="M10 3c-1.5 0-2 1-2 2.5 0 1.5-0.5 2.5-1.5 3.5-1 1-1.5 2-1.5 3.5 0 3 1.5 4.5 3.5 4.5s3.5-1.5 3.5-4.5c0-1.5-0.5-2.5-1.5-3.5-1-1-1.5-2-1.5-3.5 0-1.5-0.5-2.5-2-2.5z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linecap="round"/></svg></button>
+                    <button class="ribbon-btn" title="Basınç Kaybı"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><line x1="10" y1="2" x2="10" y2="16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 13l3 4 3-4" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+                </div>
+                <div class="ribbon-group-label">Sıhhi</div>
+            </div>
+        </div>
+
+        <div class="ribbon-content" data-tab-content="fire">
+            <div class="ribbon-group">
+                <div class="ribbon-buttons">
+                    <button class="ribbon-btn" title="Yangın Denetimi"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1" fill="none" opacity="0.6"/><circle cx="10" cy="10" r="2" fill="currentColor"/><line x1="10" y1="2" x2="10" y2="3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="16.5" y1="3.5" x2="15.8" y2="4.2" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button>
+                    <button class="ribbon-btn" title="Kaçış Hesabı"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><rect x="4" y="4" width="10" height="12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><line x1="9" y1="4" x2="9" y2="2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="10" r="1.5" fill="currentColor"/></svg></button>
+                </div>
+                <div class="ribbon-group-label">Yangın</div>
+            </div>
+        </div>
+
+        <div class="ribbon-content" data-tab-content="reports">
+            <div class="ribbon-group">
+                <div class="ribbon-buttons">
+                    <button class="ribbon-btn" title="PDF Rapor"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><rect x="4" y="2" width="8" height="12" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/><rect x="5.5" y="3.5" width="8" height="12" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round" opacity="0.6" transform="translate(0.5, 0.5)"/></svg></button>
+                    <button class="ribbon-btn" title="Excel Özeti"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><rect x="3" y="3" width="14" height="12" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><line x1="10" y1="3" x2="10" y2="15" stroke="currentColor" stroke-width="1" opacity="0.5"/><line x1="3" y1="8" x2="17" y2="8" stroke="currentColor" stroke-width="1" opacity="0.5"/><line x1="3" y1="11" x2="17" y2="11" stroke="currentColor" stroke-width="1" opacity="0.5"/></svg></button>
+                    <button class="ribbon-btn" title="Detaylı Rapor"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><path d="M5 3h6l3 3v10a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/><path d="M11 3v2a2 2 0 0 0 2 2h2" stroke="currentColor" stroke-width="1.2" fill="none" stroke-linejoin="round"/></svg></button>
+                </div>
+                <div class="ribbon-group-label">Raporlar</div>
+            </div>
+        </div>
+
+        <div class="ribbon-content" data-tab-content="settings">
+            <div class="ribbon-group">
+                <div class="ribbon-buttons">
+                    <button class="ribbon-btn" title="Birimler"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M10 4v2.5M10 13.5v2.5M4 10H6.5M13.5 10H16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="10" cy="10" r="6" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.5"/></svg></button>
+                    <button class="ribbon-btn" title="Arka Plan"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><circle cx="6" cy="6" r="2" fill="currentColor" opacity="0.6"/><circle cx="14" cy="7" r="2" fill="currentColor" opacity="0.8"/><circle cx="10" cy="14" r="2" fill="currentColor" opacity="0.5"/><path d="M6 8L14 9L10 16" stroke="currentColor" stroke-width="1" fill="none" opacity="0.4"/></svg></button>
+                    <button class="ribbon-btn" title="Varsayılanlar"><svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" width="18" height="18" style="color: currentColor;"><path d="M4 3h12a1 1 0 0 1 1 1v9H3V4a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><path d="M2 12h16l-1 3a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1l-1-3z" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linejoin="round"/><circle cx="10" cy="8" r="1.5" fill="currentColor"/></svg></button>
+                </div>
+                <div class="ribbon-group-label">Yapılandırma</div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTAINER -->
+    <div class="main-container">
+        <!-- LEFT SIDEBAR: PROJECT TREE -->
+        <aside class="sidebar">
+            <div class="sidebar-title">Proje Gezgini</div>
+            <ul class="tree-container">
+                <li class="tree-node">
+                    <div class="tree-item active">
+                        <span class="tree-toggle">▼</span>
+                        <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><path d="M2 3h4l1 1h7a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/></svg></span>
+                        <span>Örnek Proje</span>
+                    </div>
+                    <ul class="tree-children open">
+                        <li class="tree-node">
+                            <div class="tree-item">
+                                <span class="tree-toggle">▼</span>
+                                <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><rect x="3" y="2" width="10" height="12" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><line x1="6" y1="2" x2="6" y2="14" stroke="currentColor" stroke-width="1" opacity="0.4"/><line x1="10" y1="2" x2="10" y2="14" stroke="currentColor" stroke-width="1" opacity="0.4"/><line x1="3" y1="5" x2="13" y2="5" stroke="currentColor" stroke-width="1" opacity="0.4"/><line x1="3" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="1" opacity="0.4"/><line x1="3" y1="11" x2="13" y2="11" stroke="currentColor" stroke-width="1" opacity="0.4"/></svg></span>
+                                <span>Mahaller</span>
+                            </div>
+                            <ul class="tree-children open">
+                                <li class="tree-node">
+                                    <div class="tree-item">
+                                        <span class="tree-toggle" style="visibility: hidden;"></span>
+                                        <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><path d="M3 7l2-2 2 2v6H3z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><path d="M9 7l2-2 2 2v6H9z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round" opacity="0.6"/><rect x="4" y="10" width="2" height="3" stroke="currentColor" stroke-width="0.8" fill="none"/><rect x="10" y="10" width="2" height="3" stroke="currentColor" stroke-width="0.8" fill="none" opacity="0.6"/></svg></span>
+                                        <span>Zemin Kat</span>
+                                    </div>
+                                </li>
+                                <li class="tree-node">
+                                    <div class="tree-item">
+                                        <span class="tree-toggle" style="visibility: hidden;"></span>
+                                        <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><path d="M3 7l2-2 2 2v6H3z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><path d="M9 7l2-2 2 2v6H9z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round" opacity="0.6"/><rect x="4" y="10" width="2" height="3" stroke="currentColor" stroke-width="0.8" fill="none"/><rect x="10" y="10" width="2" height="3" stroke="currentColor" stroke-width="0.8" fill="none" opacity="0.6"/></svg></span>
+                                        <span>1. Kat</span>
+                                    </div>
+                                </li>
+                                <li class="tree-node">
+                                    <div class="tree-item">
+                                        <span class="tree-toggle" style="visibility: hidden;"></span>
+                                        <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><path d="M3 7l2-2 2 2v6H3z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><path d="M9 7l2-2 2 2v6H9z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round" opacity="0.6"/><rect x="4" y="10" width="2" height="3" stroke="currentColor" stroke-width="0.8" fill="none"/><rect x="10" y="10" width="2" height="3" stroke="currentColor" stroke-width="0.8" fill="none" opacity="0.6"/></svg></span>
+                                        <span>2. Kat</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="tree-node">
+                            <div class="tree-item">
+                                <span class="tree-toggle">▼</span>
+                                <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1" fill="none"/><path d="M8 3v1.5M8 11.5v1.5M3 8H4.5M11.5 8H13" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><circle cx="8" cy="8" r="4.5" stroke="currentColor" stroke-width="1" fill="none" opacity="0.4"/></svg></span>
+                                <span>Sistemler</span>
+                            </div>
+                            <ul class="tree-children open">
+                                <li class="tree-node">
+                                    <div class="tree-item">
+                                        <span class="tree-toggle" style="visibility: hidden;"></span>
+                                        <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><path d="M8 2c1 0 1.5 1 1.5 2.5 0 1.5-0.5 2-0.5 3 0 1 0.5 1.5 0.5 2.5 0 1.5-1 2-2 2s-2-0.5-2-2c0-1 0.5-1.5 0.5-2.5 0-1-0.5-1.5-0.5-3 0-1.5 0.5-2.5 1.5-2.5z" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg></span>
+                                        <span>Isıtma Sistemi</span>
+                                    </div>
+                                </li>
+                                <li class="tree-node">
+                                    <div class="tree-item">
+                                        <span class="tree-toggle" style="visibility: hidden;"></span>
+                                        <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><path d="M8 2l1 2-0.5 2 1.5 0 -0.5 2 1 1 -1 1.5 0.5 2 -2 -1.5 0 2 -2 -2 0.5 -2 -1 -1 1 -1.5 -0.5 -2 2 1z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/></svg></span>
+                                        <span>Soğutma Sistemi</span>
+                                    </div>
+                                </li>
+                                <li class="tree-node">
+                                    <div class="tree-item">
+                                        <span class="tree-toggle" style="visibility: hidden;"></span>
+                                        <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><path d="M2 6Q4 4 6 5T9 3Q11 4 12 6" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/><path d="M2 9Q4 7 7 8T12 7" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.6"/></svg></span>
+                                        <span>Havalandırma</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="tree-node">
+                            <div class="tree-item">
+                                <span class="tree-toggle">▼</span>
+                                <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><path d="M3 10c0 1.5 0.5 2 2 2 0.5 0 1-0.3 1.5-0.8l8-8c0.3-0.3 0.3-0.5 0-0.8l-1.2-1.2c-0.3-0.3-0.5-0.3-0.8 0l-8 8c-0.5 0.5-0.8 1-0.8 1.5 0 1.5-0.5 2-2 2s-2-0.5-2-2" stroke="currentColor" stroke-width="1" fill="none" stroke-linecap="round"/></svg></span>
+                                <span>Cihazlar</span>
+                            </div>
+                            <ul class="tree-children open">
+                                <li class="tree-node">
+                                    <div class="tree-item">
+                                        <span class="tree-toggle" style="visibility: hidden;"></span>
+                                        <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><rect x="3" y="3" width="10" height="10" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/></svg></span>
+                                        <span>Kazan - Isıtma</span>
+                                    </div>
+                                </li>
+                                <li class="tree-node">
+                                    <div class="tree-item">
+                                        <span class="tree-toggle" style="visibility: hidden;"></span>
+                                        <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><path d="M8 2l1 2-0.5 2 1.5 0 -0.5 2 1 1 -1 1.5 0.5 2 -2 -1.5 0 2 -2 -2 0.5 -2 -1 -1 1 -1.5 -0.5 -2 2 1z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/></svg></span>
+                                        <span>Split Klima - Salon</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                        <li class="tree-node">
+                            <div class="tree-item">
+                                <span class="tree-toggle">▼</span>
+                                <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><path d="M3 2h6l3 3v8a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><line x1="5" y1="5" x2="11" y2="5" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/><line x1="5" y1="7.5" x2="11" y2="7.5" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/><line x1="5" y1="10" x2="11" y2="10" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg></span>
+                                <span>Raporlar</span>
+                            </div>
+                            <ul class="tree-children open">
+                                <li class="tree-node">
+                                    <div class="tree-item">
+                                        <span class="tree-toggle" style="visibility: hidden;"></span>
+                                        <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><rect x="2" y="8" width="2" height="5" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><rect x="6" y="5" width="2" height="8" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><rect x="10" y="3" width="2" height="10" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><line x1="2" y1="13" x2="14" y2="13" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg></span>
+                                        <span>Isıtma Raporu</span>
+                                    </div>
+                                </li>
+                                <li class="tree-node">
+                                    <div class="tree-item">
+                                        <span class="tree-toggle" style="visibility: hidden;"></span>
+                                        <span class="tree-item-icon"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><rect x="3" y="2" width="8" height="11" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><circle cx="11" cy="4" r="0.8" fill="currentColor"/><line x1="5" y1="5" x2="10" y2="5" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/><line x1="5" y1="7" x2="10" y2="7" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/><line x1="5" y1="9" x2="10" y2="9" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg></span>
+                                        <span>Soğutma Raporu</span>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+
+        <!-- CENTER WORKSPACE -->
+        <div class="workspace">
+            <div class="doc-tabs">
+                <div class="doc-tab active" data-doc="mahaller">
+                    <span><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><rect x="3" y="2" width="8" height="11" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><circle cx="11" cy="4" r="0.8" fill="currentColor"/><line x1="5" y1="5" x2="10" y2="5" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/><line x1="5" y1="7" x2="10" y2="7" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/><line x1="5" y1="9" x2="10" y2="9" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/></svg></span>
+                    <span>Mahaller</span>
+                </div>
+                <div class="doc-tab" data-doc="sistemler">
+                    <span><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1" fill="none"/><path d="M8 3v1.5M8 11.5v1.5M3 8H4.5M11.5 8H13" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><circle cx="8" cy="8" r="4.5" stroke="currentColor" stroke-width="1" fill="none" opacity="0.4"/></svg></span>
+                    <span>Sistemler</span>
+                </div>
+                <div class="doc-tab" data-doc="cihazlar">
+                    <span><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor;"><path d="M3 3h10a1 1 0 0 1 1 1v7H2V4a1 1 0 0 1 1-1z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><path d="M1.5 10h13l-0.5 2.5a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1L1.5 10z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><circle cx="8" cy="6.5" r="1" fill="currentColor"/></svg></span>
+                    <span>Cihazlar</span>
+                </div>
+            </div>
+
+            <!-- Document Content -->
+            <div class="doc-content active" data-doc-content="mahaller">
+                <div class="content-header">
+                    <div class="content-title">Mahaller Listesi</div>
+                    <div class="content-toolbar">
+                        <button class="toolbar-btn">+ Mahal Ekle</button>
+                        <button class="toolbar-btn"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor; display: inline; margin-right: 4px;"><rect x="2" y="3" width="12" height="7" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><rect x="4" y="10" width="8" height="3" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><circle cx="5" cy="5" r="0.6" fill="currentColor"/><circle cx="11" cy="5" r="0.6" fill="currentColor"/></svg> Yazdır</button>
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Mahal Adı</th>
+                            <th>Kat</th>
+                            <th>Alan (m²)</th>
+                            <th>Kat Yüksekliği (m)</th>
+                            <th>Ürün Sayısı</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Salon</td>
+                            <td>Zemin Kat</td>
+                            <td>45.5</td>
+                            <td>3.2</td>
+                            <td>2</td>
+                            <td><span class="status-badge"><span class="status-dot"></span>Tamamlandı</span></td>
+                        </tr>
+                        <tr>
+                            <td>Mutfak</td>
+                            <td>Zemin Kat</td>
+                            <td>18.0</td>
+                            <td>3.2</td>
+                            <td>1</td>
+                            <td><span class="status-badge"><span class="status-dot"></span>Tamamlandı</span></td>
+                        </tr>
+                        <tr>
+                            <td>Yatak Odası 1</td>
+                            <td>1. Kat</td>
+                            <td>28.5</td>
+                            <td>3.0</td>
+                            <td>1</td>
+                            <td><span class="status-badge" style="color: #F59E0B;"><span class="status-dot" style="background-color: #F59E0B;"></span>Gözden Geçirilme</span></td>
+                        </tr>
+                        <tr>
+                            <td>Banyo</td>
+                            <td>1. Kat</td>
+                            <td>12.3</td>
+                            <td>2.8</td>
+                            <td>0</td>
+                            <td><span class="status-badge" style="color: #3B82F6;"><span class="status-dot" style="background-color: #3B82F6;"></span>Bekleme</span></td>
+                        </tr>
+                        <tr>
+                            <td>Ofis</td>
+                            <td>2. Kat</td>
+                            <td>35.8</td>
+                            <td>3.1</td>
+                            <td>3</td>
+                            <td><span class="status-badge"><span class="status-dot"></span>Tamamlandı</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="doc-content" data-doc-content="sistemler">
+                <div class="content-header">
+                    <div class="content-title">Sistemler Özeti</div>
+                    <div class="content-toolbar">
+                        <button class="toolbar-btn">+ Sistem Ekle</button>
+                        <button class="toolbar-btn"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor; display: inline; margin-right: 4px;"><rect x="2" y="3" width="12" height="7" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><rect x="4" y="10" width="8" height="3" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><circle cx="5" cy="5" r="0.6" fill="currentColor"/><circle cx="11" cy="5" r="0.6" fill="currentColor"/></svg> Yazdır</button>
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Sistem Adı</th>
+                            <th>Tip</th>
+                            <th>Kapasitesi (kW)</th>
+                            <th>Debi (m³/h)</th>
+                            <th>Kullanılan Mahallar</th>
+                            <th>Verimlilik (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Isıtma Sistemi</td>
+                            <td>Caldaia (Kazan)</td>
+                            <td>85.5</td>
+                            <td>4200</td>
+                            <td>5</td>
+                            <td>92</td>
+                        </tr>
+                        <tr>
+                            <td>Soğutma Sistemi</td>
+                            <td>Split Klima</td>
+                            <td>72.0</td>
+                            <td>3600</td>
+                            <td>3</td>
+                            <td>95</td>
+                        </tr>
+                        <tr>
+                            <td>Havalandırma</td>
+                            <td>Merkezi Ünite</td>
+                            <td>3.5</td>
+                            <td>5500</td>
+                            <td>8</td>
+                            <td>85</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="doc-content" data-doc-content="cihazlar">
+                <div class="content-header">
+                    <div class="content-title">Cihazlar Envanteri</div>
+                    <div class="content-toolbar">
+                        <button class="toolbar-btn">+ Cihaz Ekle</button>
+                        <button class="toolbar-btn"><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor; display: inline; margin-right: 4px;"><rect x="2" y="3" width="12" height="7" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><rect x="4" y="10" width="8" height="3" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><circle cx="5" cy="5" r="0.6" fill="currentColor"/><circle cx="11" cy="5" r="0.6" fill="currentColor"/></svg> Yazdır</button>
+                    </div>
+                </div>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Cihaz Adı</th>
+                            <th>Model</th>
+                            <th>Sistem</th>
+                            <th>Konum</th>
+                            <th>Kapasite</th>
+                            <th>Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Kazan Bosch</td>
+                            <td>Condens 3000W</td>
+                            <td>Isıtma</td>
+                            <td>Bodrumkatı Teknik Odası</td>
+                            <td>85.5 kW</td>
+                            <td><span class="status-badge"><span class="status-dot"></span>Aktif</span></td>
+                        </tr>
+                        <tr>
+                            <td>Split Indoor 1</td>
+                            <td>Daikin FTXM50M</td>
+                            <td>Soğutma</td>
+                            <td>Salon</td>
+                            <td>42.0 kW</td>
+                            <td><span class="status-badge"><span class="status-dot"></span>Aktif</span></td>
+                        </tr>
+                        <tr>
+                            <td>Split Indoor 2</td>
+                            <td>Daikin FTXM35M</td>
+                            <td>Soğutma</td>
+                            <td>Yatak Odası 1</td>
+                            <td>30.0 kW</td>
+                            <td><span class="status-badge"><span class="status-dot"></span>Aktif</span></td>
+                        </tr>
+                        <tr>
+                            <td>Havalandırma Ünitesi</td>
+                            <td>Swegon Gold 4000</td>
+                            <td>Havalandırma</td>
+                            <td>Çatı Alanı</td>
+                            <td>5500 m³/h</td>
+                            <td><span class="status-badge"><span class="status-dot"></span>Aktif</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- RIGHT SIDEBAR: PANEL CARDS -->
+        <aside class="right-panel">
+            <div class="panel-title">Hesap Özeti</div>
+            <div class="panel-cards">
+                <!-- Card 1: Hesap Parametreleri -->
+                <div class="panel-card">
+                    <div class="panel-card-header">
+                        <span>Hesap Parametreleri</span>
+                        <span class="panel-card-toggle">▼</span>
+                    </div>
+                    <div class="panel-card-content open">
+                        <div class="panel-item">
+                            <span class="panel-item-label">Birim Sistemi:</span>
+                            <span class="panel-item-value">SI</span>
+                        </div>
+                        <div class="panel-item">
+                            <span class="panel-item-label">Standart:</span>
+                            <span class="panel-item-value">EN 12831</span>
+                        </div>
+                        <div class="panel-item">
+                            <span class="panel-item-label">Dış Sıcaklık:</span>
+                            <span class="panel-item-value">−12°C</span>
+                        </div>
+                        <div class="panel-item">
+                            <span class="panel-item-label">İç Sıcaklık:</span>
+                            <span class="panel-item-value">+21°C</span>
+                        </div>
+                        <div class="panel-item">
+                            <span class="panel-item-label">Nem Oranı:</span>
+                            <span class="panel-item-value">45%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2: Isıtma Yükü Sonuçları -->
+                <div class="panel-card">
+                    <div class="panel-card-header">
+                        <span>Isıtma Yükü</span>
+                        <span class="panel-card-toggle">▼</span>
+                    </div>
+                    <div class="panel-card-content open">
+                        <div class="panel-item">
+                            <span class="panel-item-label">Toplam Yük:</span>
+                            <span class="panel-item-value">85.5 kW</span>
+                        </div>
+                        <div class="panel-item">
+                            <span class="panel-item-label">Birim Yük:</span>
+                            <span class="panel-item-value">85 W/m²</span>
+                        </div>
+                        <div class="panel-item">
+                            <span class="panel-item-label">Yoğunlaştırma:</span>
+                            <span class="panel-item-value">Evet</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 3: Soğutma Yükü Sonuçları -->
+                <div class="panel-card">
+                    <div class="panel-card-header">
+                        <span>Soğutma Yükü</span>
+                        <span class="panel-card-toggle">▼</span>
+                    </div>
+                    <div class="panel-card-content open">
+                        <div class="panel-item">
+                            <span class="panel-item-label">Toplam Yük:</span>
+                            <span class="panel-item-value">72.0 kW</span>
+                        </div>
+                        <div class="panel-item">
+                            <span class="panel-item-label">Sensible:</span>
+                            <span class="panel-item-value">56.3 kW</span>
+                        </div>
+                        <div class="panel-item">
+                            <span class="panel-item-label">Latent:</span>
+                            <span class="panel-item-value">15.7 kW</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 4: Uyarılar -->
+                <div class="panel-card">
+                    <div class="panel-card-header">
+                        <span>Uyarılar</span>
+                        <span class="panel-card-toggle">▼</span>
+                    </div>
+                    <div class="panel-card-content open">
+                        <div class="panel-alert">
+                            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: currentColor; display: inline; margin-right: 6px; vertical-align: middle;"><path d="M8 2l6 11H2z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><line x1="8" y1="6" x2="8" y2="9" stroke="currentColor" stroke-width="1" stroke-linecap="round"/><circle cx="8" cy="11.5" r="0.6" fill="currentColor"/></svg> Yatak Odası 1 Banyo: Hesap tamamlanmadı. Gözden geçirilmesi gerekiyor.
+                        </div>
+                        <div class="panel-alert" style="background-color: rgba(34, 197, 94, 0.1); border-left-color: #22c55e; color: #86efac;">
+                            <svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14" style="color: #22c55e; display: inline; margin-right: 6px; vertical-align: middle;"><path d="M3 9l3 3 7-8" stroke="currentColor" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg> Isıtma ve Soğutma hesaplamaları tamamlandı.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- FOOTER / STATUS BAR -->
+    <footer>
+        <div class="status-badge">
+            <span class="status-dot"></span>
+            Hazır — Proje: Örnek Proje
+        </div>
+        <div class="status-center">
+            <span><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="12" height="12" style="color: currentColor; display: inline; margin-right: 4px; vertical-align: middle;"><path d="M8 2c2 0 4 2 4 4 0 3-4 8-4 8s-4-5-4-8c0-2 2-4 4-4z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><circle cx="8" cy="6" r="1.5" fill="currentColor" opacity="0.6"/></svg> Koordinat: (45.5 m, 18.0 m)</span>
+            <span><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="12" height="12" style="color: currentColor; display: inline; margin-right: 4px; vertical-align: middle;"><circle cx="8" cy="8" r="4" stroke="currentColor" stroke-width="1" fill="none"/><line x1="12" y1="12" x2="14" y2="14" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg> Yakınlık: 100%</span>
+            <span><svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="12" height="12" style="color: currentColor; display: inline; margin-right: 4px; vertical-align: middle;"><path d="M8 2l6 10H2z" stroke="currentColor" stroke-width="1" fill="none" stroke-linejoin="round"/><line x1="8" y1="6" x2="8" y2="9" stroke="currentColor" stroke-width="0.8" stroke-linecap="round"/><circle cx="8" cy="10.5" r="0.5" fill="currentColor"/></svg> Ölçek: 1:50</span>
+        </div>
+        <div class="status-badge">
+            Birim: SI (m, kW, m³/h)
+        </div>
+    </footer>
+
+    <script>
+        // Ribbon Tab Switching
+        document.querySelectorAll('.ribbon-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active from all tabs and content
+                document.querySelectorAll('.ribbon-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.ribbon-content').forEach(c => c.classList.remove('active'));
+
+                // Add active to clicked tab and corresponding content
+                this.classList.add('active');
+                const tabName = this.getAttribute('data-tab');
+                document.querySelector(`.ribbon-content[data-tab-content="${tabName}"]`).classList.add('active');
+            });
+        });
+
+        // Document Tab Switching
+        document.querySelectorAll('.doc-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Remove active from all tabs and content
+                document.querySelectorAll('.doc-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.doc-content').forEach(c => c.classList.remove('active'));
+
+                // Add active to clicked tab and corresponding content
+                this.classList.add('active');
+                const docName = this.getAttribute('data-doc');
+                document.querySelector(`.doc-content[data-doc-content="${docName}"]`).classList.add('active');
+            });
+        });
+
+        // Tree Node Toggle
+        document.querySelectorAll('.tree-item').forEach(item => {
+            const toggle = item.querySelector('.tree-toggle');
+            if (toggle && toggle.style.visibility !== 'hidden') {
+                toggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const children = item.nextElementSibling;
+                    if (children && children.classList.contains('tree-children')) {
+                        children.classList.toggle('open');
+                        toggle.classList.toggle('collapsed');
+                    }
+                });
+            }
+
+            // Tree item selection
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.tree-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Panel Card Toggle
+        document.querySelectorAll('.panel-card-header').forEach(header => {
+            header.addEventListener('click', function() {
+                const content = this.nextElementSibling;
+                const toggle = this.querySelector('.panel-card-toggle');
+                if (content && content.classList.contains('panel-card-content')) {
+                    content.classList.toggle('open');
+                    toggle.classList.toggle('collapsed');
+                }
+            });
+        });
+
+        // Table Row Hover (already in CSS, but can add interactions here if needed)
+        document.querySelectorAll('.data-table tbody tr').forEach(row => {
+            row.addEventListener('click', function() {
+                document.querySelectorAll('.data-table tbody tr').forEach(r => r.style.backgroundColor = '');
+                this.style.backgroundColor = 'rgba(38, 99, 235, 0.2)';
+            });
+        });
+    </script>
+</body>
+</html>

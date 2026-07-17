@@ -48,7 +48,14 @@ Görev: <tek, net iş>
 Standart/referans: <VDI 2078 / EN 12831 / ASHRAE ...>
 Beklenen çıktı: <kod / hesap tablosu / rapor + birimler>
 Kısıt: Sadece bu görevi yap, kapsamı genişletme. Varsayımlarını belirt.
+      SADECE görevde belirtilen dosyalara dokun — saglik-kontrol.js, TASK_QUEUE.json,
+      tools/motor-test.js, tools/golden-test.js gibi PAYLAŞILAN altyapı dosyalarını
+      DEĞİŞTİRME (bunlar "iyileştirme" gerektirse bile ayrı bir görev olarak verilir).
 ```
+
+**Doğrulama adımına ek:** Worker raporunu kabul etmeden önce SADECE görevde belirtilen
+dosyaların değiştiğini teyit et — paylaşılan altyapı dosyalarında beklenmeyen değişiklik
+varsa (bkz. GELISTIRICI_NOTLARI.md'deki 2026-07-17 olayı) geri al ve worker'ı uyar.
 
 ## Standart referans kütüphanesi
 
@@ -56,6 +63,24 @@ Kısıt: Sadece bu görevi yap, kapsamı genişletme. Varsayımlarını belirt.
 - **Isı kazancı / soğutma yükü:** VDI 2078, ASHRAE Handbook — Fundamentals
 - **Konfor / iç hava:** VDI 6020, EN 16798
 - **Kanal/boru boyutlandırma & basınç kaybı:** ASHRAE Duct Design, Darcy-Weisbach
+
+## codebase-memory-mcp (kod-yapısı arama aracı — kuruldu)
+
+Kullanıcının bilgisayarında `codebase-memory-mcp 0.9.0` kuruldu
+(`C:\Users\gkhns\AppData\Local\Programs\codebase-memory-mcp\codebase-memory-mcp.exe`).
+Bu, kod tabanını (fonksiyon/çağrı/route grafiği) indeksleyip tek sorguyla
+"bu fonksiyonu kim çağırıyor", "bu değişiklik neyi etkiler" gibi soruları
+grep/read döngüsü yerine çok daha az token'la cevaplayan bir MCP sunucusu.
+
+**Kullanım notu (önemli):** Bu araç kullanıcının kendi bilgisayarında çalışan
+Claude Code / Claude Desktop MCP istemcisine bağlanır. Cowork oturumları
+(bu proje üzerinde çalışan sandbox tabanlı oturumlar) ayrı bir ortamda
+çalıştığı için bu tool'ları doğrudan GÖREMEYEBİLİR — eğer bir oturumda
+`index_repository`, `search_graph`, `trace_call_path` vb. tool'lar mevcutsa
+(ToolSearch ile kontrol et) KULLAN; yoksa eskisi gibi Grep/Read'e devam et.
+Eğer mevcutsa: worker'a delege etmeden önce ilgili sembolleri/çağrı
+zincirlerini bu araçla bul, delege prompt'una ekle — token tasarrufu sağlar.
+İlk kullanımdan önce `index_repository` ile proje kök dizinini indeksle.
 
 ## Proje yapısı (referans — şimdilik dokunulmuyor)
 
