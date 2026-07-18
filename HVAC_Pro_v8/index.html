@@ -13,8 +13,8 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
-            background-color: #12161E;
-            color: #e2e8f0;
+            background-color: #f8f9fb;
+            color: #1a1f28;
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -23,8 +23,8 @@
 
         /* ===== HEADER / LOGO + RIBBON ===== */
         header {
-            background: #1a1f28;
-            border-bottom: 1px solid #2d3139;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
             box-shadow: none;
             padding: 0;
             display: flex;
@@ -35,8 +35,8 @@
             display: flex;
             align-items: center;
             padding: 8px 16px;
-            border-bottom: 1px solid #2d3139;
-            background: #1a1f28;
+            border-bottom: 1px solid #e2e8f0;
+            background: #ffffff;
         }
 
         .logo {
@@ -53,8 +53,8 @@
         .ribbon-container {
             display: flex;
             padding: 0;
-            background: #1a1f28;
-            border-bottom: 1px solid #2d3139;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
             overflow-x: auto;
         }
 
@@ -69,7 +69,7 @@
             cursor: pointer;
             border: none;
             background: transparent;
-            color: #cbd5e1;
+            color: #475569;
             font-size: 13px;
             font-weight: 500;
             transition: all 0.2s ease;
@@ -79,20 +79,20 @@
 
         .ribbon-tab:hover {
             background-color: rgba(59, 130, 246, 0.08);
-            color: #e2e8f0;
+            color: #1a1f28;
         }
 
         .ribbon-tab.active {
             border-bottom-color: #3B82F6;
             background-color: rgba(59, 130, 246, 0.05);
-            color: #e2e8f0;
+            color: #1a1f28;
         }
 
         .ribbon-content {
             display: none;
             padding: 12px 16px;
-            background: #1a1f28;
-            border-top: 1px solid #2d3139;
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
             box-shadow: none;
         }
 
@@ -111,7 +111,7 @@
 
         .ribbon-group-label {
             font-size: 11px;
-            color: #94a3b8;
+            color: #64748b;
             text-transform: uppercase;
             font-weight: 600;
             letter-spacing: 0.5px;
@@ -129,12 +129,12 @@
             justify-content: center;
             width: 48px;
             height: 48px;
-            background: #1E232E;
-            border: 1px solid #2d3139;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 4px;
             cursor: pointer;
             transition: all 0.2s ease;
-            color: #cbd5e1;
+            color: #475569;
             font-size: 20px;
             font-weight: bold;
         }
@@ -142,7 +142,7 @@
         .ribbon-btn:hover {
             background: #252b36;
             border-color: #3B82F6;
-            color: #e2e8f0;
+            color: #1a1f28;
             box-shadow: none;
             transform: none;
         }
@@ -157,8 +157,8 @@
         /* ===== SIDEBAR (PROJECT TREE) ===== */
         .sidebar {
             width: 280px;
-            background: #1E232E;
-            border-right: 1px solid #2d3139;
+            background: #ffffff;
+            border-right: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -169,10 +169,10 @@
             padding: 12px 16px;
             font-size: 12px;
             font-weight: 700;
-            color: #e2e8f0;
+            color: #1a1f28;
             text-transform: uppercase;
-            border-bottom: 1px solid #2d3139;
-            background: #1a1f28;
+            border-bottom: 1px solid #e2e8f0;
+            background: #ffffff;
             letter-spacing: 0.5px;
         }
 
@@ -194,7 +194,7 @@
             cursor: pointer;
             user-select: none;
             font-size: 13px;
-            color: #cbd5e1;
+            color: #475569;
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
             margin: 1px 4px;
@@ -203,13 +203,13 @@
 
         .tree-item:hover {
             background-color: rgba(59, 130, 246, 0.08);
-            color: #e2e8f0;
+            color: #1a1f28;
             border-left-color: #3B82F6;
         }
 
         .tree-item.active {
             background-color: rgba(59, 130, 246, 0.12);
-            color: #e2e8f0;
+            color: #1a1f28;
             border-left-color: #3B82F6;
             font-weight: 600;
         }
@@ -232,15 +232,15 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            background-color: #12161E;
-            border-right: 1px solid #2d3139;
+            background-color: #f8f9fb;
+            border-right: 1px solid #e2e8f0;
             overflow: hidden;
         }
 
         .doc-tabs {
             display: flex;
-            background: #1a1f28;
-            border-bottom: 1px solid #2d3139;
+            background: #ffffff;
+            border-bottom: 1px solid #e2e8f0;
             padding: 0;
             gap: 2px;
             padding-left: 4px;
@@ -256,7 +256,7 @@
             border-bottom: 2px solid transparent;
             border-radius: 0;
             cursor: pointer;
-            color: #94a3b8;
+            color: #64748b;
             font-size: 12px;
             transition: all 0.2s ease;
             white-space: nowrap;
@@ -267,12 +267,12 @@
 
         .doc-tab:hover {
             background: rgba(59, 130, 246, 0.08);
-            color: #cbd5e1;
+            color: #475569;
         }
 
         .doc-tab.active {
             background: rgba(59, 130, 246, 0.1);
-            color: #e2e8f0;
+            color: #1a1f28;
             border-bottom-color: #3B82F6;
             box-shadow: none;
         }
@@ -295,13 +295,13 @@
             align-items: center;
             margin-bottom: 16px;
             padding-bottom: 12px;
-            border-bottom: 1px solid #2d3139;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .content-title {
             font-size: 16px;
             font-weight: 700;
-            color: #e2e8f0;
+            color: #1a1f28;
         }
 
         .content-toolbar {
@@ -311,11 +311,11 @@
 
         .toolbar-btn {
             padding: 6px 12px;
-            background: #1E232E;
-            border: 1px solid #2d3139;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
             border-radius: 4px;
             cursor: pointer;
-            color: #cbd5e1;
+            color: #475569;
             font-size: 12px;
             transition: all 0.2s ease;
         }
@@ -323,7 +323,7 @@
         .toolbar-btn:hover {
             background: #252b36;
             border-color: #3B82F6;
-            color: #e2e8f0;
+            color: #1a1f28;
         }
 
         /* Data Table */
@@ -331,14 +331,14 @@
             width: 100%;
             border-collapse: collapse;
             background-color: transparent;
-            border: 1px solid #2d3139;
+            border: 1px solid #e2e8f0;
             border-radius: 4px;
             overflow: hidden;
         }
 
         .data-table thead {
-            background: #171b24;
-            border-bottom: 1px solid #2d3139;
+            background: #f8f9fb;
+            border-bottom: 1px solid #e2e8f0;
         }
 
         .data-table th {
@@ -346,10 +346,10 @@
             text-align: left;
             font-size: 12px;
             font-weight: 700;
-            color: #94a3b8;
+            color: #64748b;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-right: 1px solid #2d3139;
+            border-right: 1px solid #e2e8f0;
         }
 
         .data-table th:last-child {
@@ -358,9 +358,9 @@
 
         .data-table td {
             padding: 8px 12px;
-            border-bottom: 1px solid rgba(45, 49, 57, 0.6);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
             font-size: 13px;
-            color: #cbd5e1;
+            color: #475569;
         }
 
         .data-table tbody tr:hover {
@@ -370,8 +370,8 @@
         /* ===== RIGHT PANEL ===== */
         .right-panel {
             width: 320px;
-            background: #1E232E;
-            border-left: 1px solid #2d3139;
+            background: #ffffff;
+            border-left: 1px solid #e2e8f0;
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -382,10 +382,10 @@
             padding: 12px 16px;
             font-size: 12px;
             font-weight: 700;
-            color: #e2e8f0;
+            color: #1a1f28;
             text-transform: uppercase;
-            border-bottom: 1px solid #2d3139;
-            background: #1a1f28;
+            border-bottom: 1px solid #e2e8f0;
+            background: #ffffff;
             letter-spacing: 0.5px;
         }
 
@@ -397,7 +397,7 @@
 
         .panel-card {
             background: transparent;
-            border: 1px solid #2d3139;
+            border: 1px solid #e2e8f0;
             border-radius: 4px;
             margin-bottom: 8px;
             overflow: hidden;
@@ -419,8 +419,8 @@
             align-items: center;
             font-size: 12px;
             font-weight: 700;
-            color: #e2e8f0;
-            border-bottom: 1px solid #2d3139;
+            color: #1a1f28;
+            border-bottom: 1px solid #e2e8f0;
             user-select: none;
             transition: all 0.2s ease;
         }
@@ -448,7 +448,7 @@
             padding: 12px;
             display: none;
             background: transparent;
-            border-top: 1px solid #2d3139;
+            border-top: 1px solid #e2e8f0;
         }
 
         .panel-card-content.open {
@@ -469,7 +469,7 @@
         }
 
         .panel-item-label {
-            color: #94a3b8;
+            color: #64748b;
             font-weight: 500;
         }
 
@@ -481,14 +481,14 @@
 
         /* Footer */
         footer {
-            background: #1a1f28;
-            border-top: 1px solid #2d3139;
+            background: #ffffff;
+            border-top: 1px solid #e2e8f0;
             padding: 8px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 11px;
-            color: #94a3b8;
+            color: #64748b;
             gap: 16px;
             box-shadow: none;
         }
@@ -559,9 +559,9 @@
         }
 
         .modal-content {
-            background-color: #1a1f28;
+            background-color: #ffffff;
             padding: 20px;
-            border: 1px solid #2d3139;
+            border: 1px solid #e2e8f0;
             border-radius: 8px;
             max-width: 400px;
             width: 90%;
@@ -572,7 +572,7 @@
             font-size: 16px;
             font-weight: 700;
             margin-bottom: 16px;
-            color: #e2e8f0;
+            color: #1a1f28;
         }
 
         .modal-field {
@@ -584,16 +584,16 @@
             font-size: 12px;
             font-weight: 600;
             margin-bottom: 4px;
-            color: #cbd5e1;
+            color: #475569;
         }
 
         .modal-input {
             width: 100%;
             padding: 8px;
             background: #252b36;
-            border: 1px solid #2d3139;
+            border: 1px solid #e2e8f0;
             border-radius: 4px;
-            color: #e2e8f0;
+            color: #1a1f28;
             font-size: 13px;
             box-sizing: border-box;
         }
@@ -607,7 +607,7 @@
         .modal-btn {
             flex: 1;
             padding: 8px;
-            border: 1px solid #2d3139;
+            border: 1px solid #e2e8f0;
             border-radius: 4px;
             cursor: pointer;
             font-size: 12px;
@@ -617,7 +617,7 @@
 
         .modal-btn.cancel {
             background: transparent;
-            color: #cbd5e1;
+            color: #475569;
         }
 
         .modal-btn.cancel:hover {
@@ -641,7 +641,7 @@
             align-items: center;
             justify-content: center;
             height: 100%;
-            color: #94a3b8;
+            color: #64748b;
             font-size: 14px;
         }
     </style>
@@ -666,7 +666,7 @@
 
         <!-- Ribbon Content -->
         <div class="ribbon-content" data-tab-content="home">
-            <div style="padding: 12px; color: #cbd5e1;">GSEM MEP PRO — soldaki sekmelerden bir disiplin modülü seçin (Isıtma/Soğutma, Havalandırma, Sıhhi Tesisat, Yangın Sistemleri).</div>
+            <div style="padding: 12px; color: #475569;">GSEM MEP PRO — soldaki sekmelerden bir disiplin modülü seçin (Isıtma/Soğutma, Havalandırma, Sıhhi Tesisat, Yangın Sistemleri).</div>
         </div>
 
         <div class="ribbon-content active" data-tab-content="heating-cooling">
@@ -679,23 +679,23 @@
         </div>
 
         <div class="ribbon-content" data-tab-content="ventilation">
-            <div style="padding: 12px; color: #cbd5e1;">Yakinda...</div>
+            <div style="padding: 12px; color: #475569; font-size: 12px;">Modül seçmek için aşağıdaki hesap alanını kullanın.</div>
         </div>
 
         <div class="ribbon-content" data-tab-content="plumbing">
-            <div style="padding: 12px; color: #cbd5e1;">Yakinda...</div>
+            <div style="padding: 12px; color: #475569; font-size: 12px;">Modül seçmek için aşağıdaki hesap alanını kullanın.</div>
         </div>
 
         <div class="ribbon-content" data-tab-content="fire">
-            <div style="padding: 12px; color: #cbd5e1;">Yakinda...</div>
+            <div style="padding: 12px; color: #475569; font-size: 12px;">Modül seçmek için aşağıdaki hesap alanını kullanın.</div>
         </div>
 
         <div class="ribbon-content" data-tab-content="reports">
-            <div style="padding: 12px; color: #cbd5e1;">Yakinda...</div>
+            <div style="padding: 12px; color: #475569;">Yakinda...</div>
         </div>
 
         <div class="ribbon-content" data-tab-content="settings">
-            <div style="padding: 12px; color: #cbd5e1;">Yakinda...</div>
+            <div style="padding: 12px; color: #475569;">Yakinda...</div>
         </div>
     </header>
 
@@ -792,17 +792,21 @@
                         <span class="panel-card-toggle">▼</span>
                     </div>
                     <div class="panel-card-content open" id="summary-info">
-                        <div style="font-size: 11px; color: #cbd5e1;">Mahaller ekleyerek baslayın.</div>
+                        <div style="font-size: 11px; color: #475569;">Mahaller ekleyerek baslayın.</div>
                     </div>
                 </div>
             </div>
         </aside>
     </div>
 
-    <!-- MODULE PLACEHOLDER (Isıtma/Soğutma dışındaki sekmeler için) -->
-    <div id="modulePlaceholder" style="display:none; padding:40px; color:#94a3b8; text-align:center;">
-        <div style="font-size:14px;">Bu disiplin modülü (<span id="modulePlaceholderName"></span>) henüz eklenmedi. Şu an aktif modül: <strong>Isıtma/Soğutma</strong>.</div>
+    <!-- MODULE CONTAINERS (Isıtma/Soğutma dışındaki sekmeler için) -->
+    <div id="modulePlaceholder" style="display:none; padding:40px; color:#64748b; text-align:center;">
+        <div style="font-size:14px;">Modul yükleniyor...</div>
     </div>
+
+    <div id="ek-hesaplar-ventilation" style="display:none; padding:20px; overflow-y: auto; flex: 1; background-color: #f8f9fb;"></div>
+    <div id="ek-hesaplar-plumbing" style="display:none; padding:20px; overflow-y: auto; flex: 1; background-color: #f8f9fb;"></div>
+    <div id="ek-hesaplar-fire" style="display:none; padding:20px; overflow-y: auto; flex: 1; background-color: #f8f9fb;"></div>
 
     <!-- FOOTER -->
     <footer>
@@ -859,25 +863,73 @@
 
     <!-- JS SCRIPTS -->
     <script src="js/calc-engine.js?v=1"></script>
+    <script src="js/ek-hesaplar-config.js?v=1"></script>
+    <script src="js/ek-hesaplar-ui.js?v=1"></script>
     <script src="js/gsem-app.js?v=1"></script>
 
     <script>
         // Ribbon Tab Switching — aynı zamanda hangi disiplin MODÜLÜ gösteriliyor onu da kontrol eder.
-        // Şu an tek çalışan modül: "heating-cooling" (Isıtma/Soğutma — mahal/ısı yükü hesabı).
-        // Diğer sekmeler (ventilation/plumbing/fire/reports/settings/home) placeholder gösterir.
+        // Şu an çalışan modüller: "heating-cooling" (Isıtma/Soğutma — mahal/ısı yükü hesabı) +
+        // "ventilation", "plumbing", "fire" (ek-hesaplar UI'ı ile).
+        // Diğer sekmeler (reports/settings/home) placeholder gösterir.
         const moduleNames = {
             home: 'Ana Sayfa', 'heating-cooling': 'Isıtma/Soğutma', ventilation: 'Havalandırma',
             plumbing: 'Sıhhi Tesisat', fire: 'Yangın Sistemleri', reports: 'Raporlar', settings: 'Ayarlar'
         };
+
+        // Render state: hangi sekmeler render() çağrısı ile başlatıldı?
+        const renderedModules = {};
+
         function activateModule(tabName) {
             const mainContainer = document.getElementById('mainContainer');
             const placeholder = document.getElementById('modulePlaceholder');
+            const ventilationContainer = document.getElementById('ek-hesaplar-ventilation');
+            const plumbingContainer = document.getElementById('ek-hesaplar-plumbing');
+            const fireContainer = document.getElementById('ek-hesaplar-fire');
+
+            // Tüm containers'ı gizle
+            if (mainContainer) mainContainer.style.display = 'none';
+            if (placeholder) placeholder.style.display = 'none';
+            if (ventilationContainer) ventilationContainer.style.display = 'none';
+            if (plumbingContainer) plumbingContainer.style.display = 'none';
+            if (fireContainer) fireContainer.style.display = 'none';
+
             if (tabName === 'heating-cooling') {
-                mainContainer.style.display = '';
-                placeholder.style.display = 'none';
+                // Ana mahal tablosu
+                if (mainContainer) mainContainer.style.display = '';
+            } else if (tabName === 'ventilation') {
+                // Havalandırma modülleri (ek-hesaplar UI)
+                if (ventilationContainer) {
+                    ventilationContainer.style.display = '';
+                    // İlk kez render() çağrısı?
+                    if (!renderedModules[tabName] && window.EkHesaplarUI && window.EkHesaplarUI.render) {
+                        window.EkHesaplarUI.render('ek-hesaplar-ventilation', 'ventilation');
+                        renderedModules[tabName] = true;
+                    }
+                }
+            } else if (tabName === 'plumbing') {
+                // Sıhhi tesisat modülleri (ek-hesaplar UI)
+                if (plumbingContainer) {
+                    plumbingContainer.style.display = '';
+                    // İlk kez render() çağrısı?
+                    if (!renderedModules[tabName] && window.EkHesaplarUI && window.EkHesaplarUI.render) {
+                        window.EkHesaplarUI.render('ek-hesaplar-plumbing', 'plumbing');
+                        renderedModules[tabName] = true;
+                    }
+                }
+            } else if (tabName === 'fire') {
+                // Yangın sistemleri modülleri (ek-hesaplar UI)
+                if (fireContainer) {
+                    fireContainer.style.display = '';
+                    // İlk kez render() çağrısı?
+                    if (!renderedModules[tabName] && window.EkHesaplarUI && window.EkHesaplarUI.render) {
+                        window.EkHesaplarUI.render('ek-hesaplar-fire', 'fire');
+                        renderedModules[tabName] = true;
+                    }
+                }
             } else {
-                mainContainer.style.display = 'none';
-                placeholder.style.display = '';
+                // reports, settings, home gibi diğer sekmeler
+                if (placeholder) placeholder.style.display = '';
                 document.getElementById('modulePlaceholderName').textContent = moduleNames[tabName] || tabName;
             }
         }

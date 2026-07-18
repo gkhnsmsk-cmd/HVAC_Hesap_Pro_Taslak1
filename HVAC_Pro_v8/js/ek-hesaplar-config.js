@@ -8,6 +8,7 @@
   const modules = [
     {
       id: 'uvalue',
+      category: 'heating-cooling',
       nameTr: 'U-Değeri Hesabı',
       windowName: 'UValue',
       mainFunc: 'uValue',
@@ -20,6 +21,7 @@
     },
     {
       id: 'pipe-hydraulics',
+      category: 'plumbing',
       nameTr: 'Boru Basınç Kaybı',
       windowName: 'PipeHydraulics',
       mainFunc: 'pressureDrop',
@@ -32,6 +34,7 @@
     },
     {
       id: 'sanitary-drainage',
+      category: 'plumbing',
       nameTr: 'Kanalizasyon Debisi',
       windowName: 'SanitaryDrainage',
       mainFunc: 'wasteFlow',
@@ -43,6 +46,7 @@
     },
     {
       id: 'expansion-tank',
+      category: 'heating-cooling',
       nameTr: 'Genleşme Tankı Hacmi',
       windowName: 'ExpansionTank',
       mainFunc: 'nominalVolume',
@@ -56,6 +60,7 @@
     },
     {
       id: 'rainwater-drainage',
+      category: 'plumbing',
       nameTr: 'Yağmur Suyu Drenajı',
       windowName: 'RainwaterDrainage',
       mainFunc: 'designFlow',
@@ -67,6 +72,7 @@
     },
     {
       id: 'shelter-ventilation',
+      category: 'ventilation',
       nameTr: 'Barınak Taze Hava Hesabı',
       windowName: 'ShelterVentilation',
       mainFunc: 'freshAirRequired',
@@ -78,6 +84,7 @@
     },
     {
       id: 'carpark-ventilation',
+      category: 'ventilation',
       nameTr: 'Otopark Havalandırması',
       windowName: 'CarparkVentilation',
       mainFunc: 'normalVentFlow',
@@ -89,6 +96,7 @@
     },
     {
       id: 'smoke-extract',
+      category: 'ventilation',
       nameTr: 'Duman Tahliyesi',
       windowName: 'SmokeExtract',
       mainFunc: 'achExtract',
@@ -100,6 +108,7 @@
     },
     {
       id: 'fire-prelim',
+      category: 'fire',
       nameTr: 'Yangın Sistemi (Ön Hesap)',
       windowName: 'FirePrelim',
       mainFunc: 'sprinklerDemand',
@@ -111,6 +120,7 @@
     },
     {
       id: 'pump-npsh',
+      category: 'plumbing',
       nameTr: 'Pompa NPSH Kontrolü',
       windowName: 'PumpNPSH',
       mainFunc: 'npshAvailable',
@@ -123,6 +133,7 @@
     },
     {
       id: 'heat-recovery',
+      category: 'ventilation',
       nameTr: 'Isı Geri Kazanımı',
       windowName: 'HeatRecovery',
       mainFunc: 'recoveredHeat',
@@ -136,6 +147,7 @@
     },
     {
       id: 'condensate-drain',
+      category: 'ventilation',
       nameTr: 'Yoğunlaşma Drenajı',
       windowName: 'CondensateDrain',
       mainFunc: 'condensateFlow',
@@ -148,6 +160,7 @@
     },
     {
       id: 'cable-sizing-prelim',
+      category: 'other',
       nameTr: 'Kablo Tespit (Ön Tasarım)',
       windowName: 'CableSizingPrelim',
       mainFunc: 'loadCurrent',
@@ -160,6 +173,7 @@
     },
     {
       id: 'condensation-check',
+      category: 'heating-cooling',
       nameTr: 'Yoğunlaşma Kontrolü',
       windowName: 'CondensationCheck',
       mainFunc: 'vaporPressureProfile',
@@ -172,6 +186,7 @@
     },
     {
       id: 'gas-suppression',
+      category: 'fire',
       nameTr: 'Gaz Söndürme Sistemi',
       windowName: 'GasSuppression',
       mainFunc: 'agentMass',
@@ -184,6 +199,7 @@
     },
     {
       id: 'water-softening',
+      category: 'plumbing',
       nameTr: 'Su Yumuşatma Tesisi',
       windowName: 'WaterSoftening',
       mainFunc: 'resinVolume',
@@ -196,6 +212,7 @@
     },
     {
       id: 'fuel-tank',
+      category: 'heating-cooling',
       nameTr: 'Yakıt Tankı Hacmi',
       windowName: 'FuelTank',
       mainFunc: 'tankVolume',
@@ -208,6 +225,7 @@
     },
     {
       id: 'duct-silencer',
+      category: 'ventilation',
       nameTr: 'Kanal Savcı (Silencer)',
       windowName: 'DuctSilencer',
       mainFunc: 'attenuationRequired',
@@ -220,6 +238,7 @@
     },
     {
       id: 'seismic-hanger',
+      category: 'other',
       nameTr: 'Deprem Kütlesi Taşıyıcısı',
       windowName: 'SeismicHanger',
       mainFunc: 'seismicLoad',
@@ -232,6 +251,7 @@
     },
     {
       id: 'compressed-air',
+      category: 'ventilation',
       nameTr: 'Sıkıştırılmış Hava Talep Tahmini',
       windowName: 'CompressedAir',
       mainFunc: 'airDemand',
@@ -244,6 +264,7 @@
     },
     {
       id: 'medical-gas',
+      category: 'other',
       nameTr: 'Tıbbi Gaz Sistemi',
       windowName: 'MedicalGas',
       mainFunc: 'totalFlow',
@@ -256,6 +277,7 @@
     },
     {
       id: 'co-control-ventilation',
+      category: 'ventilation',
       nameTr: 'CO Kontrolü ile Havalandırma',
       windowName: 'COControlVentilation',
       mainFunc: 'coBasedFlow',
@@ -268,6 +290,7 @@
     },
     {
       id: 'heat-pump-energy',
+      category: 'heating-cooling',
       nameTr: 'Isı Pompası Enerji Tahmini',
       windowName: 'HeatPumpEnergy',
       mainFunc: 'electricityDemand',
@@ -280,6 +303,7 @@
     },
     {
       id: 'noise-level-sum',
+      category: 'other',
       nameTr: 'Sesler Toplamı (dB Toplama)',
       windowName: 'NoiseLevelSum',
       mainFunc: 'sumDecibels',
@@ -292,6 +316,7 @@
     },
     {
       id: 'pipe-thermal-expansion',
+      category: 'plumbing',
       nameTr: 'Boru Isıl Genleşmesi',
       windowName: 'PipeThermalExpansion',
       mainFunc: 'linearExpansion',
@@ -304,6 +329,7 @@
     },
     {
       id: 'water-hammer',
+      category: 'plumbing',
       nameTr: 'Su Çekici (Water Hammer)',
       windowName: 'WaterHammer',
       mainFunc: 'joukowskyPressureRise',
@@ -316,6 +342,7 @@
     },
     {
       id: 'lmtd',
+      category: 'heating-cooling',
       nameTr: 'LMTD (Logaritmik Ortalama Sıcaklık Farkı)',
       windowName: 'LMTD',
       mainFunc: 'lmtd',
@@ -329,6 +356,7 @@
     },
     {
       id: 'affinity-laws',
+      category: 'heating-cooling',
       nameTr: 'Pompa Benzerlik Kanunları',
       windowName: 'AffinityLaws',
       mainFunc: 'scaleBySpeed',
@@ -341,6 +369,7 @@
     },
     {
       id: 'system-compare',
+      category: 'other',
       nameTr: 'Sistem Ekonomik Karşılaştırması',
       windowName: 'SystemCompare',
       mainFunc: 'npv',
@@ -354,6 +383,7 @@
     },
     {
       id: 'water-storage-tank',
+      category: 'plumbing',
       nameTr: 'Su Depolama Tankı Hacmi',
       windowName: 'WaterStorageTank',
       mainFunc: 'calc',
@@ -366,6 +396,7 @@
     },
     {
       id: 'dhw-boiler',
+      category: 'heating-cooling',
       nameTr: 'Sıcak Su Katlı Isıtıcı',
       windowName: 'DhwBoiler',
       mainFunc: 'depolamaHacmi',
@@ -378,6 +409,7 @@
     },
     {
       id: 'pool-evaporation',
+      category: 'ventilation',
       nameTr: 'Yüzme Havuzu Buharlaşması',
       windowName: 'PoolEvaporation',
       mainFunc: 'calc',
@@ -391,6 +423,7 @@
     },
     {
       id: 'elevator-pressurization',
+      category: 'ventilation',
       nameTr: 'Asansör Basınçlandırması',
       windowName: 'ElevatorPressurization',
       mainFunc: 'calc',
@@ -403,6 +436,7 @@
     },
     {
       id: 'sprinkler-k-factor',
+      category: 'fire',
       nameTr: 'Sprinkler K-Faktörü',
       windowName: 'SprinklerKFactor',
       mainFunc: 'debiFromBasinc',
@@ -414,12 +448,180 @@
     },
     {
       id: 'disiplin-sistem-secimi',
+      category: 'other',
       nameTr: 'Disiplin Sistem Seçimi',
       windowName: null,
       mainFunc: null,
       description: 'HVAC sistem disiplinlerine göre uygun sistem seçenekleri',
       params: [
         { name: 'disiplin', label: 'Disiplin (Heating/Cooling/etc)', unit: 'text', type: 'string', default: 'heating' }
+      ]
+    },
+    {
+      id: 'elevator-motor-cooling',
+      category: 'ventilation',
+      nameTr: 'Asansör Motor Soğutması',
+      windowName: 'ElevatorMotorCooling',
+      mainFunc: 'calc',
+      description: 'Asansör makine odasında motor soğutması için gerekli hava debisi',
+      params: [
+        { name: 'motor_kW', label: 'Motor Gücü', unit: 'kW', type: 'number', default: 10, min: 1, max: 50, step: 1 },
+        { name: 'verim_yuzde', label: 'Motor Verimi', unit: '%', type: 'number', default: 90, min: 70, max: 99, step: 1 },
+        { name: 'hedef_temp_artisi_K', label: 'Hedef Sıcaklık Artışı', unit: 'K', type: 'number', default: 10, min: 3, max: 20, step: 1 }
+      ]
+    },
+    {
+      id: 'cooling-tower-sizing',
+      category: 'heating-cooling',
+      nameTr: 'Soğutma Kulesi Kapasitesi',
+      windowName: 'CoolingTowerSizing',
+      mainFunc: 'calc',
+      description: 'Soğutma sisteminin pompa ısısını dikkate alarak kulesi kapasitesi tahmini',
+      params: [
+        { name: 'Q_sogutma_kW', label: 'Soğutma Yükü', unit: 'kW', type: 'number', default: 500, min: 50, max: 5000, step: 50 },
+        { name: 'pompVerimi_yuzde', label: 'Pompa Isı Oranı', unit: '%', type: 'number', default: 3, min: 1, max: 10, step: 0.5 }
+      ]
+    },
+    {
+      id: 'boiler-sizing',
+      category: 'heating-cooling',
+      nameTr: 'Kombi Boyutlandırması',
+      windowName: 'BoilerSizing',
+      mainFunc: 'calc',
+      description: 'Isıtma sisteminin ihtiyacı olan kombi gücünün hesaplanması (emniyet faktörü ile)',
+      params: [
+        { name: 'Q_isitma_yuku_kW', label: 'Isıtma Yükü', unit: 'kW', type: 'number', default: 100, min: 10, max: 1000, step: 10 },
+        { name: 'emniyet_faktoru', label: 'Emniyet Faktörü', unit: 'frak', type: 'number', default: 1.2, min: 1.0, max: 1.5, step: 0.05 }
+      ]
+    },
+    {
+      id: 'staircase-pressurization',
+      category: 'ventilation',
+      nameTr: 'Merdiven Basınçlandırması',
+      windowName: 'StaircasePressurization',
+      mainFunc: 'calc',
+      description: 'Yangın tahliyesinde merdiven şaftının basınçlandırması debisi',
+      params: [
+        { name: 'shaftVolume_m3', label: 'Şaft Hacmi', unit: 'm³', type: 'number', default: 200, min: 50, max: 1000, step: 50 },
+        { name: 'pressurizationTime_min', label: 'Basınçlandırma Süresi', unit: 'dak', type: 'number', default: 5, min: 1, max: 15, step: 1 },
+        { name: 'targetPressure_Pa', label: 'Hedef Basınç', unit: 'Pa', type: 'number', default: 50, min: 10, max: 200, step: 10 }
+      ]
+    },
+    {
+      id: 'kitchen-hood',
+      category: 'ventilation',
+      nameTr: 'Mutfak Davlumbazı (Hood)',
+      windowName: 'KitchenHood',
+      mainFunc: 'calc',
+      description: 'Mutfak davlumbazının gerekli hava debisi hesaplaması',
+      params: [
+        { name: 'alanM2', label: 'Davlumba Alanı', unit: 'm²', type: 'number', default: 5, min: 1, max: 50, step: 1 },
+        { name: 'izgara_eni_m', label: 'İzgara Genişliği', unit: 'm', type: 'number', default: 2, min: 0.5, max: 10, step: 0.1 },
+        { name: 'hava_hizi_ms', label: 'Hava Hızı', unit: 'm/s', type: 'number', default: 1.5, min: 0.5, max: 3.0, step: 0.1 }
+      ]
+    },
+    {
+      id: 'domestic-water-demand',
+      category: 'plumbing',
+      nameTr: 'Evsel Su Talebı ve Hidrofor',
+      windowName: 'DomesticWaterDemand',
+      mainFunc: 'calc',
+      description: 'Günlük su talebinden pik debi ve hidrofor tank hacmi hesaplanması',
+      params: [
+        { name: 'gunluk_ortalama_debi_m3gun', label: 'Günlük Ortalama Su Talebi', unit: 'm³/gün', type: 'number', default: 50, min: 5, max: 500, step: 5 },
+        { name: 'pik_katsayisi', label: 'Pik Debi Katsayısı', unit: 'frak', type: 'number', default: 3, min: 1, max: 5, step: 0.5 },
+        { name: 'calisma_saati', label: 'Pompa Çalışma Saati', unit: 'h/gün', type: 'number', default: 10, min: 4, max: 24, step: 1 }
+      ]
+    },
+    {
+      id: 'fresh-air-load',
+      category: 'ventilation',
+      nameTr: 'Taze Hava Yükü (Sensible + Latent)',
+      windowName: 'FreshAirLoad',
+      mainFunc: 'calc',
+      description: 'Taze havadan kaynaklanan duyulur ve gizli soğutma/ısıtma yükü',
+      params: [
+        { name: 'debi_m3h', label: 'Hava Debisi', unit: 'm³/h', type: 'number', default: 1000, min: 100, max: 20000, step: 100 },
+        { name: 'T_dis_C', label: 'Dış Hava Sıcaklığı', unit: '°C', type: 'number', default: 35, min: -30, max: 50, step: 1 },
+        { name: 'T_ic_C', label: 'İç Hava Sıcaklığı', unit: '°C', type: 'number', default: 24, min: 10, max: 30, step: 1 },
+        { name: 'x_dis_g_kg', label: 'Dış Nem Oranı', unit: 'g/kg', type: 'number', default: 18, min: 0, max: 30, step: 1 }
+      ]
+    },
+    {
+      id: 'fire-pump-sizing',
+      category: 'fire',
+      nameTr: 'Yangın Pompa Boyutlandırması',
+      windowName: 'FirePumpSizing',
+      mainFunc: 'calc',
+      description: 'Sprinkler, hidrant ve dolaptan toplam debi talepleri',
+      params: [
+        { name: 'Q_sprinkler_m3h', label: 'Sprinkler Debisi', unit: 'm³/h', type: 'number', default: 54, min: 10, max: 500, step: 10 },
+        { name: 'Q_hidrant_m3h', label: 'Hidrant Debisi', unit: 'm³/h', type: 'number', default: 30, min: 10, max: 200, step: 10 },
+        { name: 'Q_dolap_m3h', label: 'Dolap Debisi', unit: 'm³/h', type: 'number', default: 10, min: 5, max: 50, step: 5 }
+      ]
+    },
+    {
+      id: 'coil-sizing',
+      category: 'heating-cooling',
+      nameTr: 'Isı Değiştirici Bobin Boyutlandırması',
+      windowName: 'CoilSizing',
+      mainFunc: 'calc',
+      description: 'Isıl bobin (heat/cool coil) tasarımı ve alan hesabı',
+      params: [
+        { name: 'Q_kW', label: 'Isıl Yük', unit: 'kW', type: 'number', default: 100, min: 10, max: 500, step: 10 },
+        { name: 'debi_m3h', label: 'Hava Debisi', unit: 'm³/h', type: 'number', default: 3000, min: 500, max: 20000, step: 100 },
+        { name: 'dT_C', label: 'Sıcaklık Düşüşü', unit: 'K', type: 'number', default: 5, min: 1, max: 15, step: 0.5 }
+      ]
+    },
+    {
+      id: 'room-ventilation-rate',
+      category: 'ventilation',
+      nameTr: 'Oda Havalandırma Hızı (ACH)',
+      windowName: 'RoomVentilationRate',
+      mainFunc: 'calc',
+      description: 'Mekan hacmine ve kullanım türüne göre gerekli hava değişim sayısı',
+      params: [
+        { name: 'volume_m3', label: 'Hacim', unit: 'm³', type: 'number', default: 50, min: 10, max: 1000, step: 10 },
+        { name: 'ach_target', label: 'Hedef ACH', unit: '1/h', type: 'number', default: 6, min: 2, max: 20, step: 1 }
+      ]
+    },
+    {
+      id: 'cogeneration-energy',
+      category: 'heating-cooling',
+      nameTr: 'Kojenerasyon Enerji Tahmini',
+      windowName: 'CogenerationEnergy',
+      mainFunc: 'calc',
+      description: 'Kombineli ısı ve elektrik üretim verimliliği analizi',
+      params: [
+        { name: 'toplam_yakit_kW', label: 'Toplam Yakıt Enerjisi', unit: 'kW', type: 'number', default: 100, min: 10, max: 1000, step: 10 },
+        { name: 'elektrik_verim', label: 'Elektrik Verimi', unit: 'frak', type: 'number', default: 0.3, min: 0.1, max: 0.5, step: 0.05 },
+        { name: 'isil_verim', label: 'Isıl Verimi', unit: 'frak', type: 'number', default: 0.4, min: 0.2, max: 0.6, step: 0.05 }
+      ]
+    },
+    {
+      id: 'power-factor-correction',
+      category: 'other',
+      nameTr: 'Güç Faktörü Düzeltmesi',
+      windowName: 'PowerFactorCorrection',
+      mainFunc: 'calc',
+      description: 'Reaktif güç ve kondansatör kapasitesi hesabı',
+      params: [
+        { name: 'P_kW', label: 'Aktif Güç', unit: 'kW', type: 'number', default: 100, min: 10, max: 1000, step: 10 },
+        { name: 'pf_current', label: 'Mevcut Güç Faktörü', unit: 'frak', type: 'number', default: 0.75, min: 0.3, max: 1.0, step: 0.05 },
+        { name: 'pf_target', label: 'Hedef Güç Faktörü', unit: 'frak', type: 'number', default: 0.95, min: 0.7, max: 1.0, step: 0.05 }
+      ]
+    },
+    {
+      id: 'duct-heat-gain',
+      category: 'ventilation',
+      nameTr: 'Kanal Isı Kazancı/Kaybı',
+      windowName: 'DuctHeatGain',
+      mainFunc: 'calc',
+      description: 'Hava kanallarında dış ortam sıcaklığı nedeniyle isı transfer hesabı',
+      params: [
+        { name: 'debi_m3h', label: 'Hava Debisi', unit: 'm³/h', type: 'number', default: 3000, min: 500, max: 20000, step: 100 },
+        { name: 'T_hava_C', label: 'Kanal İçi Hava Sıcaklığı', unit: '°C', type: 'number', default: 15, min: -10, max: 40, step: 1 },
+        { name: 'T_ortam_C', label: 'Dış Ortam Sıcaklığı', unit: '°C', type: 'number', default: 35, min: -30, max: 50, step: 1 }
       ]
     }
   ];
