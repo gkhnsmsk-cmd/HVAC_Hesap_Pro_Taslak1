@@ -91,6 +91,18 @@
         importExcelBtn.addEventListener('click', () => excelFileInput.click());
         excelFileInput.addEventListener('change', (e) => this.importFromExcel(e));
       }
+
+      // Boş Şablon İndir butonu
+      const downloadTemplateBtn = document.getElementById('btn-download-template');
+      if (downloadTemplateBtn) {
+        downloadTemplateBtn.addEventListener('click', () => this.downloadExcelTemplate());
+      }
+
+      // Mahalleri Excel'e Aktar butonu
+      const exportExcelBtn = document.getElementById('btn-export-excel');
+      if (exportExcelBtn) {
+        exportExcelBtn.addEventListener('click', () => this.exportMahalsToExcel());
+      }
     },
 
     // Modal açma
@@ -476,6 +488,119 @@
       };
 
       reader.readAsArrayBuffer(file);
+    },
+
+    // 39 kolonluk referans başlık sırası (mahal1_mahaller.xlsx ile birebir; importFromExcel'deki
+    // kolon indeksleriyle tam uyumlu — round-trip garantisi için sıra DEĞİŞTİRİLMEMELİ)
+    excelColumnHeaders: [
+      'mahal no', 'mahal adı', 'İç Sıcaklık- Yaz', 'İç Sıcaklık- Kış', 'alan', 'yükseklik',
+      'duvar u değeri', 'pencere u değeri', 'skylight u değeri', 'döşeme u değeri', 'tavan u değeri',
+      'skylight gölgeleme kaysayısı', 'pencere gölgeleme kaysayısı',
+      'kuzey dış duvar alanı', 'güney dış duvar alanı', 'doğu dış duvar alanı', 'batı dış duvar alanı',
+      'kuzeybatı dış duvar alanı', 'kuzeydoğu dış duvar alanı', 'güneydoğu dış duvar alanı', 'güneybatı dış duvar alanı',
+      'kuzey dış pencere alanı', 'güney dış pencere alanı', 'doğu dış pencere alanı', 'batı dış pencere alanı',
+      'kuzeybatı dış pencere alanı', 'kuzeydoğu dış pencere alanı', 'güneydoğu dış pencere alanı', 'güneybatı dış pencere alanı',
+      'döşeme alanı', 'tavan alanı', 'skylight alanı',
+      'oturan kişi', 'ayakta kişi', 'dans eden kişi',
+      'aydınlatma yükü', 'Televizyon', 'Cihazlar', 'Tavan Durumu'
+    ],
+
+    // Boş 39 kolonlu Excel şablonu indir (1 örnek satırla birlikte)
+    downloadExcelTemplate: function() {
+      if (typeof XLSX === 'undefined') {
+        alert('Excel kütüphanesi (SheetJS) yüklenemedi.');
+        return;
+      }
+
+      const header = this.excelColumnHeaders;
+
+      // Örnek satır — makul default değerler, importFromExcel kolon sırasıyla birebir
+      const ornekSatir = [
+        'G01-001', 'ÖRNEK ODA', 24, 21, 50, 3.0,
+        0.45, 2.1, 2.8, 0.50, 0.35,
+        0.65, 0.5,
+        10, 10, 5, 5,
+        0, 0, 0, 0,
+        4, 4, 2, 2,
+        0, 0, 0, 0,
+        50, 50, 0,
+        2, 0, 0,
+        20, 0, 0, ''
+      ];
+
+      const aoa = [header, ornekSatir];
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Mahaller');
+      XLSX.writeFile(wb, 'mahal_sablonu.xlsx');
+    },
+
+    // Mevcut mahals[] dizisini 39 kolon + qIsı(W)/qSogutma(W) sonuç kolonlarıyla (41 kolon) dışa aktar
+    exportMahalsToExcel: function() {
+      if (!this.mahals || this.mahals.length === 0) {
+        alert('Aktarılacak mahal yok.');
+        return;
+      }
+      if (typeof XLSX === 'undefined') {
+        alert('Excel kütüphanesi (SheetJS) yüklenemedi.');
+        return;
+      }
+
+      const header = this.excelColumnHeaders.concat(['qIsı (W)', 'qSogutma (W)']);
+
+      const rows = this.mahals.map((m, idx) => [
+        m.id !== undefined && m.id !== null ? m.id : (idx + 1),
+        m.mahalAdi,
+        m.icSicaklikYaz,
+        m.icSicaklikKis,
+        m.alan,
+        m.h,
+        m.uDuvar,
+        m.uPencere,
+        m.skylightU,
+        m.uDoseme,
+        m.uTavan,
+        m.skylightGolge,
+        m.golgeleme,
+        m.duvarKuzey,
+        m.duvarGuney,
+        m.duvarDogu,
+        m.duvarBati,
+        m.duvarKuzeybati,
+        m.duvarKuzeydogu,
+        m.duvarGuneydogu,
+        m.duvarGuneybati,
+        m.pencereKuzey,
+        m.pencereGuney,
+        m.pencereDogu,
+        m.pencereBati,
+        m.pencereKuzeybati,
+        m.pencereKuzeydogu,
+        m.pencereGuneydogu,
+        m.pencereGuneybati,
+        (m.dosemeAlan !== null && m.dosemeAlan !== undefined) ? m.dosemeAlan : m.alan,
+        (m.tavanAlan !== null && m.tavanAlan !== undefined) ? m.tavanAlan : m.alan,
+        m.skylightAlan,
+        m.kisiOturan,
+        m.kisiAyakta,
+        m.kisiDans,
+        m.aydinlatmaWm2,
+        m.tvWm2,
+        m.cihazWm2,
+        '',
+        m.qIsı,
+        m.qSogutma
+      ]);
+
+      const aoa = [header].concat(rows);
+      const ws = XLSX.utils.aoa_to_sheet(aoa);
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Mahaller');
+
+      const now = new Date();
+      const tarih = now.getFullYear() + String(now.getMonth() + 1).padStart(2, '0') + String(now.getDate()).padStart(2, '0')
+        + '_' + String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
+      XLSX.writeFile(wb, 'mahaller_export_' + tarih + '.xlsx');
     },
 
     // Mahal hesapla — GERÇEK motor: calc-engine.js / hesaplaMahalV5 (EN 12831 kış + ASHRAE CLTD yaz)
