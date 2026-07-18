@@ -914,6 +914,8 @@
                     <div class="content-title" data-i18n="content_title_rooms">Isıtma/Soğutma Modülü — Mahaller Listesi</div>
                     <div class="content-toolbar">
                         <button class="toolbar-btn" id="btn-mahal-ekle" data-i18n="btn_add_room">+ Mahal Ekle</button>
+                        <button class="toolbar-btn" id="btn-import-excel">Excel'den İçe Aktar</button>
+                        <input type="file" id="excel-file-input" accept=".xlsx,.xls" style="display:none">
                     </div>
                 </div>
                 <table class="data-table">
@@ -1188,6 +1190,7 @@
     </div>
 
     <!-- JS SCRIPTS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script src="js/calc-engine.js?v=1"></script>
     <script src="js/groq-client.js?v=1"></script>
     <script src="js/ek-hesaplar-config.js?v=1"></script>

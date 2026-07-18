@@ -83,6 +83,14 @@
       if (aiSendBtn) {
         aiSendBtn.addEventListener('click', () => this.onAISendPrompt());
       }
+
+      // Excel İçe Aktarma — buton file input'u tetikler, input değişince parse edilir
+      const importExcelBtn = document.getElementById('btn-import-excel');
+      const excelFileInput = document.getElementById('excel-file-input');
+      if (importExcelBtn && excelFileInput) {
+        importExcelBtn.addEventListener('click', () => excelFileInput.click());
+        excelFileInput.addEventListener('change', (e) => this.importFromExcel(e));
+      }
     },
 
     // Modal açma
@@ -327,6 +335,147 @@
       this.mahals = this.mahals.filter(m => m.id !== id);
       this.saveToStorage();
       this.render();
+    },
+
+    // Excel'den (mahal1_mahaller.xlsx formatı, 39 kolon, sabit sıra) mahal listesi içe aktar.
+    // Mevcut mahaller SİLİNMEZ — sadece yeni satırlar eklenir.
+    importFromExcel: function(event) {
+      const fileInput = event && event.target;
+      const file = fileInput && fileInput.files && fileInput.files[0];
+      if (!file) return;
+
+      // Güvenli sayı okuma: geçersiz/boş -> fallback (0 varsayılan)
+      const toNum = function(v, fallback) {
+        if (v === undefined || v === null || v === '') return fallback;
+        const n = parseFloat(v);
+        return isNaN(n) ? fallback : n;
+      };
+      // Tavan/Döşeme alanı gibi "boşsa alan'a fallback" alanları için: geçersizse null
+      const toNumOrNull = function(v) {
+        if (v === undefined || v === null || v === '') return null;
+        const n = parseFloat(v);
+        return isNaN(n) ? null : n;
+      };
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          if (typeof XLSX === 'undefined') {
+            alert('Excel kütüphanesi (SheetJS) yüklenemedi.');
+            return;
+          }
+
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[firstSheetName];
+          const rows = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+
+          if (!rows || rows.length < 2) {
+            alert('Excel dosyasında veri satırı bulunamadı.');
+            return;
+          }
+
+          // İlk satır başlık — atla, veri satırlarını işle
+          const dataRows = rows.slice(1);
+          let importedCount = 0;
+
+          dataRows.forEach((row, idx) => {
+            if (!row || row.length === 0) return; // boş satır -> atla
+
+            // Kolon sırası (0-index, TAM Excel referans sırasıyla):
+            // 0 mahal no, 1 mahal adı, 2 İç Sıcaklık-Yaz, 3 İç Sıcaklık-Kış, 4 alan,
+            // 5 yükseklik, 6 duvar u, 7 pencere u, 8 skylight u, 9 döşeme u, 10 tavan u,
+            // 11 skylight gölgeleme, 12 pencere gölgeleme,
+            // 13-20 dış duvar alanları (kuzey,güney,doğu,batı,kuzeybatı,kuzeydoğu,güneydoğu,güneybatı),
+            // 21-28 dış pencere alanları (aynı yön sırası),
+            // 29 döşeme alanı, 30 tavan alanı, 31 skylight alanı,
+            // 32 oturan kişi, 33 ayakta kişi, 34 dans eden kişi,
+            // 35 aydınlatma yükü, 36 Televizyon, 37 Cihazlar, 38 Tavan Durumu (kullanılmıyor)
+
+            const mahalAdi = (row[1] !== undefined && row[1] !== null) ? String(row[1]).trim() : '';
+            if (!mahalAdi) return; // mahal adı yoksa satırı atla
+
+            const mahal = {
+              id: Date.now() + idx,
+              mahalAdi: mahalAdi,
+              alan: toNum(row[4], 0),
+              h: toNum(row[5], 3.0),
+              icSicaklikYaz: toNum(row[2], 24),
+              icSicaklikKis: toNum(row[3], 21),
+              // Excel'de dış sıcaklık kolonu yok — varsayılan proje parametrelerini kullan
+              disSicaklikYaz: this.defaultCalcParams.Tmax,
+              disSicaklikKis: this.defaultCalcParams.kisKt,
+
+              // U-değerleri
+              uDuvar: toNum(row[6], 0.45),
+              uPencere: toNum(row[7], 2.1),
+              skylightU: toNum(row[8], 2.8),
+              uDoseme: toNum(row[9], 0.50),
+              uTavan: toNum(row[10], 0.35),
+              skylightGolge: toNum(row[11], 0.65),
+              golgeleme: toNum(row[12], 0.5),
+
+              // Yönlere göre dış duvar alanları
+              duvarKuzey: toNum(row[13], 0),
+              duvarGuney: toNum(row[14], 0),
+              duvarDogu: toNum(row[15], 0),
+              duvarBati: toNum(row[16], 0),
+              duvarKuzeybati: toNum(row[17], 0),
+              duvarKuzeydogu: toNum(row[18], 0),
+              duvarGuneydogu: toNum(row[19], 0),
+              duvarGuneybati: toNum(row[20], 0),
+
+              // Yönlere göre dış pencere alanları
+              pencereKuzey: toNum(row[21], 0),
+              pencereGuney: toNum(row[22], 0),
+              pencereDogu: toNum(row[23], 0),
+              pencereBati: toNum(row[24], 0),
+              pencereKuzeybati: toNum(row[25], 0),
+              pencereKuzeydogu: toNum(row[26], 0),
+              pencereGuneydogu: toNum(row[27], 0),
+              pencereGuneybati: toNum(row[28], 0),
+
+              // Döşeme / Tavan / Skylight alanları
+              dosemeAlan: toNumOrNull(row[29]),
+              tavanAlan: toNumOrNull(row[30]),
+              skylightAlan: toNum(row[31], 0),
+
+              // İç yükler
+              kisiOturan: toNum(row[32], 0),
+              kisiAyakta: toNum(row[33], 0),
+              kisiDans: toNum(row[34], 0),
+              aydinlatmaWm2: toNum(row[35], 20),
+              tvWm2: toNum(row[36], 0),
+              cihazWm2: toNum(row[37], 0),
+
+              qIsı: 0,
+              qSogutma: 0
+            };
+
+            this.calculateMahal(mahal);
+            this.mahals.push(mahal);
+            importedCount++;
+          });
+
+          this.saveToStorage();
+          this.render();
+
+          if (importedCount > 0) {
+            alert(importedCount + ' mahal içe aktarıldı.');
+          } else {
+            alert('İçe aktarılacak geçerli satır bulunamadı.');
+          }
+        } catch (err) {
+          console.error('Excel içe aktarma hatası:', err);
+          alert('Excel dosyası okunurken hata oluştu: ' + err.message);
+        } finally {
+          // Aynı dosyayı tekrar seçebilmek için input'u sıfırla
+          if (fileInput) fileInput.value = '';
+        }
+      };
+
+      reader.readAsArrayBuffer(file);
     },
 
     // Mahal hesapla — GERÇEK motor: calc-engine.js / hesaplaMahalV5 (EN 12831 kış + ASHRAE CLTD yaz)
