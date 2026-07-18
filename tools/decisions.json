@@ -22,6 +22,7 @@
   "engine_function": "hesaplaMahalV5(row, P, korunanCihaz) - js/calc-engine.js - EN12831 kis + ASHRAE CLTD yaz, SAF (DOM'suz)",
   "notes": [
     "2026-07-18: index.html eski wizard'dan yeni ribbon+acik-tema arayuze gecti, motor (calc-engine.js) korundu",
-    "2026-07-18: 45+ hesap modulu js/ altinda, ek-hesaplar-config.js ile kategorilere (heating-cooling/ventilation/plumbing/fire/other) ayrildi"
+    "2026-07-18: 45+ hesap modulu js/ altinda, ek-hesaplar-config.js ile kategorilere (heating-cooling/ventilation/plumbing/fire/other) ayrildi",
+    "2026-07-18: T46-T50: 5 hesap modülü (boru yalıtımı/Fourier, kojenerasyon/enerji, güç kompanzasyonu/elektrik, oda havalandırması/ACH, kanal ısı/HVAC) tamamlandı. 50/50 (%100) görev bitişi. Paylaşılan altyapı korundu."
   ]
 }
