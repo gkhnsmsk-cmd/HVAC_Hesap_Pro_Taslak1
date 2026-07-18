@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GSEM MEP PRO</title>
+    <title data-i18n="app_title">GSEM MEP PRO</title>
     <style>
         * {
             margin: 0;
@@ -11,20 +11,42 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --theme-bg: #f8f9fb;
+            --theme-bg-light: #ffffff;
+            --theme-text: #1a1f28;
+            --theme-text-muted: #475569;
+            --theme-text-light: #64748b;
+            --theme-border: #e2e8f0;
+            --theme-accent: #3B82F6;
+            --theme-hover-bg: rgba(59, 130, 246, 0.08);
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;
-            background-color: #f8f9fb;
-            color: #1a1f28;
+            background-color: var(--theme-bg);
+            color: var(--theme-text);
             height: 100vh;
             display: flex;
             flex-direction: column;
             overflow: hidden;
         }
 
+        body.theme-dark {
+            --theme-bg: #0f1419;
+            --theme-bg-light: #1a2332;
+            --theme-text: #e8ecf1;
+            --theme-text-muted: #a8b3bf;
+            --theme-text-light: #7a8493;
+            --theme-border: #2d3748;
+            --theme-accent: #60a5fa;
+            --theme-hover-bg: rgba(96, 165, 250, 0.12);
+        }
+
         /* ===== HEADER / LOGO + RIBBON ===== */
         header {
-            background: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
+            background: var(--theme-bg-light);
+            border-bottom: 1px solid var(--theme-border);
             box-shadow: none;
             padding: 0;
             display: flex;
@@ -35,8 +57,8 @@
             display: flex;
             align-items: center;
             padding: 8px 16px;
-            border-bottom: 1px solid #e2e8f0;
-            background: #ffffff;
+            border-bottom: 1px solid var(--theme-border);
+            background: var(--theme-bg-light);
         }
 
         .logo {
@@ -53,8 +75,8 @@
         .ribbon-container {
             display: flex;
             padding: 0;
-            background: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
+            background: var(--theme-bg-light);
+            border-bottom: 1px solid var(--theme-border);
             overflow-x: auto;
         }
 
@@ -69,7 +91,7 @@
             cursor: pointer;
             border: none;
             background: transparent;
-            color: #475569;
+            color: var(--theme-text-muted);
             font-size: 13px;
             font-weight: 500;
             transition: all 0.2s ease;
@@ -78,21 +100,21 @@
         }
 
         .ribbon-tab:hover {
-            background-color: rgba(59, 130, 246, 0.08);
-            color: #1a1f28;
+            background-color: var(--theme-hover-bg);
+            color: var(--theme-text);
         }
 
         .ribbon-tab.active {
-            border-bottom-color: #3B82F6;
+            border-bottom-color: var(--theme-accent);
             background-color: rgba(59, 130, 246, 0.05);
-            color: #1a1f28;
+            color: var(--theme-text);
         }
 
         .ribbon-content {
             display: none;
             padding: 12px 16px;
-            background: #ffffff;
-            border-top: 1px solid #e2e8f0;
+            background: var(--theme-bg-light);
+            border-top: 1px solid var(--theme-border);
             box-shadow: none;
         }
 
@@ -157,8 +179,8 @@
         /* ===== SIDEBAR (PROJECT TREE) ===== */
         .sidebar {
             width: 280px;
-            background: #ffffff;
-            border-right: 1px solid #e2e8f0;
+            background: var(--theme-bg-light);
+            border-right: 1px solid var(--theme-border);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -169,10 +191,10 @@
             padding: 12px 16px;
             font-size: 12px;
             font-weight: 700;
-            color: #1a1f28;
+            color: var(--theme-text);
             text-transform: uppercase;
-            border-bottom: 1px solid #e2e8f0;
-            background: #ffffff;
+            border-bottom: 1px solid var(--theme-border);
+            background: var(--theme-bg-light);
             letter-spacing: 0.5px;
         }
 
@@ -194,7 +216,7 @@
             cursor: pointer;
             user-select: none;
             font-size: 13px;
-            color: #475569;
+            color: var(--theme-text-muted);
             transition: all 0.2s ease;
             border-left: 3px solid transparent;
             margin: 1px 4px;
@@ -202,15 +224,15 @@
         }
 
         .tree-item:hover {
-            background-color: rgba(59, 130, 246, 0.08);
-            color: #1a1f28;
-            border-left-color: #3B82F6;
+            background-color: var(--theme-hover-bg);
+            color: var(--theme-text);
+            border-left-color: var(--theme-accent);
         }
 
         .tree-item.active {
             background-color: rgba(59, 130, 246, 0.12);
-            color: #1a1f28;
-            border-left-color: #3B82F6;
+            color: var(--theme-text);
+            border-left-color: var(--theme-accent);
             font-weight: 600;
         }
 
@@ -232,15 +254,15 @@
             flex: 1;
             display: flex;
             flex-direction: column;
-            background-color: #f8f9fb;
-            border-right: 1px solid #e2e8f0;
+            background-color: var(--theme-bg);
+            border-right: 1px solid var(--theme-border);
             overflow: hidden;
         }
 
         .doc-tabs {
             display: flex;
-            background: #ffffff;
-            border-bottom: 1px solid #e2e8f0;
+            background: var(--theme-bg-light);
+            border-bottom: 1px solid var(--theme-border);
             padding: 0;
             gap: 2px;
             padding-left: 4px;
@@ -256,7 +278,7 @@
             border-bottom: 2px solid transparent;
             border-radius: 0;
             cursor: pointer;
-            color: #64748b;
+            color: var(--theme-text-light);
             font-size: 12px;
             transition: all 0.2s ease;
             white-space: nowrap;
@@ -266,14 +288,14 @@
         }
 
         .doc-tab:hover {
-            background: rgba(59, 130, 246, 0.08);
-            color: #475569;
+            background: var(--theme-hover-bg);
+            color: var(--theme-text-muted);
         }
 
         .doc-tab.active {
             background: rgba(59, 130, 246, 0.1);
-            color: #1a1f28;
-            border-bottom-color: #3B82F6;
+            color: var(--theme-text);
+            border-bottom-color: var(--theme-accent);
             box-shadow: none;
         }
 
@@ -295,13 +317,13 @@
             align-items: center;
             margin-bottom: 16px;
             padding-bottom: 12px;
-            border-bottom: 1px solid #e2e8f0;
+            border-bottom: 1px solid var(--theme-border);
         }
 
         .content-title {
             font-size: 16px;
             font-weight: 700;
-            color: #1a1f28;
+            color: var(--theme-text);
         }
 
         .content-toolbar {
@@ -311,19 +333,19 @@
 
         .toolbar-btn {
             padding: 6px 12px;
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
+            background: var(--theme-bg-light);
+            border: 1px solid var(--theme-border);
             border-radius: 4px;
             cursor: pointer;
-            color: #475569;
+            color: var(--theme-text-muted);
             font-size: 12px;
             transition: all 0.2s ease;
         }
 
         .toolbar-btn:hover {
-            background: #252b36;
-            border-color: #3B82F6;
-            color: #1a1f28;
+            background: var(--theme-hover-bg);
+            border-color: var(--theme-accent);
+            color: var(--theme-text);
         }
 
         /* Data Table */
@@ -331,14 +353,14 @@
             width: 100%;
             border-collapse: collapse;
             background-color: transparent;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--theme-border);
             border-radius: 4px;
             overflow: hidden;
         }
 
         .data-table thead {
-            background: #f8f9fb;
-            border-bottom: 1px solid #e2e8f0;
+            background: var(--theme-bg);
+            border-bottom: 1px solid var(--theme-border);
         }
 
         .data-table th {
@@ -346,10 +368,10 @@
             text-align: left;
             font-size: 12px;
             font-weight: 700;
-            color: #64748b;
+            color: var(--theme-text-light);
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            border-right: 1px solid #e2e8f0;
+            border-right: 1px solid var(--theme-border);
         }
 
         .data-table th:last-child {
@@ -358,20 +380,20 @@
 
         .data-table td {
             padding: 8px 12px;
-            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+            border-bottom: 1px solid var(--theme-border);
             font-size: 13px;
-            color: #475569;
+            color: var(--theme-text-muted);
         }
 
         .data-table tbody tr:hover {
-            background-color: rgba(59, 130, 246, 0.05);
+            background-color: var(--theme-hover-bg);
         }
 
         /* ===== RIGHT PANEL ===== */
         .right-panel {
             width: 320px;
-            background: #ffffff;
-            border-left: 1px solid #e2e8f0;
+            background: var(--theme-bg-light);
+            border-left: 1px solid var(--theme-border);
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -382,10 +404,10 @@
             padding: 12px 16px;
             font-size: 12px;
             font-weight: 700;
-            color: #1a1f28;
+            color: var(--theme-text);
             text-transform: uppercase;
-            border-bottom: 1px solid #e2e8f0;
-            background: #ffffff;
+            border-bottom: 1px solid var(--theme-border);
+            background: var(--theme-bg-light);
             letter-spacing: 0.5px;
         }
 
@@ -397,7 +419,7 @@
 
         .panel-card {
             background: transparent;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--theme-border);
             border-radius: 4px;
             margin-bottom: 8px;
             overflow: hidden;
@@ -405,8 +427,8 @@
         }
 
         .panel-card:hover {
-            background: rgba(59, 130, 246, 0.05);
-            border-color: #3B82F6;
+            background: var(--theme-hover-bg);
+            border-color: var(--theme-accent);
             box-shadow: none;
         }
 
@@ -419,14 +441,14 @@
             align-items: center;
             font-size: 12px;
             font-weight: 700;
-            color: #1a1f28;
-            border-bottom: 1px solid #e2e8f0;
+            color: var(--theme-text);
+            border-bottom: 1px solid var(--theme-border);
             user-select: none;
             transition: all 0.2s ease;
         }
 
         .panel-card-header:hover {
-            background: rgba(59, 130, 246, 0.08);
+            background: var(--theme-hover-bg);
         }
 
         .panel-card-toggle {
@@ -448,7 +470,7 @@
             padding: 12px;
             display: none;
             background: transparent;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid var(--theme-border);
         }
 
         .panel-card-content.open {
@@ -461,7 +483,7 @@
             align-items: center;
             padding: 6px 0;
             font-size: 12px;
-            border-bottom: 1px solid rgba(45, 49, 57, 0.4);
+            border-bottom: 1px solid rgba(96, 165, 250, 0.2);
         }
 
         .panel-item:last-child {
@@ -469,26 +491,26 @@
         }
 
         .panel-item-label {
-            color: #64748b;
+            color: var(--theme-text-light);
             font-weight: 500;
         }
 
         .panel-item-value {
-            color: #3B82F6;
+            color: var(--theme-accent);
             font-weight: 700;
             font-family: 'Courier New', monospace;
         }
 
         /* Footer */
         footer {
-            background: #ffffff;
-            border-top: 1px solid #e2e8f0;
+            background: var(--theme-bg-light);
+            border-top: 1px solid var(--theme-border);
             padding: 8px 16px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             font-size: 11px;
-            color: #64748b;
+            color: var(--theme-text-light);
             gap: 16px;
             box-shadow: none;
         }
@@ -559,9 +581,9 @@
         }
 
         .modal-content {
-            background-color: #ffffff;
+            background-color: var(--theme-bg-light);
             padding: 20px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--theme-border);
             border-radius: 8px;
             max-width: 400px;
             width: 90%;
@@ -572,7 +594,7 @@
             font-size: 16px;
             font-weight: 700;
             margin-bottom: 16px;
-            color: #1a1f28;
+            color: var(--theme-text);
         }
 
         .modal-field {
@@ -584,16 +606,16 @@
             font-size: 12px;
             font-weight: 600;
             margin-bottom: 4px;
-            color: #475569;
+            color: var(--theme-text-muted);
         }
 
         .modal-input {
             width: 100%;
             padding: 8px;
-            background: #252b36;
-            border: 1px solid #e2e8f0;
+            background: var(--theme-bg-light);
+            border: 1px solid var(--theme-border);
             border-radius: 4px;
-            color: #1a1f28;
+            color: var(--theme-text);
             font-size: 13px;
             box-sizing: border-box;
         }
@@ -607,7 +629,7 @@
         .modal-btn {
             flex: 1;
             padding: 8px;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--theme-border);
             border-radius: 4px;
             cursor: pointer;
             font-size: 12px;
@@ -617,18 +639,18 @@
 
         .modal-btn.cancel {
             background: transparent;
-            color: #475569;
+            color: var(--theme-text-muted);
         }
 
         .modal-btn.cancel:hover {
-            background: #252b36;
-            border-color: #3B82F6;
+            background: var(--theme-hover-bg);
+            border-color: var(--theme-accent);
         }
 
         .modal-btn.submit {
-            background: #3B82F6;
+            background: var(--theme-accent);
             color: #fff;
-            border-color: #3B82F6;
+            border-color: var(--theme-accent);
         }
 
         .modal-btn.submit:hover {
@@ -641,8 +663,52 @@
             align-items: center;
             justify-content: center;
             height: 100%;
-            color: #64748b;
+            color: var(--theme-text-light);
             font-size: 14px;
+        }
+
+        /* Settings Tab */
+        .settings-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .settings-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--theme-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .settings-control {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        #theme-selector {
+            padding: 6px 12px;
+            background: var(--theme-bg-light);
+            border: 1px solid var(--theme-border);
+            border-radius: 4px;
+            color: var(--theme-text);
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        #theme-selector:hover {
+            border-color: var(--theme-accent);
+            background: var(--theme-hover-bg);
+        }
+
+        #theme-selector:focus {
+            outline: none;
+            border-color: var(--theme-accent);
+            box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.1);
         }
     </style>
 </head>
@@ -650,31 +716,71 @@
     <!-- HEADER -->
     <header>
         <div class="logo-bar">
-            <div class="logo">GSEM MEP PRO</div>
+            <div class="logo" data-i18n="app_name">GSEM MEP PRO</div>
+            <select id="lang-selector" style="padding:4px; border-radius:4px; border:1px solid #e2e8f0; background:#fff; color:#1a1f28; margin-left: auto; cursor: pointer; font-size: 12px;">
+                <option value="tr">Türkçe</option>
+                <option value="en">English</option>
+            </select>
         </div>
         <div class="ribbon-container">
             <ul class="ribbon-tabs">
-                <li class="ribbon-tab" data-tab="home">Ana Sayfa</li>
-                <li class="ribbon-tab active" data-tab="heating-cooling">Isitma/Sogutma</li>
-                <li class="ribbon-tab" data-tab="ventilation">Havalandir</li>
-                <li class="ribbon-tab" data-tab="plumbing">Sihhi Test</li>
-                <li class="ribbon-tab" data-tab="fire">Yangin Sistem</li>
-                <li class="ribbon-tab" data-tab="reports">Raporlar</li>
-                <li class="ribbon-tab" data-tab="settings">Ayarlar</li>
+                <li class="ribbon-tab" data-tab="home" data-i18n="ribbon_home">Ana Sayfa</li>
+                <li class="ribbon-tab active" data-tab="heating-cooling" data-i18n="ribbon_heating_cooling">Isitma/Sogutma</li>
+                <li class="ribbon-tab" data-tab="ventilation" data-i18n="ribbon_ventilation">Havalandir</li>
+                <li class="ribbon-tab" data-tab="plumbing" data-i18n="ribbon_plumbing">Sihhi Test</li>
+                <li class="ribbon-tab" data-tab="fire" data-i18n="ribbon_fire">Yangin Sistem</li>
+                <li class="ribbon-tab" data-tab="reports" data-i18n="ribbon_reports">Raporlar</li>
+                <li class="ribbon-tab" data-tab="settings" data-i18n="ribbon_settings">Ayarlar</li>
             </ul>
         </div>
 
         <!-- Ribbon Content -->
         <div class="ribbon-content" data-tab-content="home">
-            <div style="padding: 12px; color: #475569;">GSEM MEP PRO — soldaki sekmelerden bir disiplin modülü seçin (Isıtma/Soğutma, Havalandırma, Sıhhi Tesisat, Yangın Sistemleri).</div>
+            <div style="display: flex; flex-direction: column; gap: 20px; padding: 16px; flex: 1; overflow-y: auto;">
+              <!-- Main Content: Welcome -->
+              <div style="padding: 16px; background: white; border-radius: 4px; border: 1px solid #e2e8f0;">
+                <h2 style="font-size: 14px; font-weight: 700; color: #1a1f28; margin-bottom: 8px;" data-i18n="home_welcome">Hoş Geldiniz</h2>
+                <p style="font-size: 13px; color: #64748b; margin-bottom: 12px;" data-i18n="home_intro_text">GSEM MEP PRO — HVAC sistemi hesaplamaları için entegre tasarım aracı.</p>
+                <div style="font-size: 12px; color: #64748b; line-height: 1.5;">
+                  <p data-i18n="home_start_guide">Başlamak için soldaki sekmelerden bir disiplin modülü seçin:</p>
+                  <ul style="margin-top: 8px; margin-left: 16px;">
+                    <li data-i18n="home_module_heating">Isitma/Sogutma — Mahal ısı yükü hesaplamaları</li>
+                    <li data-i18n="home_module_ventilation">Havalandırma — Hava debisi tasarımı</li>
+                    <li data-i18n="home_module_plumbing">Sihhi Tesisat — Su hattı boyutlandırması</li>
+                    <li data-i18n="home_module_fire">Yangın Sistemleri — Sprinkler tasarımı</li>
+                  </ul>
+                </div>
+              </div>
+
+              <!-- AI Assistant Section -->
+              <div style="padding: 16px; background: white; border-radius: 4px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; gap: 12px;">
+                <h3 style="font-size: 13px; font-weight: 700; color: #1a1f28; margin: 0;" data-i18n="ai_assistant_title">AI Asistan</h3>
+                <textarea
+                  id="ai-prompt"
+                  placeholder="HVAC hakkında soru sor..."
+                  data-i18n-placeholder="ai_prompt_placeholder"
+                  style="width: 100%; height: 100px; padding: 8px; background: #f8f9fb; border: 1px solid #e2e8f0; border-radius: 4px; color: #1a1f28; font-size: 12px; resize: vertical; font-family: 'Segoe UI', Tahoma, Geneva, sans-serif;">
+                </textarea>
+                <button
+                  id="ai-send-btn"
+                  style="padding: 8px 16px; background: #3B82F6; color: #fff; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s ease;"
+                  data-i18n="btn_send">
+                  Gönder
+                </button>
+                <div
+                  id="ai-response"
+                  style="min-height: 100px; max-height: 300px; overflow-y: auto; padding: 12px; background: #f8f9fb; border: 1px solid #e2e8f0; border-radius: 4px; color: #64748b; font-size: 12px; line-height: 1.5; display: none;">
+                </div>
+              </div>
+            </div>
         </div>
 
         <div class="ribbon-content active" data-tab-content="heating-cooling">
             <div class="ribbon-group">
                 <div class="ribbon-buttons">
-                    <button class="ribbon-btn" title="Mahal Ekle" id="ribbon-mahal-ekle">+</button>
+                    <button class="ribbon-btn" title="Mahal Ekle" id="ribbon-mahal-ekle" data-i18n="ribbon_add_label">+</button>
                 </div>
-                <div class="ribbon-group-label">Ekle</div>
+                <div class="ribbon-group-label" data-i18n="ribbon_add_label">Ekle</div>
             </div>
         </div>
 
@@ -691,11 +797,42 @@
         </div>
 
         <div class="ribbon-content" data-tab-content="reports">
-            <div style="padding: 12px; color: #475569;">Yakinda...</div>
+            <div class="ribbon-group">
+                <div class="ribbon-buttons">
+                    <button class="ribbon-btn" title="Rapor İndir" id="ribbon-report-export" data-i18n="report_export">⬇</button>
+                </div>
+                <div class="ribbon-group-label" data-i18n="report_export">İndir</div>
+            </div>
         </div>
 
         <div class="ribbon-content" data-tab-content="settings">
-            <div style="padding: 12px; color: #475569;">Yakinda...</div>
+            <div class="settings-group">
+                <div class="settings-label" data-i18n="settings_title">Ayarlar</div>
+                <div class="settings-control">
+                    <label for="theme-selector" class="settings-label" data-i18n="settings_theme_label">Tema</label>
+                    <select id="theme-selector">
+                        <option value="light" data-i18n="theme_light">Açık</option>
+                        <option value="dark" data-i18n="theme_dark">Koyu</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- AI Agent Section -->
+            <div class="settings-group" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--theme-border);">
+                <div class="settings-label" data-i18n="ai_agent_title">AI Agent</div>
+                <div class="settings-control" style="flex-direction: column; align-items: flex-start; gap: 8px;">
+                    <label for="groq-api-key" class="settings-label" data-i18n="ai_agent_groq_key_label">Groq API Key</label>
+                    <input type="password" id="groq-api-key" placeholder="gsk_..." style="padding: 6px 12px; background: var(--theme-bg-light); border: 1px solid var(--theme-border); border-radius: 4px; color: var(--theme-text); font-size: 12px; width: 200px; box-sizing: border-box;">
+                    <button id="btn-save-groq-key" class="toolbar-btn" data-i18n="btn_save" style="margin-top: 4px;">Kaydet</button>
+                    <div id="groq-status" style="font-size: 11px; margin-top: 8px; display: flex; align-items: center; gap: 6px;">
+                        <span id="groq-status-dot" style="display: inline-block; width: 6px; height: 6px; border-radius: 50%; background-color: #e2e8f0;"></span>
+                        <span id="groq-status-text" data-i18n="ai_agent_disconnected">Bağlı Değil</span>
+                    </div>
+                    <div id="groq-info" style="font-size: 10px; color: #64748b; margin-top: 8px; max-width: 250px;">
+                        <a href="https://console.groq.com/keys" target="_blank" style="color: var(--theme-accent); text-decoration: none; display: inline;">https://console.groq.com/keys</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 
@@ -703,12 +840,12 @@
     <div class="main-container" id="mainContainer">
         <!-- SIDEBAR -->
         <aside class="sidebar">
-            <div class="sidebar-title">Proje Gezgini</div>
+            <div class="sidebar-title" data-i18n="sidebar_project_explorer">Proje Gezgini</div>
             <ul class="tree-container">
                 <li class="tree-node">
                     <div class="tree-item active">
                         <span class="tree-toggle">▼</span>
-                        <span>Proje</span>
+                        <span data-i18n="tree_project">Proje</span>
                     </div>
                 </li>
             </ul>
@@ -719,27 +856,27 @@
             <div class="doc-tabs">
                 <div class="doc-tab active" data-doc="mahaller">
                     <span>📋</span>
-                    <span>Mahaller</span>
+                    <span data-i18n="doc_tab_rooms">Mahaller</span>
                 </div>
             </div>
 
             <!-- Mahaller Tab Content -->
             <div class="doc-content active" data-doc-content="mahaller">
                 <div class="content-header">
-                    <div class="content-title">Isıtma/Soğutma Modülü — Mahaller Listesi</div>
+                    <div class="content-title" data-i18n="content_title_rooms">Isıtma/Soğutma Modülü — Mahaller Listesi</div>
                     <div class="content-toolbar">
-                        <button class="toolbar-btn" id="btn-mahal-ekle">+ Mahal Ekle</button>
+                        <button class="toolbar-btn" id="btn-mahal-ekle" data-i18n="btn_add_room">+ Mahal Ekle</button>
                     </div>
                 </div>
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Mahal Adi</th>
-                            <th>Alan (m2)</th>
-                            <th>Yukseklik (m)</th>
-                            <th>Isi Kaybi (W)</th>
-                            <th>Sogutma Yuku (W)</th>
-                            <th>Durum</th>
+                            <th data-i18n="table_room_name">Mahal Adi</th>
+                            <th data-i18n="table_area">Alan (m2)</th>
+                            <th data-i18n="table_height">Yukseklik (m)</th>
+                            <th data-i18n="table_heat_loss">Isi Kaybi (W)</th>
+                            <th data-i18n="table_cooling_load">Sogutma Yuku (W)</th>
+                            <th data-i18n="table_status">Durum</th>
                         </tr>
                     </thead>
                     <tbody id="mahaller-tbody">
@@ -750,20 +887,20 @@
 
         <!-- RIGHT PANEL -->
         <aside class="right-panel">
-            <div class="panel-title">Hesap Ozetι</div>
+            <div class="panel-title" data-i18n="panel_summary_title">Hesap Ozetι</div>
             <div class="panel-cards">
                 <div class="panel-card">
                     <div class="panel-card-header">
-                        <span>Isi Yuku</span>
+                        <span data-i18n="panel_heating_load">Isi Yuku</span>
                         <span class="panel-card-toggle">▼</span>
                     </div>
                     <div class="panel-card-content open">
                         <div class="panel-item">
-                            <span class="panel-item-label">Toplam:</span>
+                            <span class="panel-item-label" data-i18n="panel_total">Toplam:</span>
                             <span class="panel-item-value" id="summary-heating-total">0.0 kW</span>
                         </div>
                         <div class="panel-item">
-                            <span class="panel-item-label">Birim Yuku:</span>
+                            <span class="panel-item-label" data-i18n="panel_unit_load">Birim Yuku:</span>
                             <span class="panel-item-value" id="summary-heating-unit">0 W/m2</span>
                         </div>
                     </div>
@@ -771,16 +908,16 @@
 
                 <div class="panel-card">
                     <div class="panel-card-header">
-                        <span>Sogutma Yuku</span>
+                        <span data-i18n="panel_cooling_load">Sogutma Yuku</span>
                         <span class="panel-card-toggle">▼</span>
                     </div>
                     <div class="panel-card-content open">
                         <div class="panel-item">
-                            <span class="panel-item-label">Toplam:</span>
+                            <span class="panel-item-label" data-i18n="panel_total">Toplam:</span>
                             <span class="panel-item-value" id="summary-cooling-total">0.0 kW</span>
                         </div>
                         <div class="panel-item">
-                            <span class="panel-item-label">Mahal Sayisi:</span>
+                            <span class="panel-item-label" data-i18n="panel_room_count">Mahal Sayisi:</span>
                             <span class="panel-item-value" id="summary-room-count">0</span>
                         </div>
                     </div>
@@ -788,11 +925,11 @@
 
                 <div class="panel-card">
                     <div class="panel-card-header">
-                        <span>Bilgi</span>
+                        <span data-i18n="panel_info">Bilgi</span>
                         <span class="panel-card-toggle">▼</span>
                     </div>
                     <div class="panel-card-content open" id="summary-info">
-                        <div style="font-size: 11px; color: #475569;">Mahaller ekleyerek baslayın.</div>
+                        <div style="font-size: 11px; color: #475569;" data-i18n="panel_info_text">Mahaller ekleyerek baslayın.</div>
                     </div>
                 </div>
             </div>
@@ -807,64 +944,67 @@
     <div id="ek-hesaplar-ventilation" style="display:none; padding:20px; overflow-y: auto; flex: 1; background-color: #f8f9fb;"></div>
     <div id="ek-hesaplar-plumbing" style="display:none; padding:20px; overflow-y: auto; flex: 1; background-color: #f8f9fb;"></div>
     <div id="ek-hesaplar-fire" style="display:none; padding:20px; overflow-y: auto; flex: 1; background-color: #f8f9fb;"></div>
+    <div id="ek-hesaplar-reports" style="display:none; padding:20px; overflow-y: auto; flex: 1; background-color: #f8f9fb;"></div>
 
     <!-- FOOTER -->
     <footer>
         <div class="status-badge">
             <span class="status-dot"></span>
-            Hazir
+            <span data-i18n="footer_ready">Hazir</span>
         </div>
         <div class="status-center">
-            <span>GSEM MEP PRO v1.0</span>
+            <span data-i18n="footer_version">GSEM MEP PRO v1.0</span>
         </div>
         <div class="status-badge">
-            Birim: SI (m, kW)
+            <span data-i18n="footer_units">Birim: SI (m, kW)</span>
         </div>
     </footer>
 
     <!-- Modal -->
     <div class="modal" id="mahal-modal">
         <div class="modal-content">
-            <div class="modal-title">Yeni Mahal Ekle</div>
+            <div class="modal-title" data-i18n="modal_title_add_room">Yeni Mahal Ekle</div>
             <div class="modal-field">
-                <label class="modal-label">Mahal Adi</label>
+                <label class="modal-label" data-i18n="modal_room_name">Mahal Adi</label>
                 <input type="text" id="modal-mahal-adi" class="modal-input" placeholder="Ornek: Salon">
             </div>
             <div class="modal-field">
-                <label class="modal-label">Alan (m2)</label>
+                <label class="modal-label" data-i18n="modal_area">Alan (m2)</label>
                 <input type="number" id="modal-alan" class="modal-input" value="50" min="1" step="0.5">
             </div>
             <div class="modal-field">
-                <label class="modal-label">Kat Yuksekligi (m)</label>
+                <label class="modal-label" data-i18n="modal_height">Kat Yuksekligi (m)</label>
                 <input type="number" id="modal-yukseklik" class="modal-input" value="3.0" min="2" step="0.1">
             </div>
             <div class="modal-field">
-                <label class="modal-label">Dis Sicaklik - Kis (°C)</label>
+                <label class="modal-label" data-i18n="modal_ext_temp_winter">Dis Sicaklik - Kis (°C)</label>
                 <input type="number" id="modal-dis-sicaklik-kis" class="modal-input" value="-12" step="1">
             </div>
             <div class="modal-field">
-                <label class="modal-label">Ic Sicaklik - Kis (°C)</label>
+                <label class="modal-label" data-i18n="modal_int_temp_winter">Ic Sicaklik - Kis (°C)</label>
                 <input type="number" id="modal-ic-sicaklik-kis" class="modal-input" value="21" step="1">
             </div>
             <div class="modal-field">
-                <label class="modal-label">Dis Sicaklik - Yaz (°C)</label>
+                <label class="modal-label" data-i18n="modal_ext_temp_summer">Dis Sicaklik - Yaz (°C)</label>
                 <input type="number" id="modal-dis-sicaklik-yaz" class="modal-input" value="33" step="1">
             </div>
             <div class="modal-field">
-                <label class="modal-label">Ic Sicaklik - Yaz (°C)</label>
+                <label class="modal-label" data-i18n="modal_int_temp_summer">Ic Sicaklik - Yaz (°C)</label>
                 <input type="number" id="modal-ic-sicaklik-yaz" class="modal-input" value="24" step="1">
             </div>
             <div class="modal-buttons">
-                <button class="modal-btn cancel" onclick="gsemApp.closeModal()">Iptal</button>
-                <button class="modal-btn submit" onclick="gsemApp.addMahal()">Ekle</button>
+                <button class="modal-btn cancel" onclick="gsemApp.closeModal()" data-i18n="modal_cancel">Iptal</button>
+                <button class="modal-btn submit" onclick="gsemApp.addMahal()" data-i18n="modal_add">Ekle</button>
             </div>
         </div>
     </div>
 
     <!-- JS SCRIPTS -->
     <script src="js/calc-engine.js?v=1"></script>
+    <script src="js/groq-client.js?v=1"></script>
     <script src="js/ek-hesaplar-config.js?v=1"></script>
     <script src="js/ek-hesaplar-ui.js?v=1"></script>
+    <script src="js/i18n.js"></script>
     <script src="js/gsem-app.js?v=1"></script>
 
     <script>
@@ -886,6 +1026,7 @@
             const ventilationContainer = document.getElementById('ek-hesaplar-ventilation');
             const plumbingContainer = document.getElementById('ek-hesaplar-plumbing');
             const fireContainer = document.getElementById('ek-hesaplar-fire');
+            const reportsContainer = document.getElementById('ek-hesaplar-reports');
 
             // Tüm containers'ı gizle
             if (mainContainer) mainContainer.style.display = 'none';
@@ -893,6 +1034,7 @@
             if (ventilationContainer) ventilationContainer.style.display = 'none';
             if (plumbingContainer) plumbingContainer.style.display = 'none';
             if (fireContainer) fireContainer.style.display = 'none';
+            if (reportsContainer) reportsContainer.style.display = 'none';
 
             if (tabName === 'heating-cooling') {
                 // Ana mahal tablosu
@@ -927,8 +1069,18 @@
                         renderedModules[tabName] = true;
                     }
                 }
+            } else if (tabName === 'reports') {
+                // Raporlar modülü
+                if (reportsContainer) {
+                    reportsContainer.style.display = '';
+                    // İlk kez render() çağrısı?
+                    if (!renderedModules[tabName] && window.gsemApp && window.gsemApp.renderReports) {
+                        window.gsemApp.renderReports();
+                        renderedModules[tabName] = true;
+                    }
+                }
             } else {
-                // reports, settings, home gibi diğer sekmeler
+                // settings, home gibi diğer sekmeler
                 if (placeholder) placeholder.style.display = '';
                 document.getElementById('modulePlaceholderName').textContent = moduleNames[tabName] || tabName;
             }
