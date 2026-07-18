@@ -55,5 +55,31 @@ chk('calc() -> NaN (güvenli)', Number.isNaN(bad5.debi_m3h));
 const r6 = SP.calc({ sizinti_alani_m2: 0.1, hedef_basinc_farkiPa: 100 });
 chk('calc: 0.1 m² × 100 Pa → sonuç > 2 m³/h', r6.debi_m3h > 2);
 
+// ── openDoorFlow / designFlow (YENİ — açık kapı senaryosu) ──
+// 12) openDoorFlow: kapi_alani_m2=1.6 (tek kanat kapı), min_hiz_ms=1.0
+//     Q = 1.6*1.0*3600 = 5760 m³/h
+const od12 = SP.openDoorFlow({ kapi_alani_m2: 1.6, min_hiz_ms: 1.0 });
+chk('openDoorFlow 1.6m² x 1.0m/s == 5760 m³/h', near(od12.debi_m3h, 5760, 1));
+
+// 13) openDoorFlow geçersiz girdi -> NaN
+chk('openDoorFlow alan<=0 -> NaN', Number.isNaN(SP.openDoorFlow({ kapi_alani_m2: 0, min_hiz_ms: 1 }).debi_m3h));
+chk('openDoorFlow hiz<=0 -> NaN', Number.isNaN(SP.openDoorFlow({ kapi_alani_m2: 1.6, min_hiz_ms: 0 }).debi_m3h));
+
+// 14) designFlow: açık kapı senaryosu (5760) >> kapalı kapı (0.27) -> baskın 'acik' olmalı
+const df14 = SP.designFlow({ sizinti_alani_m2: 0.01, hedef_basinc_farkiPa: 50, kapi_alani_m2: 1.6, min_hiz_ms: 1.0 });
+chk('designFlow baskın senaryo = acik (gerçekçi vaka)', df14.gov_senaryo === 'acik');
+chk('designFlow tasarim_debi = max(kapali,acik) ≈ 5760', near(df14.tasarim_debi_m3h, 5760, 1));
+chk('designFlow her iki bileşeni de rapor ediyor', isFinite(df14.kapali_kapi_debi_m3h) && isFinite(df14.acik_kapi_debi_m3h));
+
+// 15) designFlow: sadece kapalı-kapı girdisi verilirse (açık kapı verisi yok) -> kapali baskın, acik=NaN
+const df15 = SP.designFlow({ sizinti_alani_m2: 0.01, hedef_basinc_farkiPa: 50 });
+chk('designFlow açık kapı verisi yoksa gov=kapali', df15.gov_senaryo === 'kapali');
+chk('designFlow açık kapı verisi yoksa acik_kapi_debi=NaN', Number.isNaN(df15.acik_kapi_debi_m3h));
+
+// 16) designFlow: hiçbir girdi yok -> tamamen NaN, patlamaz
+const df16 = SP.designFlow();
+chk('designFlow() hiçbir girdi -> tasarim_debi NaN', Number.isNaN(df16.tasarim_debi_m3h));
+chk('designFlow() hiçbir girdi -> gov_senaryo null', df16.gov_senaryo === null);
+
 R('\n' + (fail ? fail + ' KALDI' : 'staircase-pressurization.js testleri GECTI'));
 process.exit(fail ? 1 : 0);

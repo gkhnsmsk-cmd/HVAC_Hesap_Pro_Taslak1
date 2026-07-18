@@ -106,6 +106,42 @@ const result8 = ElevatorPressurization.calc({
 console.log('Result:', result8);
 pass = assert(result8.debiM3h !== undefined && result8.debiM3h > 0, 'Yüksek basınç hesaplaması başarılı') && pass;
 
+// ── openDoorFlow / designFlow (YENİ — açık kapı senaryosu) ──
+console.log('\n=== Test 9: openDoorFlow — temel hesap ===');
+// kapi_alani_m2=2.0 (asansör kapısı), min_hiz_ms=1.0 -> Q=2.0*1.0*3600=7200
+const r9 = ElevatorPressurization.openDoorFlow({ kapi_alani_m2: 2.0, min_hiz_ms: 1.0 });
+console.log('Result:', r9);
+pass = assertClose(r9.debiM3h, 7200, 1, 'openDoorFlow 2.0m² x 1.0m/s == 7200 m³/h') && pass;
+
+console.log('\n=== Test 10: openDoorFlow — geçersiz girdi ===');
+const r10a = ElevatorPressurization.openDoorFlow({ kapi_alani_m2: 0, min_hiz_ms: 1 });
+const r10b = ElevatorPressurization.openDoorFlow({ kapi_alani_m2: 2, min_hiz_ms: 0 });
+pass = assert(r10a.error !== undefined, 'openDoorFlow alan=0 -> hata') && pass;
+pass = assert(r10b.error !== undefined, 'openDoorFlow hiz=0 -> hata') && pass;
+
+console.log('\n=== Test 11: designFlow — açık kapı baskın senaryo ===');
+// kapali: sizdirmazlik 1.0m2, 50Pa -> ~27288 m3/h; acik: 2.0m2 x 1.0m/s -> 7200 m3/h
+// Bu vakada kapalı-kapı (sızıntı, büyük varsayılan alan) daha büyük çıkabilir — asıl amaç
+// her iki senaryonun da hesaplanıp DOĞRU şekilde karşılaştırılması.
+const r11 = ElevatorPressurization.designFlow({
+  sizdirmazlikAlaniM2: 1.0, hedefBasincFarkiPa: 50,
+  kapi_alani_m2: 2.0, min_hiz_ms: 1.0
+});
+console.log('Result:', r11);
+pass = assert(isFinite(r11.kapaliKapiDebiM3h) && isFinite(r11.acikKapiDebiM3h), 'designFlow her iki senaryoyu da hesaplıyor') && pass;
+pass = assert(r11.tasarimDebiM3h === Math.max(r11.kapaliKapiDebiM3h, r11.acikKapiDebiM3h), 'designFlow büyük olanı seçiyor') && pass;
+pass = assert(r11.govSenaryo === 'kapali' || r11.govSenaryo === 'acik', 'designFlow gov_senaryo doğru etiketleniyor') && pass;
+
+console.log('\n=== Test 12: designFlow — sadece kapalı-kapı girdisi ===');
+const r12 = ElevatorPressurization.designFlow({ sizdirmazlikAlaniM2: 1.0, hedefBasincFarkiPa: 50 });
+pass = assert(r12.govSenaryo === 'kapali', 'designFlow açık kapı verisi yoksa gov=kapali') && pass;
+pass = assert(Number.isNaN(r12.acikKapiDebiM3h), 'designFlow açık kapı verisi yoksa acikKapiDebiM3h=NaN') && pass;
+
+console.log('\n=== Test 13: designFlow — hiçbir girdi yok ===');
+const r13 = ElevatorPressurization.designFlow();
+pass = assert(Number.isNaN(r13.tasarimDebiM3h), 'designFlow() -> tasarimDebiM3h NaN (güvenli)') && pass;
+pass = assert(r13.govSenaryo === null, 'designFlow() -> govSenaryo null') && pass;
+
 console.log('\n' + '='.repeat(50));
 if (pass) {
   console.log('ALL TESTS PASSED');

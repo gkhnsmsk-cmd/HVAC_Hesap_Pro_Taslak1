@@ -60,8 +60,57 @@
     };
   }
 
+  // ─────────────────────────────────────────────────────────────────
+  // Eski calc() SADECE "kapılar kapalı" (sızıntı) senaryosunu
+  // hesaplıyordu. Gerçek tasarımda asansör kapısı bir katta AÇIKKEN
+  // (kurtarma/tahliye senaryosu) çok daha büyük debi gerekebilir —
+  // bu senaryo eskiden HİÇ hesaplanmıyordu. Aşağıdaki fonksiyonlar
+  // bu eksiği kapatır (bkz staircase-pressurization.js'deki aynı desen).
+  // Kat-bazlı piston etkisi (kabin hareketi) ve çok katlı tam ağ
+  // analizi BU MODÜLÜN KAPSAMI DIŞINDADIR — proje-özel TEYİT gerekir.
+
+  // openDoorFlow: Asansör kapısı AÇIKKEN gereken minimum debi.
+  // kapi_alani_m2 : Açık kapı net geçiş kesiti (m²) — GİRDİ ZORUNLU
+  // min_hiz_ms    : Kapı kesitinden geçmesi gereken min. hız (m/s)
+  //                 — GİRDİ ZORUNLU, sabit VERİLMEZ (TEYİT gerekir)
+  function openDoorFlow(opt) {
+    opt = opt || {};
+    var a = _num(opt.kapi_alani_m2);
+    var v = _num(opt.min_hiz_ms);
+    if (!isFinite(a) || a <= 0) return { error: 'invalid kapi_alani_m2: must be > 0' };
+    if (!isFinite(v) || v <= 0) return { error: 'invalid min_hiz_ms: must be > 0' };
+    var debiM3h = a * v * 3600;
+    return { debiM3h: Math.round(debiM3h * 1000) / 1000 };
+  }
+
+  // designFlow: Kapalı-kapı (calc) ve açık-kapı (openDoorFlow)
+  // senaryolarını KARŞILAŞTIRIR, fanın karşılaması gereken BÜYÜK
+  // debiyi döndürür (gov_senaryo: 'kapali' | 'acik' | null).
+  function designFlow(opt) {
+    opt = opt || {};
+    var closed = calc(opt);
+    var open = openDoorFlow(opt);
+    var c = (closed && isFinite(closed.debiM3h)) ? closed.debiM3h : NaN;
+    var o = (open && isFinite(open.debiM3h)) ? open.debiM3h : NaN;
+
+    if (!isFinite(c) && !isFinite(o)) {
+      return { kapaliKapiDebiM3h: NaN, acikKapiDebiM3h: NaN, tasarimDebiM3h: NaN, govSenaryo: null };
+    }
+    var cSafe = isFinite(c) ? c : -Infinity;
+    var oSafe = isFinite(o) ? o : -Infinity;
+    var maxVal = Math.max(cSafe, oSafe);
+    return {
+      kapaliKapiDebiM3h: isFinite(c) ? c : NaN,
+      acikKapiDebiM3h: isFinite(o) ? o : NaN,
+      tasarimDebiM3h: maxVal,
+      govSenaryo: maxVal === cSafe ? 'kapali' : 'acik'
+    };
+  }
+
   var api = {
-    calc: calc
+    calc: calc,
+    openDoorFlow: openDoorFlow,
+    designFlow: designFlow
   };
   if (typeof window !== 'undefined') window.ElevatorPressurization = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
