@@ -1,0 +1,27 @@
+{
+  "brand_name": "GSEM MEP PRO",
+  "theme": "acik (beyaz zemin #ffffff/#f8f9fb, koyu metin #1a1f28, aksan mavi #3B82F6 / yesil #10B981)",
+  "canonical_app_file": "HVAC_Pro_v8/index.html",
+  "archived_folder": "HVAC_Pro_v8/_eski-arsiv",
+  "frozen_files": [
+    "HVAC_Pro_v8/_eski-arsiv/index-eski-hesap-motoru.html",
+    "HVAC_Pro_v8/_eski-arsiv/ana-yapi-mockup-referans.html"
+  ],
+  "shared_infra_no_touch": [
+    "saglik-kontrol.js",
+    "TASK_QUEUE.json",
+    "tools/motor-test.js",
+    "tools/golden-test.js",
+    "tools/verify-scope.js",
+    "tools/project-map.js",
+    "tools/decisions.js"
+  ],
+  "language_requirement": "TR/EN cift dil en bastan zorunlu, sonradan eklenmeyecek",
+  "ai_agent_requirement": "Groq zorunlu (BYOK, kullanici kendi ucretsiz API anahtarini girer) + coklu saglayici (OpenAI/Claude/Gemini) destegi planlandi, henuz kod yazilmadi",
+  "night_automation": "hvac-gece-taramasi scheduled task DURDURULDU (2026-07-18, kullanici karari - yanlis klasorde calisiyordu)",
+  "engine_function": "hesaplaMahalV5(row, P, korunanCihaz) - js/calc-engine.js - EN12831 kis + ASHRAE CLTD yaz, SAF (DOM'suz)",
+  "notes": [
+    "2026-07-18: index.html eski wizard'dan yeni ribbon+acik-tema arayuze gecti, motor (calc-engine.js) korundu",
+    "2026-07-18: 45+ hesap modulu js/ altinda, ek-hesaplar-config.js ile kategorilere (heating-cooling/ventilation/plumbing/fire/other) ayrildi"
+  ]
+}
