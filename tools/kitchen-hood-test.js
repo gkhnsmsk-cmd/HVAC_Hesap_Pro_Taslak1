@@ -66,5 +66,51 @@ chk('calc() -> NaN (güvenli)', Number.isNaN(bad6.debi_m3h));
 const r7 = KH.calc({ alanM2: 1, izgara_eni_m: 0.5, hava_hizi_ms: 0.1, cikmaDugume: 2 });
 chk('calc: küçük değerler → 360 m³/h (±10)', near(r7.debi_m3h, 360, 10));
 
+// ── deviceConvectiveLoad / deviceBasedFlow / captureEfficiencyAdjust / combinedFlow (YENİ) ──
+// 12) deviceConvectiveLoad: 3 cihaz, toplam yük
+const dcl12 = KH.deviceConvectiveLoad({ cihazlar: [{ Q_conv_kW: 5 }, { Q_conv_kW: 3.5 }, { Q_conv_kW: 2 }] });
+chk('deviceConvectiveLoad 5+3.5+2 == 10.5', near(dcl12, 10.5, 0.001));
+
+// 13) deviceConvectiveLoad: boş/geçersiz -> NaN
+chk('deviceConvectiveLoad([]) -> NaN', Number.isNaN(KH.deviceConvectiveLoad({ cihazlar: [] })));
+chk('deviceConvectiveLoad negatif yük -> NaN', Number.isNaN(KH.deviceConvectiveLoad({ cihazlar: [{ Q_conv_kW: -1 }] })));
+
+// 14) deviceBasedFlow: 10.5 kW x 250 m3h/kW = 2625 m3h
+const dbf14 = KH.deviceBasedFlow({ toplam_Q_conv_kW: 10.5, k_katsayi_m3h_kW: 250 });
+chk('deviceBasedFlow 10.5kW x 250 == 2625 m3h', near(dbf14, 2625, 1));
+
+// 15) deviceBasedFlow geçersiz k -> NaN
+chk('deviceBasedFlow k<=0 -> NaN', Number.isNaN(KH.deviceBasedFlow({ toplam_Q_conv_kW: 10.5, k_katsayi_m3h_kW: 0 })));
+
+// 16) captureEfficiencyAdjust: 2625 / 0.75 = 3500
+const cea16 = KH.captureEfficiencyAdjust({ V_gerekli_m3h: 2625, yakalama_verimi: 0.75 });
+chk('captureEfficiencyAdjust 2625/0.75 == 3500', near(cea16, 3500, 1));
+
+// 17) captureEfficiencyAdjust geçersiz verim (0, >1) -> NaN
+chk('captureEfficiencyAdjust verim=0 -> NaN', Number.isNaN(KH.captureEfficiencyAdjust({ V_gerekli_m3h: 2625, yakalama_verimi: 0 })));
+chk('captureEfficiencyAdjust verim=1.5 -> NaN', Number.isNaN(KH.captureEfficiencyAdjust({ V_gerekli_m3h: 2625, yakalama_verimi: 1.5 })));
+
+// 18) combinedFlow: iki yöntem karşılaştırılıyor, büyük olan seçilmeli
+// izgara yöntemi: alanM2=10, izgara_eni_m=2.5, hava_hizi_ms=1.0, cikmaDugume=2 -> 18000 m3h
+// cihaz yöntemi: toplam_Q_conv_kW=10.5, k=250, verim=0.75 -> 2625/0.75=3500 m3h
+// izgara (18000) >> cihaz (3500) -> gov='izgara'
+const cf18 = KH.combinedFlow({
+  alanM2: 10, izgara_eni_m: 2.5, hava_hizi_ms: 1.0, cikmaDugume: 2,
+  toplam_Q_conv_kW: 10.5, k_katsayi_m3h_kW: 250, yakalama_verimi: 0.75
+});
+chk('combinedFlow izgara ve cihaz debilerini raporluyor', isFinite(cf18.izgara_debi_m3h) && isFinite(cf18.cihaz_debi_m3h));
+chk('combinedFlow tasarim_debi = max(izgara,cihaz) == 18000', near(cf18.tasarim_debi_m3h, 18000, 1));
+chk('combinedFlow gov_yontem = izgara', cf18.gov_yontem === 'izgara');
+
+// 19) combinedFlow: sadece cihaz verisi varsa gov='cihaz'
+const cf19 = KH.combinedFlow({ toplam_Q_conv_kW: 10.5, k_katsayi_m3h_kW: 250, yakalama_verimi: 0.75 });
+chk('combinedFlow sadece cihaz verisi -> gov=cihaz', cf19.gov_yontem === 'cihaz');
+chk('combinedFlow sadece cihaz verisi -> izgara_debi=NaN', Number.isNaN(cf19.izgara_debi_m3h));
+
+// 20) combinedFlow: hiçbir girdi yok -> tamamen NaN, patlamaz
+const cf20 = KH.combinedFlow();
+chk('combinedFlow() hiçbir girdi -> tasarim_debi NaN', Number.isNaN(cf20.tasarim_debi_m3h));
+chk('combinedFlow() hiçbir girdi -> gov_yontem null', cf20.gov_yontem === null);
+
 R('\n' + (fail ? fail + ' KALDI' : 'kitchen-hood.js testleri GECTI'));
 process.exit(fail ? 1 : 0);
