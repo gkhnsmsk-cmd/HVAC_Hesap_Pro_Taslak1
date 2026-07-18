@@ -632,6 +632,19 @@
             color: var(--theme-text);
         }
 
+        .table-btn {
+            padding: 2px 6px;
+            font-size: 11px;
+            border: 1px solid #e2e8f0;
+            border-radius: 3px;
+            background: #fff;
+            cursor: pointer;
+            margin-right: 4px;
+        }
+
+        .table-btn-edit:hover { background: #eff6ff; border-color: #3B82F6; }
+        .table-btn-delete:hover { background: #fef2f2; border-color: #ef4444; }
+
         .modal-field {
             margin-bottom: 12px;
         }
@@ -911,7 +924,7 @@
                             <th data-i18n="table_height">Yukseklik (m)</th>
                             <th data-i18n="table_heat_loss">Isi Kaybi (W)</th>
                             <th data-i18n="table_cooling_load">Sogutma Yuku (W)</th>
-                            <th data-i18n="table_status">Durum</th>
+                            <th data-i18n="table_actions">İşlemler</th>
                         </tr>
                     </thead>
                     <tbody id="mahaller-tbody">
@@ -998,7 +1011,7 @@
     <!-- Modal -->
     <div class="modal" id="mahal-modal">
         <div class="modal-content">
-            <div class="modal-title" data-i18n="modal_title_add_room">Yeni Mahal Ekle</div>
+            <div class="modal-title" id="modal-title-text" data-i18n="modal_title_add_room">Yeni Mahal Ekle</div>
 
             <div class="modal-section">
                 <h4 class="modal-section-title">Temel Bilgiler</h4>

@@ -6,6 +6,7 @@
 
   window.gsemApp = {
     mahals: [],
+    editingId: null,
     defaultCalcParams: {
       Tmax: 33,
       DR: 10,
@@ -93,6 +94,72 @@
     closeModal: function() {
       document.getElementById('mahal-modal').classList.remove('active');
       this.clearModalFields();
+      this.editingId = null;
+      const titleEl = document.getElementById('modal-title-text');
+      if (titleEl) titleEl.textContent = (window.i18n && window.i18n.get('modal_title_add_room')) || 'Yeni Mahal Ekle';
+    },
+
+    // Mevcut bir mahali düzenlemek için modalı önceden doldurarak aç
+    openEditModal: function(id) {
+      const mahal = this.mahals.find(m => m.id === id);
+      if (!mahal) return;
+
+      this.editingId = id;
+
+      document.getElementById('modal-mahal-adi').value = mahal.mahalAdi;
+      document.getElementById('modal-alan').value = mahal.alan;
+      document.getElementById('modal-yukseklik').value = mahal.h;
+      document.getElementById('modal-dis-sicaklik-kis').value = mahal.disSicaklikKis;
+      document.getElementById('modal-ic-sicaklik-kis').value = mahal.icSicaklikKis;
+      document.getElementById('modal-dis-sicaklik-yaz').value = mahal.disSicaklikYaz;
+      document.getElementById('modal-ic-sicaklik-yaz').value = mahal.icSicaklikYaz;
+
+      // U-değerleri
+      document.getElementById('modal-u-duvar').value = mahal.uDuvar;
+      document.getElementById('modal-u-pencere').value = mahal.uPencere;
+      document.getElementById('modal-u-tavan').value = mahal.uTavan;
+      document.getElementById('modal-u-doseme').value = mahal.uDoseme;
+      document.getElementById('modal-golgeleme').value = mahal.golgeleme;
+
+      // Yönler (8 yön × duvar/pencere)
+      document.getElementById('modal-duvar-kuzey').value = mahal.duvarKuzey;
+      document.getElementById('modal-pencere-kuzey').value = mahal.pencereKuzey;
+      document.getElementById('modal-duvar-guney').value = mahal.duvarGuney;
+      document.getElementById('modal-pencere-guney').value = mahal.pencereGuney;
+      document.getElementById('modal-duvar-dogu').value = mahal.duvarDogu;
+      document.getElementById('modal-pencere-dogu').value = mahal.pencereDogu;
+      document.getElementById('modal-duvar-bati').value = mahal.duvarBati;
+      document.getElementById('modal-pencere-bati').value = mahal.pencereBati;
+      document.getElementById('modal-duvar-kuzeydogu').value = mahal.duvarKuzeydogu;
+      document.getElementById('modal-pencere-kuzeydogu').value = mahal.pencereKuzeydogu;
+      document.getElementById('modal-duvar-guneydogu').value = mahal.duvarGuneydogu;
+      document.getElementById('modal-pencere-guneydogu').value = mahal.pencereGuneydogu;
+      document.getElementById('modal-duvar-guneybati').value = mahal.duvarGuneybati;
+      document.getElementById('modal-pencere-guneybati').value = mahal.pencereGuneybati;
+      document.getElementById('modal-duvar-kuzeybati').value = mahal.duvarKuzeybati;
+      document.getElementById('modal-pencere-kuzeybati').value = mahal.pencereKuzeybati;
+
+      // Skylight
+      document.getElementById('modal-skylight-alan').value = mahal.skylightAlan;
+      document.getElementById('modal-skylight-u').value = mahal.skylightU;
+      document.getElementById('modal-skylight-golge').value = mahal.skylightGolge;
+
+      // Tavan/Döşeme (null olabilir — boş bırak, fallback davranışı korunsun)
+      document.getElementById('modal-tavan-alan').value = (mahal.tavanAlan === null || mahal.tavanAlan === undefined) ? '' : mahal.tavanAlan;
+      document.getElementById('modal-doseme-alan').value = (mahal.dosemeAlan === null || mahal.dosemeAlan === undefined) ? '' : mahal.dosemeAlan;
+
+      // İç yükler
+      document.getElementById('modal-kisi-oturan').value = mahal.kisiOturan;
+      document.getElementById('modal-kisi-ayakta').value = mahal.kisiAyakta;
+      document.getElementById('modal-kisi-dans').value = mahal.kisiDans;
+      document.getElementById('modal-tv-wm2').value = mahal.tvWm2;
+      document.getElementById('modal-cihaz-wm2').value = mahal.cihazWm2;
+      document.getElementById('modal-aydinlatma-wm2').value = mahal.aydinlatmaWm2;
+
+      const titleEl = document.getElementById('modal-title-text');
+      if (titleEl) titleEl.textContent = (window.i18n && window.i18n.get('modal_title_edit_room')) || 'Mahal Düzenle';
+
+      document.getElementById('mahal-modal').classList.add('active');
     },
 
     // Modal alanlarını temizle
@@ -235,14 +302,31 @@
         qSogutma: 0
       };
 
-      // Hesapla
-      this.calculateMahal(mahal);
+      if (this.editingId) {
+        // Düzenleme modu: mevcut mahali güncelle, id sabit kalsın
+        const idx = this.mahals.findIndex(m => m.id === this.editingId);
+        if (idx !== -1) {
+          const updated = Object.assign({}, mahal, { id: this.editingId });
+          this.calculateMahal(updated);
+          this.mahals[idx] = updated;
+        }
+        this.editingId = null;
+      } else {
+        // Yeni mahal ekleme modu
+        this.calculateMahal(mahal);
+        this.mahals.push(mahal);
+      }
 
-      // Tabloya ekle
-      this.mahals.push(mahal);
       this.saveToStorage();
       this.render();
       this.closeModal();
+    },
+
+    // Mahal sil
+    deleteMahal: function(id) {
+      this.mahals = this.mahals.filter(m => m.id !== id);
+      this.saveToStorage();
+      this.render();
     },
 
     // Mahal hesapla — GERÇEK motor: calc-engine.js / hesaplaMahalV5 (EN 12831 kış + ASHRAE CLTD yaz)
@@ -491,7 +575,10 @@
           <td>${mahal.h.toFixed(1)}</td>
           <td>${(mahal.qIsı * 1000).toFixed(0)}</td>
           <td>${(mahal.qSogutma * 1000).toFixed(0)}</td>
-          <td>✓</td>
+          <td>
+            <button class="table-btn table-btn-edit" onclick="gsemApp.openEditModal(${mahal.id})" title="Düzenle">✎</button>
+            <button class="table-btn table-btn-delete" onclick="if(confirm('Silinsin mi?')) gsemApp.deleteMahal(${mahal.id})" title="Sil">🗑</button>
+          </td>
         `;
         tbody.appendChild(row);
       });
