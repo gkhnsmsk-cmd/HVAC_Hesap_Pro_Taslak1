@@ -25,6 +25,7 @@
     "2026-07-18: 45+ hesap modulu js/ altinda, ek-hesaplar-config.js ile kategorilere (heating-cooling/ventilation/plumbing/fire/other) ayrildi",
     "2026-07-18: T46-T50: 5 hesap modülü (boru yalıtımı/Fourier, kojenerasyon/enerji, güç kompanzasyonu/elektrik, oda havalandırması/ACH, kanal ısı/HVAC) tamamlandı. 50/50 (%100) görev bitişi. Paylaşılan altyapı korundu.",
     "2026-07-18: 2026-07-18: mahal-modal (HVAC_Pro_v8/index.html) 7 alanlik basit formdan hesaplaMahalV5 motorunun bekledigi 39 alanli tam forma genisletildi (U-degerleri, 8 yon x duvar/pencere, skylight, tavan/doseme, ic yukler). i18n sonraki chunk'ta eklenecek. gsem-app.js henuz bu id'leri okumuyor - sonraki chunk.",
-    "2026-07-18: 2026-07-18: Mahal tablosuna Duzenle/Sil butonlari eklendi, modal artik openEditModal(id) ile 39 alani onceden doldurup mevcut mahali id sabit kalarak gunceller (addMahal editingId mantigi). gsem-app.js + index.html degisti, motor/i18n dokunulmadi."
+    "2026-07-18: 2026-07-18: Mahal tablosuna Duzenle/Sil butonlari eklendi, modal artik openEditModal(id) ile 39 alani onceden doldurup mevcut mahali id sabit kalarak gunceller (addMahal editingId mantigi). gsem-app.js + index.html degisti, motor/i18n dokunulmadi.",
+    "2026-07-18: 2026-07-18: index.html/gsem-app.js'e merkezi 'Tasarim Sartlari (Proje Geneli)' paneli eklendi (localStorage: gsem_design_conditions), defaultCalcParams artik kullanici tarafindan Settings tab'inda duzenlenebilir."
   ]
 }

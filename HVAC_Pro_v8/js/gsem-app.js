@@ -27,6 +27,7 @@
       this.loadFromStorage();
       this.loadThemeFromStorage();
       this.loadAISettings();
+      this.loadDesignConditions();
       this.applyI18nPlaceholders();
       this.render();
       // Set language selector to current language (restored from localStorage by i18n.js)
@@ -70,6 +71,12 @@
       const saveGroqBtn = document.getElementById('btn-save-groq-key');
       if (saveGroqBtn) {
         saveGroqBtn.addEventListener('click', () => this.saveAISettings());
+      }
+
+      // Tasarım Şartları (Proje Geneli) — Kaydet butonu listener
+      const saveDesignConditionsBtn = document.getElementById('btn-save-design-conditions');
+      if (saveDesignConditionsBtn) {
+        saveDesignConditionsBtn.addEventListener('click', () => this.saveDesignConditions());
       }
 
       // Settings tab listener — load AI settings when tab opens
@@ -187,9 +194,9 @@
       document.getElementById('modal-mahal-adi').value = '';
       document.getElementById('modal-alan').value = '50';
       document.getElementById('modal-yukseklik').value = '3.0';
-      document.getElementById('modal-dis-sicaklik-kis').value = '-12';
+      document.getElementById('modal-dis-sicaklik-kis').value = this.defaultCalcParams.kisKt;
       document.getElementById('modal-ic-sicaklik-kis').value = '21';
-      document.getElementById('modal-dis-sicaklik-yaz').value = '33';
+      document.getElementById('modal-dis-sicaklik-yaz').value = this.defaultCalcParams.Tmax;
       document.getElementById('modal-ic-sicaklik-yaz').value = '24';
 
       // U-değerleri
@@ -976,6 +983,77 @@
         alert(window.i18n.get('success_api_key_saved') || 'API Key başarıyla kaydedildi.');
       } catch (e) {
         console.error('AI ayarları kaydedilirken hata:', e);
+        alert('Hata: ' + e.message);
+      }
+    },
+
+    // Tasarım Şartları (Proje Geneli) — localStorage'dan yükle ve defaultCalcParams'ı güncelle
+    loadDesignConditions: function() {
+      try {
+        const raw = localStorage.getItem('gsem_design_conditions');
+        const saved = raw ? JSON.parse(raw) : null;
+
+        if (saved) {
+          if (saved.kisKt !== undefined) this.defaultCalcParams.kisKt = saved.kisKt;
+          if (saved.Tmax !== undefined) this.defaultCalcParams.Tmax = saved.Tmax;
+          if (saved.DR !== undefined) this.defaultCalcParams.DR = saved.DR;
+          if (saved.ruzgarZam !== undefined) this.defaultCalcParams.ruzgarZam = saved.ruzgarZam;
+          if (saved.ruzgarHiz !== undefined) this.defaultCalcParams.ruzgarHiz = saved.ruzgarHiz;
+          if (saved.emSog !== undefined) this.defaultCalcParams.emSog = saved.emSog;
+          if (saved.emIst !== undefined) this.defaultCalcParams.emIst = saved.emIst;
+        }
+
+        const setVal = (id, val) => {
+          const el = document.getElementById(id);
+          if (el) el.value = val;
+        };
+        setVal('proj-dis-sicaklik-kis', this.defaultCalcParams.kisKt);
+        setVal('proj-dis-sicaklik-yaz', this.defaultCalcParams.Tmax);
+        setVal('proj-DR', this.defaultCalcParams.DR);
+        setVal('proj-ruzgarZam', this.defaultCalcParams.ruzgarZam);
+        setVal('proj-ruzgarHiz', this.defaultCalcParams.ruzgarHiz);
+        setVal('proj-emSog', this.defaultCalcParams.emSog);
+        setVal('proj-emIst', this.defaultCalcParams.emIst);
+      } catch (e) {
+        console.warn('Tasarım şartları yüklemede hata:', e);
+      }
+    },
+
+    // Tasarım Şartları (Proje Geneli) — input'lardan oku, defaultCalcParams'ı güncelle, localStorage'a kaydet
+    saveDesignConditions: function() {
+      try {
+        const getVal = (id, fallback) => {
+          const el = document.getElementById(id);
+          const v = el ? parseFloat(el.value) : NaN;
+          return isNaN(v) ? fallback : v;
+        };
+
+        this.defaultCalcParams.kisKt = getVal('proj-dis-sicaklik-kis', this.defaultCalcParams.kisKt);
+        this.defaultCalcParams.Tmax = getVal('proj-dis-sicaklik-yaz', this.defaultCalcParams.Tmax);
+        this.defaultCalcParams.DR = getVal('proj-DR', this.defaultCalcParams.DR);
+        this.defaultCalcParams.ruzgarZam = getVal('proj-ruzgarZam', this.defaultCalcParams.ruzgarZam);
+        this.defaultCalcParams.ruzgarHiz = getVal('proj-ruzgarHiz', this.defaultCalcParams.ruzgarHiz);
+        this.defaultCalcParams.emSog = getVal('proj-emSog', this.defaultCalcParams.emSog);
+        this.defaultCalcParams.emIst = getVal('proj-emIst', this.defaultCalcParams.emIst);
+
+        const toSave = {
+          kisKt: this.defaultCalcParams.kisKt,
+          Tmax: this.defaultCalcParams.Tmax,
+          DR: this.defaultCalcParams.DR,
+          ruzgarZam: this.defaultCalcParams.ruzgarZam,
+          ruzgarHiz: this.defaultCalcParams.ruzgarHiz,
+          emSog: this.defaultCalcParams.emSog,
+          emIst: this.defaultCalcParams.emIst
+        };
+        localStorage.setItem('gsem_design_conditions', JSON.stringify(toSave));
+
+        const statusEl = document.getElementById('design-conditions-status');
+        if (statusEl) {
+          statusEl.textContent = '✓ Kaydedildi';
+          setTimeout(() => { statusEl.textContent = ''; }, 2000);
+        }
+      } catch (e) {
+        console.error('Tasarım şartları kaydedilirken hata:', e);
         alert('Hata: ' + e.message);
       }
     },

@@ -865,6 +865,44 @@
                 </div>
             </div>
 
+            <!-- Tasarım Şartları (Proje Geneli) Section -->
+            <div class="settings-group" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--theme-border);">
+                <div class="settings-label">Tasarım Şartları (Proje Geneli)</div>
+                <div style="font-size: 11px; color: #64748b; margin: 4px 0 12px 0; max-width: 320px;">Bu değerler yeni mahal eklerken ve Excel içe aktarımında varsayılan olarak kullanılır.</div>
+                <div class="settings-control">
+                    <label for="proj-dis-sicaklik-kis" class="settings-label">Dış Sıcaklık - Kış (°C)</label>
+                    <input type="number" id="proj-dis-sicaklik-kis" step="1" value="-12" style="padding: 6px 12px; background: var(--theme-bg-light); border: 1px solid var(--theme-border); border-radius: 4px; color: var(--theme-text); font-size: 12px; width: 200px; box-sizing: border-box;">
+                </div>
+                <div class="settings-control">
+                    <label for="proj-dis-sicaklik-yaz" class="settings-label">Dış Sıcaklık - Yaz (°C)</label>
+                    <input type="number" id="proj-dis-sicaklik-yaz" step="1" value="33" style="padding: 6px 12px; background: var(--theme-bg-light); border: 1px solid var(--theme-border); border-radius: 4px; color: var(--theme-text); font-size: 12px; width: 200px; box-sizing: border-box;">
+                </div>
+                <div class="settings-control">
+                    <label for="proj-DR" class="settings-label">Günlük Sıcaklık Salınımı DR (°C)</label>
+                    <input type="number" id="proj-DR" step="0.5" value="10" style="padding: 6px 12px; background: var(--theme-bg-light); border: 1px solid var(--theme-border); border-radius: 4px; color: var(--theme-text); font-size: 12px; width: 200px; box-sizing: border-box;">
+                </div>
+                <div class="settings-control">
+                    <label for="proj-ruzgarZam" class="settings-label">Rüzgar Zam Katsayısı</label>
+                    <input type="number" id="proj-ruzgarZam" step="0.05" value="1.1" style="padding: 6px 12px; background: var(--theme-bg-light); border: 1px solid var(--theme-border); border-radius: 4px; color: var(--theme-text); font-size: 12px; width: 200px; box-sizing: border-box;">
+                </div>
+                <div class="settings-control">
+                    <label for="proj-ruzgarHiz" class="settings-label">Rüzgar Hızı (m/s)</label>
+                    <input type="number" id="proj-ruzgarHiz" step="0.1" value="3.5" style="padding: 6px 12px; background: var(--theme-bg-light); border: 1px solid var(--theme-border); border-radius: 4px; color: var(--theme-text); font-size: 12px; width: 200px; box-sizing: border-box;">
+                </div>
+                <div class="settings-control">
+                    <label for="proj-emSog" class="settings-label">Emniyet Katsayısı - Soğutma (%)</label>
+                    <input type="number" id="proj-emSog" step="1" value="5" style="padding: 6px 12px; background: var(--theme-bg-light); border: 1px solid var(--theme-border); border-radius: 4px; color: var(--theme-text); font-size: 12px; width: 200px; box-sizing: border-box;">
+                </div>
+                <div class="settings-control">
+                    <label for="proj-emIst" class="settings-label">Emniyet Katsayısı - Isıtma (%)</label>
+                    <input type="number" id="proj-emIst" step="1" value="5" style="padding: 6px 12px; background: var(--theme-bg-light); border: 1px solid var(--theme-border); border-radius: 4px; color: var(--theme-text); font-size: 12px; width: 200px; box-sizing: border-box;">
+                </div>
+                <div class="settings-control">
+                    <button id="btn-save-design-conditions" class="toolbar-btn" style="margin-top: 4px;">Kaydet</button>
+                    <span id="design-conditions-status" style="font-size: 11px; color: #10B981; margin-left: 8px;"></span>
+                </div>
+            </div>
+
             <!-- AI Agent Section -->
             <div class="settings-group" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--theme-border);">
                 <div class="settings-label" data-i18n="ai_agent_title">AI Agent</div>
