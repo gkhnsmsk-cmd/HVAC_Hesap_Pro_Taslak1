@@ -104,6 +104,64 @@
       document.getElementById('modal-ic-sicaklik-kis').value = '21';
       document.getElementById('modal-dis-sicaklik-yaz').value = '33';
       document.getElementById('modal-ic-sicaklik-yaz').value = '24';
+
+      // U-değerleri
+      document.getElementById('modal-u-duvar').value = '0.45';
+      document.getElementById('modal-u-pencere').value = '2.1';
+      document.getElementById('modal-u-tavan').value = '0.35';
+      document.getElementById('modal-u-doseme').value = '0.50';
+      document.getElementById('modal-golgeleme').value = '0.5';
+
+      // Yönler (8 yön × duvar/pencere)
+      document.getElementById('modal-duvar-kuzey').value = '0';
+      document.getElementById('modal-pencere-kuzey').value = '0';
+      document.getElementById('modal-duvar-guney').value = '0';
+      document.getElementById('modal-pencere-guney').value = '0';
+      document.getElementById('modal-duvar-dogu').value = '0';
+      document.getElementById('modal-pencere-dogu').value = '0';
+      document.getElementById('modal-duvar-bati').value = '0';
+      document.getElementById('modal-pencere-bati').value = '0';
+      document.getElementById('modal-duvar-kuzeydogu').value = '0';
+      document.getElementById('modal-pencere-kuzeydogu').value = '0';
+      document.getElementById('modal-duvar-guneydogu').value = '0';
+      document.getElementById('modal-pencere-guneydogu').value = '0';
+      document.getElementById('modal-duvar-guneybati').value = '0';
+      document.getElementById('modal-pencere-guneybati').value = '0';
+      document.getElementById('modal-duvar-kuzeybati').value = '0';
+      document.getElementById('modal-pencere-kuzeybati').value = '0';
+
+      // Skylight
+      document.getElementById('modal-skylight-alan').value = '0';
+      document.getElementById('modal-skylight-u').value = '2.8';
+      document.getElementById('modal-skylight-golge').value = '0.65';
+
+      // Tavan/Döşeme (boş bırakılırsa calculateMahal'de alan'a fallback)
+      document.getElementById('modal-tavan-alan').value = '';
+      document.getElementById('modal-doseme-alan').value = '';
+
+      // İç yükler
+      document.getElementById('modal-kisi-oturan').value = '0';
+      document.getElementById('modal-kisi-ayakta').value = '0';
+      document.getElementById('modal-kisi-dans').value = '0';
+      document.getElementById('modal-tv-wm2').value = '0';
+      document.getElementById('modal-cihaz-wm2').value = '0';
+      document.getElementById('modal-aydinlatma-wm2').value = '20';
+    },
+
+    // Modal input'undan güvenli sayı oku (boş/NaN ise varsayılana düş)
+    _readModalNum: function(id, fallback) {
+      const el = document.getElementById(id);
+      if (!el) return fallback;
+      const v = parseFloat(el.value);
+      return isNaN(v) ? fallback : v;
+    },
+
+    // Modal input'undan güvenli sayı oku, boşsa null döndür (tavan/döşeme alanı için)
+    _readModalNumOrNull: function(id) {
+      const el = document.getElementById(id);
+      if (!el || el.value === '' || el.value === null) return null;
+      const v = parseFloat(el.value);
+      return isNaN(v) ? null : v;
     },
 
     // Mahal ekle
@@ -130,6 +188,49 @@
         disSicaklikKis: disKis,
         icSicaklikYaz: icYaz,
         disSicaklikYaz: disYaz,
+
+        // U-değerleri
+        uDuvar: this._readModalNum('modal-u-duvar', 0.45),
+        uPencere: this._readModalNum('modal-u-pencere', 2.1),
+        uTavan: this._readModalNum('modal-u-tavan', 0.35),
+        uDoseme: this._readModalNum('modal-u-doseme', 0.50),
+        golgeleme: this._readModalNum('modal-golgeleme', 0.5),
+
+        // Yönler (8 yön × duvar/pencere) — gerçek girilen alanlar, yaklaşıklık YOK
+        duvarKuzey: this._readModalNum('modal-duvar-kuzey', 0),
+        pencereKuzey: this._readModalNum('modal-pencere-kuzey', 0),
+        duvarGuney: this._readModalNum('modal-duvar-guney', 0),
+        pencereGuney: this._readModalNum('modal-pencere-guney', 0),
+        duvarDogu: this._readModalNum('modal-duvar-dogu', 0),
+        pencereDogu: this._readModalNum('modal-pencere-dogu', 0),
+        duvarBati: this._readModalNum('modal-duvar-bati', 0),
+        pencereBati: this._readModalNum('modal-pencere-bati', 0),
+        duvarKuzeydogu: this._readModalNum('modal-duvar-kuzeydogu', 0),
+        pencereKuzeydogu: this._readModalNum('modal-pencere-kuzeydogu', 0),
+        duvarGuneydogu: this._readModalNum('modal-duvar-guneydogu', 0),
+        pencereGuneydogu: this._readModalNum('modal-pencere-guneydogu', 0),
+        duvarGuneybati: this._readModalNum('modal-duvar-guneybati', 0),
+        pencereGuneybati: this._readModalNum('modal-pencere-guneybati', 0),
+        duvarKuzeybati: this._readModalNum('modal-duvar-kuzeybati', 0),
+        pencereKuzeybati: this._readModalNum('modal-pencere-kuzeybati', 0),
+
+        // Skylight
+        skylightAlan: this._readModalNum('modal-skylight-alan', 0),
+        skylightU: this._readModalNum('modal-skylight-u', 2.8),
+        skylightGolge: this._readModalNum('modal-skylight-golge', 0.65),
+
+        // Tavan/Döşeme (boşsa null — calculateMahal'de alan'a fallback yapılır)
+        tavanAlan: this._readModalNumOrNull('modal-tavan-alan'),
+        dosemeAlan: this._readModalNumOrNull('modal-doseme-alan'),
+
+        // İç yükler
+        kisiOturan: this._readModalNum('modal-kisi-oturan', 0),
+        kisiAyakta: this._readModalNum('modal-kisi-ayakta', 0),
+        kisiDans: this._readModalNum('modal-kisi-dans', 0),
+        tvWm2: this._readModalNum('modal-tv-wm2', 0),
+        cihazWm2: this._readModalNum('modal-cihaz-wm2', 0),
+        aydinlatmaWm2: this._readModalNum('modal-aydinlatma-wm2', 20),
+
         qIsı: 0,
         qSogutma: 0
       };
@@ -155,37 +256,46 @@
           return;
         }
 
-        // Basit modal sadece toplam alan+yükseklik alıyor; yön bazlı duvar/pencere alanı
-        // TOPLANMIYOR. Motor bunları istiyor — kare oda varsayımıyla türetiyoruz:
-        //   çevre = 4×kenar (kenar=√alan), dış duvar = çevre×h, pencere/duvar oranı %20 (tipik ofis/konut)
-        // Bu bir YAKLAŞIKLIK: gerçek projede yön bazlı gerçek duvar/pencere alanları girilmeli
-        // (bkz. index.html Excel-tabanlı akış — orada gerçek ölçüler kullanılıyor).
-        const kenar = Math.sqrt(Math.max(mahal.alan, 1));
-        const cevre = 4 * kenar;
-        const disDuvarToplam = cevre * mahal.h;
-        const pencereOrani = 0.20;
-        const pencereToplam = disDuvarToplam * pencereOrani;
-        const duvarToplam = disDuvarToplam - pencereToplam;
-        // Tek dış cephe (güney) varsayımıyla motora veriyoruz — 4 yöne bölmek sonucu değiştirmez
-        // (motor yön bazlı sadece güneş radyasyonu/CLTD farkı için kullanıyor; muhafazakâr taraf
-        // için tüm cepheyi "güney"e veriyoruz — yaz kazancı biraz yüksek çıkabilir, kışta etkisiz).
-
+        // Motor GERÇEK yön-bazlı duvar/pencere alanlarıyla besleniyor (yaklaşıklık YOK,
+        // kullanıcı girdisi doğrudan).
         const row = {
           mahalAdi: mahal.mahalAdi,
           alan: mahal.alan,
           h: mahal.h,
           'İç Sıcaklık- Yaz': mahal.icSicaklikYaz,
           'İç Sıcaklık- Kış': mahal.icSicaklikKis,
-          'duvar u değeri': 0.45,
-          'pencere u değeri': 2.1,
-          'tavan u değeri': 0.35,
-          'döşeme u değeri': 0.50,
-          'pencere gölgeleme kaysayısı': 0.5,
-          'güney dış duvar alanı': duvarToplam,
-          'güney dış pencere alanı': pencereToplam,
-          'tavan alanı': mahal.alan,
-          'döşeme alanı': mahal.alan,
-          'aydınlatma yükü': 20
+          'duvar u değeri': mahal.uDuvar,
+          'pencere u değeri': mahal.uPencere,
+          'tavan u değeri': mahal.uTavan,
+          'döşeme u değeri': mahal.uDoseme,
+          'pencere gölgeleme kaysayısı': mahal.golgeleme,
+          'skylight alanı': mahal.skylightAlan,
+          'skylight u değeri': mahal.skylightU,
+          'skylight gölgeleme kaysayısı': mahal.skylightGolge,
+          'kuzey dış duvar alanı': mahal.duvarKuzey,
+          'kuzey dış pencere alanı': mahal.pencereKuzey,
+          'güney dış duvar alanı': mahal.duvarGuney,
+          'güney dış pencere alanı': mahal.pencereGuney,
+          'doğu dış duvar alanı': mahal.duvarDogu,
+          'doğu dış pencere alanı': mahal.pencereDogu,
+          'batı dış duvar alanı': mahal.duvarBati,
+          'batı dış pencere alanı': mahal.pencereBati,
+          'kuzeydoğu dış duvar alanı': mahal.duvarKuzeydogu,
+          'kuzeydoğu dış pencere alanı': mahal.pencereKuzeydogu,
+          'güneydoğu dış duvar alanı': mahal.duvarGuneydogu,
+          'güneydoğu dış pencere alanı': mahal.pencereGuneydogu,
+          'güneybatı dış duvar alanı': mahal.duvarGuneybati,
+          'güneybatı dış pencere alanı': mahal.pencereGuneybati,
+          'kuzeybatı dış duvar alanı': mahal.duvarKuzeybati,
+          'kuzeybatı dış pencere alanı': mahal.pencereKuzeybati,
+          'tavan alanı': mahal.tavanAlan || mahal.alan,
+          'döşeme alanı': mahal.dosemeAlan || mahal.alan,
+          'oturan kişi': mahal.kisiOturan,
+          'ayakta kişi': mahal.kisiAyakta,
+          'dans eden kişi': mahal.kisiDans,
+          'Televizyon': mahal.tvWm2,
+          'Cihazlar': mahal.cihazWm2,
+          'aydınlatma yükü': mahal.aydinlatmaWm2
         };
 
         const P = {

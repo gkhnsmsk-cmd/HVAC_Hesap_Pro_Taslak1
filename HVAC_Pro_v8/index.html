@@ -585,9 +585,44 @@
             padding: 20px;
             border: 1px solid var(--theme-border);
             border-radius: 8px;
-            max-width: 400px;
-            width: 90%;
+            max-width: 640px;
+            width: 92%;
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            max-height: 85vh;
+            overflow-y: auto;
+        }
+
+        .modal-section {
+            margin: 16px 0;
+            padding-top: 12px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .modal-section-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #1a1f28;
+            margin-bottom: 8px;
+        }
+
+        .modal-yon-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .modal-yon-table th, .modal-yon-table td {
+            padding: 4px 6px;
+            border: 1px solid #e2e8f0;
+            text-align: center;
+        }
+
+        .modal-yon-table input {
+            width: 70px;
+            padding: 3px;
+            border: 1px solid #e2e8f0;
+            border-radius: 3px;
+            font-size: 12px;
         }
 
         .modal-title {
@@ -964,34 +999,174 @@
     <div class="modal" id="mahal-modal">
         <div class="modal-content">
             <div class="modal-title" data-i18n="modal_title_add_room">Yeni Mahal Ekle</div>
-            <div class="modal-field">
-                <label class="modal-label" data-i18n="modal_room_name">Mahal Adi</label>
-                <input type="text" id="modal-mahal-adi" class="modal-input" placeholder="Ornek: Salon">
+
+            <div class="modal-section">
+                <h4 class="modal-section-title">Temel Bilgiler</h4>
+                <div class="modal-field">
+                    <label class="modal-label" data-i18n="modal_room_name">Mahal Adi</label>
+                    <input type="text" id="modal-mahal-adi" class="modal-input" placeholder="Ornek: Salon">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label" data-i18n="modal_area">Alan (m2)</label>
+                    <input type="number" id="modal-alan" class="modal-input" value="50" min="1" step="0.5">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label" data-i18n="modal_height">Kat Yuksekligi (m)</label>
+                    <input type="number" id="modal-yukseklik" class="modal-input" value="3.0" min="2" step="0.1">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label" data-i18n="modal_ext_temp_winter">Dis Sicaklik - Kis (°C)</label>
+                    <input type="number" id="modal-dis-sicaklik-kis" class="modal-input" value="-12" step="1">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label" data-i18n="modal_int_temp_winter">Ic Sicaklik - Kis (°C)</label>
+                    <input type="number" id="modal-ic-sicaklik-kis" class="modal-input" value="21" step="1">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label" data-i18n="modal_ext_temp_summer">Dis Sicaklik - Yaz (°C)</label>
+                    <input type="number" id="modal-dis-sicaklik-yaz" class="modal-input" value="33" step="1">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label" data-i18n="modal_int_temp_summer">Ic Sicaklik - Yaz (°C)</label>
+                    <input type="number" id="modal-ic-sicaklik-yaz" class="modal-input" value="24" step="1">
+                </div>
             </div>
-            <div class="modal-field">
-                <label class="modal-label" data-i18n="modal_area">Alan (m2)</label>
-                <input type="number" id="modal-alan" class="modal-input" value="50" min="1" step="0.5">
+
+            <div class="modal-section">
+                <h4 class="modal-section-title">U-Değerleri ve Gölgeleme</h4>
+                <div class="modal-field">
+                    <label class="modal-label">Duvar U-değeri (W/m²K)</label>
+                    <input type="number" id="modal-u-duvar" class="modal-input" value="0.45" step="0.01">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Pencere U-değeri (W/m²K)</label>
+                    <input type="number" id="modal-u-pencere" class="modal-input" value="2.1" step="0.1">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Tavan U-değeri (W/m²K)</label>
+                    <input type="number" id="modal-u-tavan" class="modal-input" value="0.35" step="0.01">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Döşeme U-değeri (W/m²K)</label>
+                    <input type="number" id="modal-u-doseme" class="modal-input" value="0.50" step="0.01">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Pencere Gölgeleme Katsayısı (0-1)</label>
+                    <input type="number" id="modal-golgeleme" class="modal-input" value="0.5" step="0.05" min="0" max="1">
+                </div>
             </div>
-            <div class="modal-field">
-                <label class="modal-label" data-i18n="modal_height">Kat Yuksekligi (m)</label>
-                <input type="number" id="modal-yukseklik" class="modal-input" value="3.0" min="2" step="0.1">
+
+            <div class="modal-section">
+                <h4 class="modal-section-title">Yönlere Göre Dış Duvar ve Pencere Alanları (m²)</h4>
+                <table class="modal-yon-table">
+                    <thead>
+                        <tr>
+                            <th>Yön</th>
+                            <th>Duvar Alanı (m²)</th>
+                            <th>Pencere Alanı (m²)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td>Kuzey</td>
+                        <td><input type="number" id="modal-duvar-kuzey" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" id="modal-pencere-kuzey" value="0" min="0" step="0.1"></td>
+                    </tr>
+                    <tr>
+                        <td>Güney</td>
+                        <td><input type="number" id="modal-duvar-guney" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" id="modal-pencere-guney" value="0" min="0" step="0.1"></td>
+                    </tr>
+                    <tr>
+                        <td>Doğu</td>
+                        <td><input type="number" id="modal-duvar-dogu" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" id="modal-pencere-dogu" value="0" min="0" step="0.1"></td>
+                    </tr>
+                    <tr>
+                        <td>Batı</td>
+                        <td><input type="number" id="modal-duvar-bati" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" id="modal-pencere-bati" value="0" min="0" step="0.1"></td>
+                    </tr>
+                    <tr>
+                        <td>Kuzeydoğu</td>
+                        <td><input type="number" id="modal-duvar-kuzeydogu" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" id="modal-pencere-kuzeydogu" value="0" min="0" step="0.1"></td>
+                    </tr>
+                    <tr>
+                        <td>Güneydoğu</td>
+                        <td><input type="number" id="modal-duvar-guneydogu" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" id="modal-pencere-guneydogu" value="0" min="0" step="0.1"></td>
+                    </tr>
+                    <tr>
+                        <td>Güneybatı</td>
+                        <td><input type="number" id="modal-duvar-guneybati" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" id="modal-pencere-guneybati" value="0" min="0" step="0.1"></td>
+                    </tr>
+                    <tr>
+                        <td>Kuzeybatı</td>
+                        <td><input type="number" id="modal-duvar-kuzeybati" value="0" min="0" step="0.1"></td>
+                        <td><input type="number" id="modal-pencere-kuzeybati" value="0" min="0" step="0.1"></td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="modal-field">
-                <label class="modal-label" data-i18n="modal_ext_temp_winter">Dis Sicaklik - Kis (°C)</label>
-                <input type="number" id="modal-dis-sicaklik-kis" class="modal-input" value="-12" step="1">
+
+            <div class="modal-section">
+                <h4 class="modal-section-title">Skylight (Çatı Penceresi)</h4>
+                <div class="modal-field">
+                    <label class="modal-label">Skylight Alanı (m²)</label>
+                    <input type="number" id="modal-skylight-alan" class="modal-input" value="0">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Skylight U-değeri (W/m²K)</label>
+                    <input type="number" id="modal-skylight-u" class="modal-input" value="2.8">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Skylight Gölgeleme Katsayısı</label>
+                    <input type="number" id="modal-skylight-golge" class="modal-input" value="0.65">
+                </div>
             </div>
-            <div class="modal-field">
-                <label class="modal-label" data-i18n="modal_int_temp_winter">Ic Sicaklik - Kis (°C)</label>
-                <input type="number" id="modal-ic-sicaklik-kis" class="modal-input" value="21" step="1">
+
+            <div class="modal-section">
+                <h4 class="modal-section-title">Tavan / Döşeme Alanları</h4>
+                <div class="modal-field">
+                    <label class="modal-label">Tavan Alanı (m²)</label>
+                    <input type="number" id="modal-tavan-alan" class="modal-input" placeholder="Boş bırakılırsa Alan değeri kullanılır">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Döşeme Alanı (m²)</label>
+                    <input type="number" id="modal-doseme-alan" class="modal-input" placeholder="Boş bırakılırsa Alan değeri kullanılır">
+                </div>
             </div>
-            <div class="modal-field">
-                <label class="modal-label" data-i18n="modal_ext_temp_summer">Dis Sicaklik - Yaz (°C)</label>
-                <input type="number" id="modal-dis-sicaklik-yaz" class="modal-input" value="33" step="1">
+
+            <div class="modal-section">
+                <h4 class="modal-section-title">İç Yükler (Kişi / Cihaz / Aydınlatma)</h4>
+                <div class="modal-field">
+                    <label class="modal-label">Oturan Kişi Sayısı</label>
+                    <input type="number" id="modal-kisi-oturan" class="modal-input" value="0">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Ayakta Kişi Sayısı</label>
+                    <input type="number" id="modal-kisi-ayakta" class="modal-input" value="0">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Dans Eden Kişi Sayısı</label>
+                    <input type="number" id="modal-kisi-dans" class="modal-input" value="0">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Televizyon Yükü (W/m²)</label>
+                    <input type="number" id="modal-tv-wm2" class="modal-input" value="0">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Cihaz Yükü (W/m²)</label>
+                    <input type="number" id="modal-cihaz-wm2" class="modal-input" value="0">
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Aydınlatma Yükü (W/m²)</label>
+                    <input type="number" id="modal-aydinlatma-wm2" class="modal-input" value="20">
+                </div>
             </div>
-            <div class="modal-field">
-                <label class="modal-label" data-i18n="modal_int_temp_summer">Ic Sicaklik - Yaz (°C)</label>
-                <input type="number" id="modal-ic-sicaklik-yaz" class="modal-input" value="24" step="1">
-            </div>
+
             <div class="modal-buttons">
                 <button class="modal-btn cancel" onclick="gsemApp.closeModal()" data-i18n="modal_cancel">Iptal</button>
                 <button class="modal-btn submit" onclick="gsemApp.addMahal()" data-i18n="modal_add">Ekle</button>
