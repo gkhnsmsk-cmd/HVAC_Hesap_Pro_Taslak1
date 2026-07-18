@@ -239,14 +239,18 @@
     {
       id: 'seismic-hanger',
       category: 'other',
-      nameTr: 'Deprem Kütlesi Taşıyıcısı',
+      nameTr: 'Deprem Kütlesi Taşıyıcısı (ASCE7-22 / TBDY2018 Tam Formül)',
       windowName: 'SeismicHanger',
-      mainFunc: 'seismicLoad',
-      description: 'Deprem bölgesi için borular/kanallar için taşıyıcı yükü',
+      mainFunc: 'seismicLoadASCE7',
+      description: 'Bina/ekipman asma sistemleri için tam ASCE7 Eq.13.3-1 bileşen sismik kuvveti (ap/Rp/yükseklik dahil)',
       params: [
-        { name: 'system_mass_kg', label: 'Sistem Kütlesi', unit: 'kg', type: 'number', default: 500, min: 50, max: 5000, step: 50 },
-        { name: 'seismic_accel_g', label: 'Deprem İvmesi (g cinsinden)', unit: 'g', type: 'number', default: 0.3, min: 0.1, max: 1.0, step: 0.05 },
-        { name: 'damping_factor', label: 'Sönüm Faktörü', unit: 'frak', type: 'number', default: 1.2, min: 0.8, max: 2.0, step: 0.1 }
+        { name: 'W_kg', label: 'Ekipman/Bileşen Ağırlığı', unit: 'kg', type: 'number', default: 500, min: 1, max: 20000, step: 10 },
+        { name: 'Sds', label: 'Sds — Tasarım Spektral İvme Katsayısı (TEYİT: deprem haritası+zemin sınıfı)', unit: '-', type: 'number', default: 1.0, min: 0, max: 3.0, step: 0.05 },
+        { name: 'Ip', label: 'Ip — Bileşen Önem Katsayısı (TEYİT: 1.0 normal / 1.5 kritik)', unit: '-', type: 'number', default: 1.0, min: 1.0, max: 1.5, step: 0.5 },
+        { name: 'ap', label: 'ap — Bileşen Amplifikasyon Katsayısı (TEYİT: ASCE7 Tablo 13.5-1/13.6-1)', unit: '-', type: 'number', default: 1.0, min: 1.0, max: 2.5, step: 0.5 },
+        { name: 'Rp', label: 'Rp — Bileşen Davranış Katsayısı (TEYİT: ASCE7 Tablo 13.5-1/13.6-1)', unit: '-', type: 'number', default: 2.5, min: 1.0, max: 12, step: 0.5 },
+        { name: 'z_m', label: 'Bağlantı Noktası Yüksekliği (taban itibariyle)', unit: 'm', type: 'number', default: 3, min: 0, max: 300, step: 0.5 },
+        { name: 'h_m', label: 'Bina Ortalama Çatı Yüksekliği (taban itibariyle)', unit: 'm', type: 'number', default: 12, min: 1, max: 300, step: 0.5 }
       ]
     },
     {
