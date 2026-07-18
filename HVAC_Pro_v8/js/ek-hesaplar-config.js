@@ -269,14 +269,18 @@
     {
       id: 'medical-gas',
       category: 'other',
-      nameTr: 'Tıbbi Gaz Sistemi',
+      nameTr: 'Tıbbi Gaz Sistemi — Toplam Debi (ISO 7396-1)',
       windowName: 'MedicalGas',
       mainFunc: 'totalFlow',
-      description: 'Hastane tıbbi gaz (O2, N2O, Vac) taleplerinin toplamı',
+      description: 'Gaz çıkış noktalarının (nokta tipi × adet × debi) toplamı — her satır ayrı nokta tipi (O2/vakum/N2O/basınçlı hava vb, TEYİT gerekir)',
       params: [
-        { name: 'yatakSayisi', label: 'Yatak Sayısı', type: 'number', default: 50, min: 5, max: 500, step: 5 },
-        { name: 'dolulukOrani', label: 'Yatak Doluluğu', unit: 'frak', type: 'number', default: 0.75, min: 0.2, max: 1.0, step: 0.05 },
-        { name: 'gazTuru', label: 'Gaz Türü (0=O2, 1=N2O, 2=Vac)', unit: 'enum', type: 'number', default: 0, min: 0, max: 2, step: 1 }
+        {
+          name: 'noktalar', label: 'Gaz Çıkış Noktaları', type: 'array',
+          itemFields: [
+            { name: 'adet', label: 'Adet', default: 1 },
+            { name: 'debi_l_min_nokta', label: 'Nokta Başı Debi (L/min)', default: 6 }
+          ]
+        }
       ]
     },
     {

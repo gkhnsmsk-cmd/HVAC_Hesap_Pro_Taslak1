@@ -84,7 +84,7 @@
           ? 'ek-param-' + containerId + '-' + idx + '-' + pIdx
           : 'ek-param-' + idx + '-' + pIdx;
         html += '<div class="pi" style="margin-bottom: 10px;">';
-        html += '  <label for="' + inputId + '">' + param.label + ' (' + param.unit + ')</label>';
+        html += '  <label for="' + inputId + '">' + param.label + (param.unit ? ' (' + param.unit + ')' : '') + '</label>';
 
         if (param.type === 'number') {
           html += '  <input type="number" id="' + inputId + '" ';
@@ -96,13 +96,111 @@
           html += '  <input type="text" id="' + inputId + '" value="' + param.default + '" />';
         } else if (param.type === 'enum') {
           html += '  <input type="number" id="' + inputId + '" value="' + param.default + '" min="' + param.min + '" max="' + param.max + '" />';
+        } else if (param.type === 'array') {
+          // Çok-satırlı (dizi) parametre: her satır itemFields'e göre birden
+          // fazla alt-input içerir (örn. medical-gas.js totalFlow({noktalar:[...]})).
+          html += '  <table class="ek-array-table" id="ek-array-table-' + inputId + '" data-next-index="0" data-item-fields=\'' + JSON.stringify(param.itemFields || []).replace(/'/g, '&#39;') + '\'>';
+          html += '    <thead><tr>';
+          (param.itemFields || []).forEach(function (f) { html += '<th>' + f.label + '</th>'; });
+          html += '<th></th></tr></thead>';
+          html += '    <tbody id="ek-array-body-' + inputId + '"></tbody>';
+          html += '  </table>';
+          html += '  <button type="button" class="ek-array-add-btn" data-target="' + inputId + '" style="margin-top:4px; padding:3px 8px; font-size:11px; background:#fff; border:1px solid #e2e8f0; border-radius:4px; cursor:pointer;">+ Satır Ekle</button>';
         }
         html += '</div>';
       });
       html += '</div>';
 
       formContainer.innerHTML = html;
+
+      // Dizi (array) parametreleri için: başlangıçta 1 satır ekle + "+ Satır
+      // Ekle"/"Sil" butonlarını bağla (event delegation, formContainer üstünde).
+      mod.params.forEach(function (param, pIdx) {
+        if (param.type !== 'array') return;
+        const inputId = containerId
+          ? 'ek-param-' + containerId + '-' + idx + '-' + pIdx
+          : 'ek-param-' + idx + '-' + pIdx;
+        addArrayRow(inputId, param.itemFields || []);
+      });
+      if (!formContainer._ekArrayDelegated) {
+        formContainer.addEventListener('click', function (ev) {
+          const addBtn = ev.target.closest('.ek-array-add-btn');
+          if (addBtn) {
+            const targetId = addBtn.getAttribute('data-target');
+            const table = document.getElementById('ek-array-table-' + targetId);
+            if (table) {
+              let itemFields = [];
+              try { itemFields = JSON.parse(table.getAttribute('data-item-fields') || '[]'); } catch (e) { itemFields = []; }
+              addArrayRow(targetId, itemFields);
+            }
+            return;
+          }
+          const delBtn = ev.target.closest('.ek-array-del-btn');
+          if (delBtn) {
+            const row = delBtn.closest('tr');
+            if (row) row.remove();
+          }
+        });
+        formContainer._ekArrayDelegated = true;
+      }
     }
+  }
+
+  // ─── Dizi (array) parametresine yeni satır ekle ───────────────────────
+  function addArrayRow(inputId, itemFields) {
+    const tbody = document.getElementById('ek-array-body-' + inputId);
+    const table = document.getElementById('ek-array-table-' + inputId);
+    if (!tbody || !table) return;
+
+    const rowIdx = parseInt(table.getAttribute('data-next-index') || '0', 10);
+    table.setAttribute('data-next-index', String(rowIdx + 1));
+
+    const tr = document.createElement('tr');
+    itemFields.forEach(function (f) {
+      const td = document.createElement('td');
+      const inp = document.createElement('input');
+      inp.type = 'number';
+      inp.id = inputId + '-row' + rowIdx + '-' + f.name;
+      inp.className = 'ek-array-cell';
+      inp.style.width = '70px';
+      inp.style.padding = '2px 4px';
+      inp.style.fontSize = '11px';
+      if (f.default !== undefined) inp.value = f.default;
+      td.appendChild(inp);
+      tr.appendChild(td);
+    });
+    const tdBtn = document.createElement('td');
+    const delBtn = document.createElement('button');
+    delBtn.type = 'button';
+    delBtn.className = 'ek-array-del-btn';
+    delBtn.textContent = 'Sil';
+    delBtn.style.cssText = 'padding:2px 6px; font-size:10px; background:#fff; border:1px solid #e2e8f0; border-radius:3px; cursor:pointer; color:#b91c1c;';
+    tdBtn.appendChild(delBtn);
+    tr.appendChild(tdBtn);
+
+    tbody.appendChild(tr);
+  }
+
+  // ─── Dizi (array) parametresinin tüm satırlarını oku ──────────────────
+  function readArrayParam(inputId, itemFields) {
+    const tbody = document.getElementById('ek-array-body-' + inputId);
+    if (!tbody) return [];
+    const rows = tbody.querySelectorAll('tr');
+    const result = [];
+    rows.forEach(function (tr) {
+      const obj = {};
+      let hasValue = false;
+      itemFields.forEach(function (f) {
+        const cellInput = tr.querySelector('input[id$="-' + f.name + '"]');
+        if (cellInput) {
+          const v = parseFloat(cellInput.value);
+          obj[f.name] = isNaN(v) ? 0 : v;
+          if (cellInput.value !== '') hasValue = true;
+        }
+      });
+      if (hasValue) result.push(obj);
+    });
+    return result;
   }
 
   // ─── Form temizle ─────────────────────────────────────────────────────
@@ -145,6 +243,13 @@
       const inputId = containerId
         ? 'ek-param-' + containerId + '-' + currentModuleIndex + '-' + pIdx
         : 'ek-param-' + currentModuleIndex + '-' + pIdx;
+
+      if (param.type === 'array') {
+        // Dizi (çok-satırlı) parametre: tek bir input yok, satırları oku.
+        params[param.name] = readArrayParam(inputId, param.itemFields || []);
+        return;
+      }
+
       const elem = document.getElementById(inputId);
       if (!elem) {
         showErrorUI('Input bulunamadı: ' + inputId, containerId);
@@ -205,7 +310,10 @@
     html += '<strong>Giriş:</strong> ';
     const inputStrs = mod.params.map(p => {
       const val = inputs[p.name];
-      return p.label + '=' + (typeof val === 'number' ? val.toFixed(2) : val) + ' ' + p.unit;
+      if (p.type === 'array') {
+        return p.label + '=[' + (Array.isArray(val) ? val.length : 0) + ' satır]';
+      }
+      return p.label + '=' + (typeof val === 'number' ? val.toFixed(2) : val) + (p.unit ? ' ' + p.unit : '');
     });
     html += inputStrs.join(', ');
     html += '</div>';
