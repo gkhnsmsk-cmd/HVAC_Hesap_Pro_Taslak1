@@ -506,7 +506,7 @@
         "HVAC_Pro_v8/js/pipe-insulation-loss.js",
         "tools/pipe-insulation-loss-test.js"
       ],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "T47",
@@ -517,7 +517,7 @@
         "HVAC_Pro_v8/js/cogeneration-energy.js",
         "tools/cogeneration-energy-test.js"
       ],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "T48",
@@ -528,7 +528,7 @@
         "HVAC_Pro_v8/js/power-factor-correction.js",
         "tools/power-factor-correction-test.js"
       ],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "T49",
@@ -539,7 +539,7 @@
         "HVAC_Pro_v8/js/room-ventilation-rate.js",
         "tools/room-ventilation-rate-test.js"
       ],
-      "status": "pending"
+      "status": "done"
     },
     {
       "id": "T50",
@@ -550,7 +550,7 @@
         "HVAC_Pro_v8/js/duct-heat-gain.js",
         "tools/duct-heat-gain-test.js"
       ],
-      "status": "pending"
+      "status": "done"
     }
   ]
 }
