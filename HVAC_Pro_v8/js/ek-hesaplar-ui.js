@@ -347,7 +347,7 @@
     // HTML yapı oluştur (dropdown + form + results)
     container.innerHTML = `
       <div style="display: flex; flex-direction: column; gap: 12px;">
-        <select id="ek-hesaplar-modul-select-${containerId}" style="padding: 8px; background: #252b36; border: 1px solid #2d3139; border-radius: 4px; color: #e2e8f0; font-size: 13px;">
+        <select id="ek-hesaplar-modul-select-${containerId}" style="padding: 8px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 4px; color: #1a1f28; font-size: 13px;">
           <option value="">-- Modül Seçin --</option>
         </select>
         <div id="ek-hesaplar-form-container-${containerId}" style="display: flex; flex-direction: column; gap: 10px;"></div>

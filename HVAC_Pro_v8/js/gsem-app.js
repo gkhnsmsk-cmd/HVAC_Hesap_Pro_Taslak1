@@ -201,7 +201,7 @@
 
       if (this.mahals.length === 0) {
         const row = document.createElement('tr');
-        row.innerHTML = '<td colspan="6" style="text-align: center; color: #94a3b8;">Mahal eklenmemis</td>';
+        row.innerHTML = '<td colspan="6" style="text-align: center; color: #64748b;">Mahal eklenmemis</td>';
         tbody.appendChild(row);
       }
     },
@@ -220,10 +220,10 @@
 
       const infoDiv = document.getElementById('summary-info');
       if (this.mahals.length === 0) {
-        infoDiv.innerHTML = '<div style="font-size: 11px; color: #cbd5e1;">Mahaller ekleyerek baslayın.</div>';
+        infoDiv.innerHTML = '<div style="font-size: 11px; color: #475569;">Mahaller ekleyerek baslayın.</div>';
       } else {
         infoDiv.innerHTML = `
-          <div style="font-size: 11px; color: #cbd5e1;">
+          <div style="font-size: 11px; color: #475569;">
             <strong>Toplam Alan:</strong> ${totalArea.toFixed(1)} m²<br>
             <strong>Isı Kaybi:</strong> ${totalHeating.toFixed(2)} kW<br>
             <strong>Soğutma Yükü:</strong> ${totalCooling.toFixed(2)} kW<br>
